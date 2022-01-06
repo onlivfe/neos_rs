@@ -1,0 +1,17 @@
+[package]
+name = "neos"
+version = "0.0.0-alpha.1"
+edition = "2021"
+license = "MPL-2.0"
+description = "Rust models of NeosVR's API"
+repository = "https://git.ljoonal.xyz/ljoonal/neos_rs"
+
+[lib]
+name = "neos"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_with = { version = "1.11", default-features = false }
+chrono = { version = "0.4", features = ["serde"] }
+strum = { version = "0.23", features = ["derive"] }
