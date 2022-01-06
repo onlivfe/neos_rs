@@ -1,4 +1,4 @@
-# Rust models for NeosVR's API 
+# Neos API in rust
 
 <img align="right" width="256" height="256" src="./logo.png"/>
 
