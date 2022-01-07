@@ -7,7 +7,7 @@ authors = ["ljoonal"]
 description = "Rust models of NeosVR's API"
 repository = "https://git.ljoonal.xyz/ljoonal/neos_rs"
 keywords = ["neos"]
-categories = ["API bindings", "Games"]
+categories = ["api-bindings", "games"]
 
 [badges]
 maintenance = { status = "experimental" }
