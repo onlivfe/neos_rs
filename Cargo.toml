@@ -3,10 +3,14 @@ name = "neos"
 version = "0.0.0-alpha.1"
 edition = "2021"
 license = "MPL-2.0"
+authors = ["ljoonal"]
 description = "Rust models of NeosVR's API"
 repository = "https://git.ljoonal.xyz/ljoonal/neos_rs"
 keywords = ["neos"]
 categories = ["API bindings", "Games"]
+
+[badges]
+maintenance = { status = "experimental" }
 
 [lib]
 name = "neos"
