@@ -19,3 +19,8 @@ Though adding an API client as an optional feature is planned.
 Very much work in progress, check the docs for more details.
 
 Currently due to a lack of client and/or access to all endpoints without donating to the patreon, some of the types are missing still.
+
+## License
+
+The LICENSE is MPL-2.0.
+However, if the NeosVR team wants to use this crate or adopt it into a more official one, it can be negotiated.
