@@ -1,5 +1,7 @@
 //! Models that relate to sessions.
 
+#![allow(clippy::struct_excessive_bools)]
+
 use crate::{NeosOutputDevice, NeosRecordId};
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use std::fmt;
@@ -8,7 +10,7 @@ use std::fmt;
 #[serde(rename_all = "camelCase")]
 /// Short description of a session's user.
 ///
-/// Found for example in [NeosSession::session_users]
+/// Found for example in [`NeosSession::session_users`]
 pub struct NeosSessionUser {
 	/// The username of the user
 	pub username: String,
@@ -23,16 +25,21 @@ pub struct NeosSessionUser {
 
 #[derive(Debug, Clone, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
-/// A NeosVR session.
+/// A Neos session.
 ///
-/// Found for example in [NeosUserStatus::active_sessions](crate::NeosUserStatus::active_sessions)
+/// Found for example in
+/// [`NeosUserStatus::active_sessions`](crate::NeosUserStatus::active_sessions)
 pub struct NeosSession {
+	/// The name of the session
 	pub name: String,
+	/// The ID of the session's world
 	pub corresponding_world_id: NeosRecordId,
+	/// The tags of the session
 	pub tags: Vec<String>,
 	/// The ID of the session (`S-{uuid}` for example)
 	pub session_id: String,
-	/// Normalized (capitalization) version of the session's id (`s-{uuid}` for example)
+	/// Normalized (capitalization) version of the session's id (`s-{uuid}` for
+	/// example)
 	pub normalized_session_id: String,
 	/// The ID of the session's host (`U-{uuid}` for example)
 	pub host_user_id: String,
@@ -47,7 +54,8 @@ pub struct NeosSession {
 	/// If the host is a headless (server) instance or not.
 	pub headless_host: bool,
 	#[serde(rename = "sessionURLs")]
-	/// Links to the session, in custom protocols such as `lnl-nat:///` and `neos-steam://`
+	/// Links to the session, in custom protocols such as `lnl-nat:///` and
+	/// `neos-steam://`
 	pub session_urls: Vec<String>,
 	/// A list of the session's users very basic details.
 	pub session_users: Vec<NeosSessionUser>,
@@ -55,16 +63,27 @@ pub struct NeosSession {
 	///
 	/// Can be https:// or neosdb:// for example
 	pub thumbnail: String,
+	/// The amount of users that have joined the session
 	pub joined_users: u8,
+	/// The amount of users that are focused on the session
 	pub active_users: u8,
+	/// Total of joined_users..?
 	pub total_joined_users: u8,
+	/// Total of active_users...?
 	pub total_active_users: u8,
+	/// The max limit of users in the session
 	pub max_users: u8,
+	/// If the session is suitable for mobile clients
 	pub mobile_friendly: bool,
+	/// When the session began
 	pub session_begin_time: chrono::DateTime<chrono::Utc>,
+	/// When the session was last updated
 	pub last_update: chrono::DateTime<chrono::Utc>,
+	/// Who can access the session
 	pub access_level: SessionAccessLevel,
+	/// If the session has ended
 	pub has_ended: bool,
+	/// If the session is valid
 	pub is_valid: bool,
 }
 
@@ -84,17 +103,25 @@ pub struct NeosSession {
 #[repr(u8)]
 /// A Neos session's access level.
 ///
-/// Found for example in [NeosSession::access_level]
+/// The API is inconsistent, sometimes representing this as a string and
+/// sometimes as a number. Found for example in [`NeosSession::access_level`]
 pub enum SessionAccessLevel {
+	/// The session is private
 	Private = 0,
+	/// The session is accessible trough LAN
 	Lan = 1,
+	/// The session is accessible to the friends of the host
 	Friends = 2,
+	/// The session is accessible to anyone with friends in the session
 	FriendsOfFriends = 3,
+	/// The session is accessible to anyone who has registered an user account
 	RegisteredUsers = 4,
+	/// The session is accessible to anyone
 	Anyone = 5,
 }
 
-// Allow the SessionAccessLevel to be either represented as a string or number in JSON.
+// Allow the SessionAccessLevel to be either represented as a string or number
+// in JSON.
 impl<'de> Deserialize<'de> for SessionAccessLevel {
 	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
 	where

@@ -1,5 +1,7 @@
 //! Models that relate to the users.
 
+#![allow(clippy::struct_excessive_bools)]
+
 use crate::{
 	sessions::{NeosSession, SessionAccessLevel},
 	NeosPublicBanType,
@@ -28,7 +30,8 @@ pub struct NeosFriend {
 	#[serde(with = "serde_with::rust::default_on_error")]
 	/// When the latest message with the friend was at.
 	///
-	/// Wrong/Invalid dates such as `0001-01-01T00:00:00` are expressed as None.
+	/// Wrong/Invalid dates such as `0001-01-01T00:00:00` are expressed as
+	/// None.
 	pub latest_message_time: Option<DateTime<Utc>>,
 	/// The U-username form of ID of whose friend the details are for.
 	pub owner_id: String,
@@ -46,39 +49,57 @@ pub struct NeosUser {
 	pub username: String,
 	/// Normalized (capitalization) version of the username.
 	pub normalized_username: String,
+	/// Possible alternatives to the normalized username
 	pub alternate_normalized_names: Option<Vec<String>>,
+	/// The email address of the user. Only visible when logged in.
 	pub email: Option<String>,
 	/// When the user registered their Neos account.
 	pub registration_date: DateTime<Utc>,
+	/// If the account is verified
 	pub is_verified: bool,
+	/// When the account ban expires
 	pub account_ban_expiration: Option<DateTime<Utc>>,
+	/// When the public ban expires
 	pub public_ban_expiration: Option<DateTime<Utc>>,
+	/// The type of public ban
 	pub public_ban_type: Option<NeosPublicBanType>,
+	/// When the spectator ban expires
 	pub spectator_ban_expiration: Option<DateTime<Utc>>,
+	/// When the mute ban expires
 	pub mute_ban_expiration: Option<DateTime<Utc>>,
+	/// When the listing ban expires
 	pub listing_ban_expiration: Option<DateTime<Utc>>,
 	#[serde(with = "serde_with::rust::default_on_error")]
 	/// How much large is the users storage quota.
 	///
-	/// The api returns -1 for no permissions, which is deserialized into None here.
+	/// The api returns -1 for no permissions, which is deserialized into None
+	/// here.
 	pub quota_bytes: Option<u64>,
+	/// If the account is prevented from logging in
 	pub is_locked: bool,
+	/// If ban evasion is supressed for the user.
 	pub supress_ban_evasion: bool,
 	/// How much storage quota the user has used.
 	///
-	/// The api returns -1 for no permissions, which is deserialized into None here.
+	/// The api returns -1 for no permissions, which is deserialized into None
+	/// here.
 	pub used_bytes: Option<u64>,
 	#[serde(rename = "2fa_login")]
+	/// If the user has two factor authentication turned on.
 	pub two_factor_login: bool,
 	#[serde(default)]
 	/// Tags of the user. Seem to match up with the badges.
 	pub tags: Vec<String>,
 	/// The profile of the user
 	pub profile: Option<NeosUserProfile>,
+	/// NCR crypto referral id probably
 	pub referral_id: Option<String>,
+	/// Data about the user's patreon subscription
 	pub patreon_data: Option<NeosUserPatreonData>,
+	/// Credits, seems to exist only when authenticated.
 	pub credits: Option<NeosUserCredits>,
 	#[serde(rename = "NCRdepositAddress")]
+	/// NCR crypto address, seems to exist only when authenticated.
 	pub ncr_deposit_address: Option<String>,
 }
 
@@ -87,32 +108,33 @@ pub struct NeosUser {
 /// A Neos user/friend's status.
 ///
 /// The response from the API at `users/{user_id}/status`.
-/// Also found in [NeosFriend::user_status].
+/// Also found in [`NeosFriend::user_status`].
 pub struct NeosUserStatus {
-	/// "Online" / "Offline" and so on.
+	/// "Online" / "Offline" and so on
 	pub online_status: NeosUserOnlineStatus,
 	#[serde(with = "serde_with::rust::default_on_error")]
-	/// When the user's status last changed.
+	/// When the user's status last changed
 	///
-	/// Wrong/Invalid dates such as `2018-01-01T00:00:00` are expressed as None.
+	/// Wrong/Invalid dates such as `2018-01-01T00:00:00` are expressed as None
 	pub last_status_change: Option<DateTime<Utc>>,
+	/// The access level of the session that the user is currently in
 	pub current_session_access_level: SessionAccessLevel,
-	/// If the session that the user is currently in is hidden.
+	/// If the session that the user is currently in is hidden
 	pub current_session_hidden: bool,
 	/// If the user is currently hosting a session
 	pub current_hosting: bool,
-	/// "Screen" or "VR" for example.
+	/// "Screen" or "VR" for example
 	pub output_device: NeosOutputDevice,
-	/// Only seems to exist when the user is online.
+	/// Only seems to exist when the user is online
 	pub compatibility_hash: Option<String>,
-	/// Only seems to exist when the user is online.
+	/// Only seems to exist when the user is online
 	pub neos_version: Option<String>,
-	/// Only seems to exist when the user is online.
+	/// Only seems to exist when the user is online
 	#[serde(rename = "publicRSAKey")]
 	pub public_rsa_key: Option<NeosUserPublicRSA>,
 	/// If the user is using a mobile client.
 	pub is_mobile: bool,
-	/// Only seems to exist when the user is online.
+	/// Only seems to exist when the user is online
 	#[serde(default)]
 	pub active_sessions: Vec<NeosSession>,
 }
@@ -121,9 +143,11 @@ pub struct NeosUserStatus {
 #[serde(rename_all = "PascalCase")]
 /// A Neos users public RSA keypair...for... session authentication?
 ///
-/// Found for example in [NeosUserStatus::public_rsa_key].
+/// Found for example in [`NeosUserStatus::public_rsa_key`].
 pub struct NeosUserPublicRSA {
+	/// The exponent component of the RSA pubkey
 	pub exponent: String,
+	/// The modulus component of the RSA pubkey
 	pub modulus: String,
 }
 
@@ -131,7 +155,7 @@ pub struct NeosUserPublicRSA {
 #[serde(rename_all = "camelCase")]
 /// Partial profile of a Neos user.
 ///
-/// Found for example in [NeosFriend::profile]
+/// Found for example in [`NeosFriend::profile`]
 pub struct NeosUserProfile {
 	/// The url seems to be in a Neos' own neosdb:// format
 	pub icon_url: String,
@@ -152,17 +176,22 @@ pub struct NeosUserProfile {
 )]
 /// The online status of a Neos user.
 ///
-/// Found for example in [NeosUserStatus::online_status].
+/// Found for example in [`NeosUserStatus::online_status`].
 pub enum NeosUserOnlineStatus {
+	/// The user is online
 	Online,
+	/// The user is away
 	Away,
+	/// The user is busy offline
 	Busy,
+	/// The user is offline
 	Offline,
 }
 
 impl NeosUserOnlineStatus {
 	/// (R,G,B) colors that are estimated from the game's UI.
-	pub fn color(&self) -> (u8, u8, u8) {
+	#[must_use]
+	pub const fn color(&self) -> (u8, u8, u8) {
 		match &self {
 			NeosUserOnlineStatus::Online => (0, 255, 0),
 			NeosUserOnlineStatus::Away => (255, 200, 0),
@@ -176,25 +205,35 @@ impl NeosUserOnlineStatus {
 #[serde(rename_all = "camelCase")]
 /// Data about a Neos user's patreon subscription.
 ///
-/// Found for example in [NeosUser::patreon_data].
+/// Found for example in [`NeosUser::patreon_data`].
 /// Some fields missing due to seemingly lack of purpose of them.
 pub struct NeosUserPatreonData {
+	/// If the user is current supporting Neos on Patreon
 	pub is_patreon_supporter: bool,
+	/// If the user has supported Neos on Patreon.
 	pub has_supported: bool,
+	/// Guess: If the user has donated enough to be a board member
 	pub last_is_anorak: bool,
+	/// The ID of the github issue that this user has set as their priority.
 	pub priority_issue: u32,
+	/// Guess: The second last time when the user last activated their Patreon
+	/// subscription
 	pub last_plus_activation_time: DateTime<Utc>,
+	/// When the user last activated their Patreon subscription
 	pub last_activation_time: DateTime<Utc>,
 }
 
 /// The amount of credits that a neos user has.
 ///
-/// Found for example in [NeosUser::credits] when querying the logged in user's details.
+/// Found for example in [`NeosUser::credits`] when querying the logged in
+/// user's details.
 #[derive(Debug, Clone, Deserialize)]
 pub struct NeosUserCredits {
 	#[serde(rename = "KFC")]
+	/// Neos testing credits
 	pub kfc: Option<f64>,
 	#[serde(rename = "NCR")]
+	/// Neos credits
 	pub ncr: Option<f64>,
 }
 
@@ -212,16 +251,25 @@ pub struct NeosUserCredits {
 #[repr(u8)]
 /// The type of output device that the user is using.
 ///
-/// Found for example in [NeosUserStatus::output_device] & [NeosSessionUser::output_device][crate::NeosSessionUser::output_device]
+/// The API is inconsistent, sometimes representing this as a string and
+/// sometimes as a number. Found for example in
+/// [`NeosUserStatus::output_device`] &
+/// [`NeosSessionUser::output_device`][crate::NeosSessionUser::output_device]
 pub enum NeosOutputDevice {
+	/// Output device not known
 	Unknown = 0,
+	/// No visual output, server machine
 	Headless = 1,
+	/// Desktop
 	Screen = 2,
+	/// Virtual Reality
 	Vr = 3,
+	/// In game camera
 	Camera = 4,
 }
 
-// Allow the NeosOutputDevice to be either represented as a string or number in JSON.
+// Allow the NeosOutputDevice to be either represented as a string or number in
+// JSON.
 impl<'de> Deserialize<'de> for NeosOutputDevice {
 	fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
 	where

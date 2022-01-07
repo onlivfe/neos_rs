@@ -10,16 +10,34 @@ use serde::Deserialize;
 #[derive(Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NeosUserSession {
+	/// The Neos user that this session is for
 	pub user_id: String,
+	/// The secret token of this session
 	pub token: String,
+	/// When the session was created
 	pub created: DateTime<Utc>,
+	/// When the session is set to expire
 	pub expire: DateTime<Utc>,
+	/// If the session has the remember me checked (lives longer)
 	pub remember_me: bool,
+	/// The IP address that created the session
 	pub source_ip: String,
+	/// Assumed to be a Neos internal field
 	pub partition_key: String,
+	/// Assumed to be a Neos internal field
 	pub row_key: String,
+	/// A timestamp of the session
 	pub timestamp: DateTime<Utc>,
+	/// A standard etag, useful for caching
 	pub e_tag: String,
+}
+
+impl NeosUserSession {
+	#[must_use]
+	/// The `Authorization` header required to use this `NeosUserSession`.
+	pub fn auth_header(&self) -> String {
+		"neos ".to_owned() + &self.user_id + ":" + &self.token
+	}
 }
 
 // Need to do manual impl to censor out secret token.
@@ -53,9 +71,12 @@ impl std::fmt::Debug for NeosUserSession {
 )]
 /// The type of a ban.
 ///
-/// Found for example in [NeosUser::public_ban_type][crate::NeosUser::public_ban_type]
+/// Found for example in [`NeosUser::public_ban_type`][crate::NeosUser::public_ban_type]
 pub enum NeosPublicBanType {
+	/// A standard ban
 	Standard,
+	/// A soft ban
 	Soft,
+	/// A hard ban
 	Hard,
 }

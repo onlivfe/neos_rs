@@ -5,6 +5,8 @@ edition = "2021"
 license = "MPL-2.0"
 description = "Rust models of NeosVR's API"
 repository = "https://git.ljoonal.xyz/ljoonal/neos_rs"
+keywords = ["neos"]
+categories = ["API bindings", "Games"]
 
 [lib]
 name = "neos"
