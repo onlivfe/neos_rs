@@ -71,7 +71,8 @@ impl std::fmt::Debug for NeosUserSession {
 )]
 /// The type of a ban.
 ///
-/// Found for example in [`NeosUser::public_ban_type`][crate::NeosUser::public_ban_type]
+/// Found for example in
+/// [`NeosUser`](crate::NeosUser::public_ban_type)
 pub enum NeosPublicBanType {
 	/// A standard ban
 	Standard,

@@ -1,3 +1,4 @@
+#![doc(html_logo_url = "https://git.ljoonal.xyz/ljoonal/neos_rs/raw/logo.png")]
 //! Typed models for [Neos's api](https://wiki.neosvr.com/docfx/api/) with serde deserialization support.
 //!
 //! Featuring chrono for datetimes and strum for better enums.
@@ -14,10 +15,31 @@
 //! - Splitting some linked `Option<T>` fields into their own sub-structs
 //! - Better documentation about the API request paths
 //! - In the future this crate might also provide an API client
+//!
+//! ## Examples
+//!
+//! ```rust
+//!     extern crate serde_json;
+//!     use neos::{NeosSessionUser, NeosOutputDevice};
+//!
+//!     // Normally you'd get the data by calling the API
+//!     let data = r#"{
+//!         "username": "ljoonal",
+//!         "userID": "U-ljoonal",
+//!         "isPresent": true,
+//!         "outputDevice": 2
+//!      }"#;
+//!
+//!     let session_user: NeosSessionUser = serde_json::from_str(data).unwrap();
+//!
+//!     assert_eq!(session_user.output_device, NeosOutputDevice::Screen);
+//! ```
 
 #![deny(clippy::all)]
 #![deny(clippy::cargo)]
-#![deny(missing_docs)]
+#![warn(missing_docs)]
+#![deny(rustdoc::invalid_html_tags)]
+#![warn(rustdoc::missing_doc_code_examples)]
 #![warn(clippy::pedantic)]
 #![warn(clippy::nursery)]
 // Strum macros would cause warnings

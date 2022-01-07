@@ -108,7 +108,7 @@ pub struct NeosUser {
 /// A Neos user/friend's status.
 ///
 /// The response from the API at `users/{user_id}/status`.
-/// Also found in [`NeosFriend::user_status`].
+/// Also found in [`NeosFriend`](NeosFriend::user_status).
 pub struct NeosUserStatus {
 	/// "Online" / "Offline" and so on
 	pub online_status: NeosUserOnlineStatus,
@@ -143,7 +143,7 @@ pub struct NeosUserStatus {
 #[serde(rename_all = "PascalCase")]
 /// A Neos users public RSA keypair...for... session authentication?
 ///
-/// Found for example in [`NeosUserStatus::public_rsa_key`].
+/// Found for example in [`NeosUserStatus`](NeosUserStatus::public_rsa_key).
 pub struct NeosUserPublicRSA {
 	/// The exponent component of the RSA pubkey
 	pub exponent: String,
@@ -155,7 +155,7 @@ pub struct NeosUserPublicRSA {
 #[serde(rename_all = "camelCase")]
 /// Partial profile of a Neos user.
 ///
-/// Found for example in [`NeosFriend::profile`]
+/// Found for example in [`NeosFriend`](NeosFriend::profile)
 pub struct NeosUserProfile {
 	/// The url seems to be in a Neos' own neosdb:// format
 	pub icon_url: String,
@@ -176,7 +176,7 @@ pub struct NeosUserProfile {
 )]
 /// The online status of a Neos user.
 ///
-/// Found for example in [`NeosUserStatus::online_status`].
+/// Found for example in [`NeosUserStatus`](NeosUserStatus::online_status).
 pub enum NeosUserOnlineStatus {
 	/// The user is online
 	Online,
@@ -189,7 +189,7 @@ pub enum NeosUserOnlineStatus {
 }
 
 impl NeosUserOnlineStatus {
-	/// (R,G,B) colors that are estimated from the game's UI.
+	/// (R,G,B) colors that are estimated from the game's UI
 	#[must_use]
 	pub const fn color(&self) -> (u8, u8, u8) {
 		match &self {
@@ -205,7 +205,7 @@ impl NeosUserOnlineStatus {
 #[serde(rename_all = "camelCase")]
 /// Data about a Neos user's patreon subscription.
 ///
-/// Found for example in [`NeosUser::patreon_data`].
+/// Found for example in [`NeosUser`](NeosUser::patreon_data).
 /// Some fields missing due to seemingly lack of purpose of them.
 pub struct NeosUserPatreonData {
 	/// If the user is current supporting Neos on Patreon
@@ -214,7 +214,7 @@ pub struct NeosUserPatreonData {
 	pub has_supported: bool,
 	/// Guess: If the user has donated enough to be a board member
 	pub last_is_anorak: bool,
-	/// The ID of the github issue that this user has set as their priority.
+	/// The ID of the github issue that this user has set as their priority
 	pub priority_issue: u32,
 	/// Guess: The second last time when the user last activated their Patreon
 	/// subscription
@@ -225,8 +225,8 @@ pub struct NeosUserPatreonData {
 
 /// The amount of credits that a neos user has.
 ///
-/// Found for example in [`NeosUser::credits`] when querying the logged in
-/// user's details.
+/// Found for example in [`NeosUser`](NeosUser::credits).
+/// Although only when querying the logged in user's details.
 #[derive(Debug, Clone, Deserialize)]
 pub struct NeosUserCredits {
 	#[serde(rename = "KFC")]
@@ -252,9 +252,11 @@ pub struct NeosUserCredits {
 /// The type of output device that the user is using.
 ///
 /// The API is inconsistent, sometimes representing this as a string and
-/// sometimes as a number. Found for example in
-/// [`NeosUserStatus::output_device`] &
-/// [`NeosSessionUser::output_device`][crate::NeosSessionUser::output_device]
+/// sometimes as a number.
+///
+/// Found for example in
+/// [`NeosUserStatus`](NeosUserStatus::output_device) &
+/// [`NeosSessionUser`](crate::NeosSessionUser::output_device)
 pub enum NeosOutputDevice {
 	/// Output device not known
 	Unknown = 0,

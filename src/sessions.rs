@@ -10,7 +10,7 @@ use std::fmt;
 #[serde(rename_all = "camelCase")]
 /// Short description of a session's user.
 ///
-/// Found for example in [`NeosSession::session_users`]
+/// Found for example in [`NeosSession`](NeosSession::session_users)
 pub struct NeosSessionUser {
 	/// The username of the user
 	pub username: String,
@@ -28,7 +28,7 @@ pub struct NeosSessionUser {
 /// A Neos session.
 ///
 /// Found for example in
-/// [`NeosUserStatus::active_sessions`](crate::NeosUserStatus::active_sessions)
+/// [`NeosUserStatus`](crate::NeosUserStatus::active_sessions)
 pub struct NeosSession {
 	/// The name of the session
 	pub name: String,
@@ -104,7 +104,9 @@ pub struct NeosSession {
 /// A Neos session's access level.
 ///
 /// The API is inconsistent, sometimes representing this as a string and
-/// sometimes as a number. Found for example in [`NeosSession::access_level`]
+/// sometimes as a number.
+///
+/// Found for example in [`NeosSession`](NeosSession::access_level)
 pub enum SessionAccessLevel {
 	/// The session is private
 	Private = 0,
