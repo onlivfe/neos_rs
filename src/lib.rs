@@ -16,7 +16,7 @@
 //! - Better documentation about the API request paths
 //! - In the future this crate might also provide an API client
 //!
-//! ## Examples
+//! ## Example usage
 //!
 //! ```rust
 //!     extern crate serde_json;
@@ -58,3 +58,6 @@ pub use auth::*;
 pub use records::*;
 pub use sessions::*;
 pub use users::*;
+
+#[cfg(feature = "api_client")]
+pub mod api_client;
