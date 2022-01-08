@@ -34,9 +34,11 @@ pub use error::*;
 
 use inner::NeosApiClient;
 
+mod any;
 mod auth;
 mod noauth;
 mod req_models;
+pub use any::*;
 pub use auth::*;
 pub use noauth::*;
 pub use req_models::*;
@@ -131,38 +133,5 @@ impl NeosAuthenticated {
 	/// checks, meant for internal use.
 	fn remove_authentication(self) -> NeosUnauthenticated {
 		NeosUnauthenticated { inner: self.inner }
-	}
-}
-
-/// Any Neos API client
-pub enum AnyNeos {
-	/// The API client without authentication
-	Unauthenticated(NeosUnauthenticated),
-	/// The API client with authentication
-	Authenticated(NeosAuthenticated),
-}
-
-impl AnyNeos {
-	/// If the API client instance is authenticated or not.
-	pub const fn is_authenticated(&self) -> bool {
-		match self {
-			Self::Authenticated(_) => true,
-			Self::Unauthenticated(_) => false,
-		}
-	}
-}
-
-/// Use the inner client directly
-impl Neos for AnyNeos {
-	fn api_request(
-		&self,
-		method: Method,
-		url: &str,
-		build: &mut dyn FnMut(Request) -> Result<Request, minreq::Error>,
-	) -> Result<Response, RequestError> {
-		match self {
-			Self::Authenticated(api) => api.api_request(method, url, build),
-			Self::Unauthenticated(api) => api.api_request(method, url, build),
-		}
 	}
 }
