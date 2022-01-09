@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// An users login/auth session.
 ///
@@ -7,7 +7,7 @@ use serde::Deserialize;
 /// This is the response to logging in for example.
 ///
 /// The response from the API at POST `userSessions`.
-#[derive(Clone, Deserialize)]
+#[derive(Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NeosUserSession {
 	/// The Neos user that this session is for
@@ -20,6 +20,7 @@ pub struct NeosUserSession {
 	pub expire: DateTime<Utc>,
 	/// If the session has the remember me checked (lives longer)
 	pub remember_me: bool,
+	#[serde(rename = "sourceIP")]
 	/// The IP address that created the session
 	pub source_ip: String,
 	/// Assumed to be a Neos internal field

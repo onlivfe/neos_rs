@@ -33,7 +33,7 @@ pub struct NeosSession {
 	/// The name of the session
 	pub name: String,
 	/// The ID of the session's world
-	pub corresponding_world_id: NeosRecordId,
+	pub corresponding_world_id: Option<NeosRecordId>,
 	/// The tags of the session
 	pub tags: Vec<String>,
 	/// The ID of the session (`S-{uuid}` for example)
@@ -135,9 +135,8 @@ impl<'de> Deserialize<'de> for SessionAccessLevel {
 			type Value = SessionAccessLevel;
 
 			fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-				formatter.write_str(
-					"a string or number matching the SessionAccessLevel enum",
-				)
+				formatter
+					.write_str("a string or number matching the SessionAccessLevel enum")
 			}
 
 			fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>

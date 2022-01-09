@@ -264,6 +264,7 @@ pub enum NeosOutputDevice {
 	Headless = 1,
 	/// Desktop
 	Screen = 2,
+	#[strum(to_string = "VR")]
 	/// Virtual Reality
 	Vr = 3,
 	/// In game camera
@@ -282,13 +283,9 @@ impl<'de> Deserialize<'de> for NeosOutputDevice {
 		impl<'de> serde::de::Visitor<'de> for NeosOutputDeviceVisitor {
 			type Value = NeosOutputDevice;
 
-			fn expecting(
-				&self,
-				formatter: &mut std::fmt::Formatter,
-			) -> std::fmt::Result {
-				formatter.write_str(
-					"a string or number matching the NeosOutputDevice enum",
-				)
+			fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+				formatter
+					.write_str("a string or number matching the NeosOutputDevice enum")
 			}
 
 			fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
