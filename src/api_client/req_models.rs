@@ -1,8 +1,7 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, strum::AsRefStr)]
 #[serde(rename_all = "camelCase")]
-#[serde(untagged)]
 /// An identifier to use when requesting a session from the Neos API.
 ///
 /// So used when logging in for example, in
@@ -17,10 +16,47 @@ pub enum NeosRequestUserSessionIdentifier {
 	Email(String),
 }
 
+impl NeosRequestUserSessionIdentifier {
+	#[must_use]
+	/// Gets the inner string
+	pub const fn inner(&self) -> &String {
+		match self {
+			Self::Username(s) | Self::Email(s) | Self::OwnerID(s) => s,
+		}
+	}
+
+	#[must_use]
+	/// Gets the inner string
+	pub fn inner_mut(&mut self) -> &mut String {
+		match self {
+			Self::Username(s) | Self::Email(s) | Self::OwnerID(s) => s,
+		}
+	}
+
+	#[must_use]
+	/// If is username
+	pub const fn is_username(&self) -> bool {
+		matches!(self, Self::Username(_))
+	}
+
+	#[must_use]
+	/// If is email based
+	pub const fn is_email(&self) -> bool {
+		matches!(self, Self::Email(_))
+	}
+
+	#[must_use]
+	/// If is owner's ID based
+	pub const fn is_ownerid(&self) -> bool {
+		matches!(self, Self::OwnerID(_))
+	}
+}
+
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// Data for a user session request to the Neos api.
 pub struct NeosRequestUserSession {
+	#[serde(flatten)]
 	/// The way to identify the user account the request is for
 	pub identifier: NeosRequestUserSessionIdentifier,
 	/// The password of the account

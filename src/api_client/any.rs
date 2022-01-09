@@ -4,6 +4,7 @@ use super::{Neos, NeosAuthenticated, NeosUnauthenticated, RequestError};
 
 // Re-exported in super module
 #[allow(clippy::module_name_repetitions)]
+#[derive(Clone)]
 /// Any Neos API client
 pub enum AnyNeos {
 	/// The API client without authentication
@@ -24,7 +25,17 @@ impl From<NeosAuthenticated> for AnyNeos {
 	}
 }
 
+impl From<AnyNeos> for NeosUnauthenticated {
+	fn from(api: AnyNeos) -> Self {
+		match api {
+			AnyNeos::Unauthenticated(v) => v,
+			AnyNeos::Authenticated(v) => v.downgrade().0,
+		}
+	}
+}
+
 impl AnyNeos {
+	#[must_use]
 	/// If the API client instance has been authenticated.
 	pub const fn is_authenticated(&self) -> bool {
 		match self {
@@ -33,6 +44,7 @@ impl AnyNeos {
 		}
 	}
 
+	#[must_use]
 	/// If the API client instance hasn't been authenticated.
 	pub const fn is_unauthenticated(&self) -> bool {
 		match self {

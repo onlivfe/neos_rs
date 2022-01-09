@@ -1,23 +1,34 @@
-use std::sync::RwLock;
+use std::{
+	sync::{Arc, RwLock},
+	time::{Duration, Instant},
+};
 
 use super::{RequestError, API_BASE};
 use chrono::{DateTime, Local};
 use minreq::{Method, Request, Response};
 
+#[derive(Clone)]
 #[warn(clippy::module_name_repetitions)]
+/// Neos API client internals.
 pub struct NeosApiClient {
+	/// The user agent to use for the requests
 	user_agent: String,
-	rate_limit_expiration: RwLock<Option<chrono::DateTime<chrono::Local>>>,
+	/// When the last request was send.
+	last_request_time: Arc<RwLock<Instant>>,
+	/// Arc since we want all the API clients to share the same rate limit if
+	/// possible. RwLock to enable modifying it.
+	rate_limit_expiration: Arc<RwLock<Instant>>,
 }
 
 impl NeosApiClient {
-	pub fn new(
-		user_agent: impl Into<String>,
-		rate_limit_expiration: impl Into<Option<chrono::DateTime<chrono::Local>>>,
-	) -> Self {
+	const MIN_BETWEEN_REQUESTS: Duration = Duration::from_millis(100);
+	pub fn new(user_agent: impl Into<String>) -> Self {
 		Self {
 			user_agent: user_agent.into(),
-			rate_limit_expiration: RwLock::new(rate_limit_expiration.into()),
+			last_request_time: Arc::new(RwLock::new(
+				Instant::now() - Self::MIN_BETWEEN_REQUESTS,
+			)),
+			rate_limit_expiration: Arc::new(RwLock::new(Instant::now())),
 		}
 	}
 
@@ -28,6 +39,7 @@ impl NeosApiClient {
 		build: &mut dyn FnMut(Request) -> Result<Request, minreq::Error>,
 	) -> Result<Response, RequestError> {
 		self.sleep_if_ratelimited();
+		self.sleep_between_requests();
 
 		let response = build(
 			Request::new(method, &(API_BASE.to_owned() + url))
@@ -36,9 +48,9 @@ impl NeosApiClient {
 			.with_header("User-Agent", &self.user_agent)
 			.with_max_redirects(5)
 			// ~1MB
-			.with_max_status_line_length(2^20)
-			// ~8MB
-			.with_max_headers_size(2^23)
+			.with_max_status_line_length(Some(2usize.pow(20)))
+			// ~4MB
+			.with_max_headers_size(Some(2usize.pow(22)))
 			.with_timeout(120),
 		)?
 		.send()?;
@@ -46,23 +58,37 @@ impl NeosApiClient {
 		self.handle_response(response)
 	}
 
+	/// Makes the thread sleep until a certain time has passed between the last
+	/// request
+	fn sleep_between_requests(&self) {
+		let mut waiting_from_last_request = false;
+
+		while waiting_from_last_request {
+			let mut last_request_time = self.last_request_time.write().unwrap();
+			if Instant::now()
+				.checked_duration_since(*last_request_time + Self::MIN_BETWEEN_REQUESTS)
+				.is_some()
+			{
+				*last_request_time = Instant::now();
+				waiting_from_last_request = false;
+			} else {
+				drop(last_request_time);
+				std::thread::sleep(Self::MIN_BETWEEN_REQUESTS);
+			}
+		}
+	}
+
 	/// Makes the thread sleep until the ratelimit has expired
 	fn sleep_if_ratelimited(&self) {
 		// TODO: set a max limit for the sleeping, and/or a request cancel
 		// mechanism?
-		if let Some(rate_limited_until) =
-			*self.rate_limit_expiration.read().unwrap()
+		if let Some(since) = self
+			.rate_limit_expiration
+			.read()
+			.unwrap()
+			.checked_duration_since(Instant::now())
 		{
-			let millis = u64::try_from(
-				rate_limited_until.timestamp_millis()
-					- Local::now().timestamp_millis(),
-			);
-
-			if let Ok(millis) = millis {
-				println!("Neos' API rate limited, sleeping: {}ms", millis);
-				std::thread::sleep(std::time::Duration::from_millis(millis));
-			}
-			*self.rate_limit_expiration.write().unwrap() = None;
+			std::thread::sleep(since);
 		}
 	}
 
@@ -74,32 +100,31 @@ impl NeosApiClient {
 				.get("X-Rate-Limit-Reset")
 				.map(|time| time.parse::<DateTime<Local>>())
 			{
-				*self.rate_limit_expiration.write().unwrap() =
-					Some(rate_limit_resets);
-			} else if let Some(Ok(rate_limit_resets_after)) = response
-				.headers
-				.get("Retry-After")
-				.map(|time| time.parse::<i64>())
+				if let Ok(duration) = (rate_limit_resets - Local::now()).to_std() {
+					*self.rate_limit_expiration.write().unwrap() =
+						Instant::now() + duration;
+				}
+			} else if let Some(Ok(retry_after)) =
+				response.headers.get("Retry-After").map(|time| time.parse::<u64>())
 			{
-				*self.rate_limit_expiration.write().unwrap() = Some(
-					Local::now()
-						+ chrono::Duration::seconds(rate_limit_resets_after),
-				);
+				*self.rate_limit_expiration.write().unwrap() =
+					Instant::now() + Duration::from_secs(retry_after);
 			} else {
 				*self.rate_limit_expiration.write().unwrap() =
-					Some(Local::now() + chrono::Duration::seconds(2));
+					Instant::now() + Duration::from_secs(2);
 			}
 		};
 
 		if res.status_code == 429 {
 			apply_rate_limit(&res);
-			return Err(RequestError::ResponseCode(res.status_code));
+			return Err(RequestError::ResponseCode((
+				res.status_code,
+				res.as_str().unwrap_or("").to_owned(),
+			)));
 		}
 
-		if let Some(Ok(rate_limit_remaining)) = res
-			.headers
-			.get("X-Rate-Limit-Remaining")
-			.map(|limit| limit.parse::<u32>())
+		if let Some(Ok(rate_limit_remaining)) =
+			res.headers.get("X-Rate-Limit-Remaining").map(|limit| limit.parse::<u32>())
 		{
 			if rate_limit_remaining == 0 {
 				apply_rate_limit(&res);
@@ -107,7 +132,10 @@ impl NeosApiClient {
 		}
 
 		if res.status_code < 200 || res.status_code >= 300 {
-			return Err(RequestError::ResponseCode(res.status_code));
+			return Err(RequestError::ResponseCode((
+				res.status_code,
+				res.as_str().unwrap_or("").to_owned(),
+			)));
 		}
 
 		Ok(res)

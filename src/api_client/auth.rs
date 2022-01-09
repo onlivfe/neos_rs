@@ -1,6 +1,21 @@
-use super::{Neos, NeosAuthenticated, NeosUnauthenticated, RequestError};
-use crate::NeosFriend;
+use super::{inner::NeosApiClient, Neos, NeosUnauthenticated, RequestError};
+use crate::{NeosFriend, NeosUserSession};
 use minreq::{Method, Request, Response};
+
+/// Neos API client with authentication
+///
+/// # Example usage
+///
+/// ```rust
+///     use neos::api_client::{Neos, NeosAuthenticated};
+///     let neos_api_client: NeosAuthenticated = todo!();
+///     let online_users_count = neos_api_client.get_friends();
+/// ```
+#[derive(Clone)]
+pub struct NeosAuthenticated {
+	inner: NeosApiClient,
+	user_session: NeosUserSession,
+}
 
 impl Neos for NeosAuthenticated {
 	fn api_request(
@@ -12,28 +27,34 @@ impl Neos for NeosAuthenticated {
 		self.inner.basic_api_request(method, url, &mut |req: Request| {
 			build(req.with_header(
 				"Authorization",
-				&("neos ".to_owned() + &self.user_id + ":" + &self.token),
+				&("neos ".to_owned()
+					+ &self.user_session.user_id
+					+ ":" + &self.user_session.token),
 			))
 		})
 	}
 }
 
 impl NeosAuthenticated {
+	#[must_use]
+	/// Creates a new authenticated Neos API client instance. Does not check the
+	/// user session validity.
+	pub fn new(user_agent: String, session: NeosUserSession) -> Self {
+		Self::from((NeosApiClient::new(user_agent), session))
+	}
+
 	/// Sends a logout request to the API.
 	///
 	/// If you just want to get rid of the authentication, consider just
 	/// creating a new session.
-	pub fn logout(self) -> Result<NeosUnauthenticated, (Self, RequestError)> {
-		let res = self.api_request(
+	pub fn logout(&self) -> Result<(), RequestError> {
+		self.api_request(
 			Method::Delete,
-			&("userSessions/".to_owned() + &self.user_id),
+			&("userSessions/".to_owned() + &self.user_session.user_id),
 			&mut Ok,
-		);
+		)?;
 
-		match res {
-			Ok(_) => Ok(self.remove_authentication()),
-			Err(e) => Err((self, e)),
-		}
+		Ok(())
 	}
 
 	/// Extends the current user session
@@ -46,10 +67,25 @@ impl NeosAuthenticated {
 	pub fn get_friends(&self) -> Result<Vec<NeosFriend>, RequestError> {
 		let response = self.api_request(
 			Method::Get,
-			&("users/".to_owned() + &self.user_id + "/friends"),
+			&("users/".to_owned() + &self.user_session.user_id + "/friends"),
 			&mut Ok,
 		)?;
 
 		Ok(response.json()?)
+	}
+
+	#[must_use]
+	/// Downgrades the client to an unauthenticated version without an user
+	/// session.
+	pub fn downgrade(self) -> (NeosUnauthenticated, NeosUserSession) {
+		(NeosUnauthenticated::from(self.inner), self.user_session)
+	}
+}
+
+/// Downgrade an authenticated API client to an unauthenticated one, losing the
+/// user session.
+impl From<(NeosApiClient, NeosUserSession)> for NeosAuthenticated {
+	fn from((inner, user_session): (NeosApiClient, NeosUserSession)) -> Self {
+		NeosAuthenticated { inner, user_session }
 	}
 }

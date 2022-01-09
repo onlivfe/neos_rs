@@ -1,3 +1,5 @@
+use crate::NeosUserSession;
+
 use super::Neos;
 use minreq::Method;
 
@@ -5,18 +7,34 @@ use super::{
 	inner::NeosApiClient,
 	NeosAuthenticated,
 	NeosRequestUserSession,
-	NeosUnauthenticated,
 	RequestError,
 };
+
+/// Neos API client with authentication
+///
+/// # Example usage
+///
+/// ```rust
+///     use neos::api_client::{Neos, NeosUnauthenticated};
+///     let neos_api_client = NeosUnauthenticated::new(
+///         format!("NeosRS/{} (test runner)", env!("CARGO_PKG_VERSION")).to_string()
+///     );
+///     match neos_api_client.ping() {
+///         Ok(_) => println!("Neos' API is reachable!"),
+///         Err(err) => println!("Couldn't reach Neos' API because: {}", err)
+///     }
+/// ```
+#[derive(Clone)]
+pub struct NeosUnauthenticated {
+	inner: NeosApiClient,
+}
 
 impl Neos for NeosUnauthenticated {
 	fn api_request(
 		&self,
 		method: Method,
 		url: &str,
-		build: &mut dyn FnMut(
-			minreq::Request,
-		) -> Result<minreq::Request, minreq::Error>,
+		build: &mut dyn FnMut(minreq::Request) -> Result<minreq::Request, minreq::Error>,
 	) -> Result<minreq::Response, RequestError> {
 		self.inner.basic_api_request(method, url, build)
 	}
@@ -24,47 +42,33 @@ impl Neos for NeosUnauthenticated {
 
 impl NeosUnauthenticated {
 	#[must_use]
-	/// Creates a new Unauthenticated Neos API client instance
+	/// Creates a new unauthenticated Neos API client instance
 	pub fn new(user_agent: String) -> Self {
-		Self { inner: NeosApiClient::new(user_agent, None) }
+		Self { inner: NeosApiClient::new(user_agent) }
 	}
 
 	/// Sends a login request to the API.
 	pub fn login(
-		self,
+		&self,
 		user_session_request: &NeosRequestUserSession,
-	) -> Result<NeosAuthenticated, (Self, RequestError)> {
+	) -> Result<NeosUserSession, RequestError> {
 		let res = self.api_request(Method::Post, "userSessions", &mut |req| {
 			req.with_json(&user_session_request)
-		});
+		})?;
 
-		let res = match res {
-			Ok(v) => v,
-			Err(e) => return Err((self, e)),
-		};
-
-		let res: crate::NeosUserSession = match res.json() {
-			Ok(v) => v,
-			Err(e) => {
-				return Err((self, e.into()));
-			}
-		};
-
-		Ok(self.add_authentication(res.token, res.user_id))
+		Ok(res.json()?)
 	}
 
-	/// Extends an old user session to check that it works and returns the
-	/// authenticated API client on success.
-	pub fn extend_session(
-		self,
-		token: String,
-		user_id: String,
-	) -> Result<NeosAuthenticated, (Self, RequestError)> {
-		let api = self.add_authentication(token, user_id);
+	#[must_use]
+	/// Upgrades the client to an authenticated version with an user session.
+	/// Does not check the user session validity.
+	pub fn upgrade(self, user_session: NeosUserSession) -> NeosAuthenticated {
+		NeosAuthenticated::from((self.inner, user_session))
+	}
+}
 
-		match api.extend_session() {
-			Ok(_) => Ok(api),
-			Err(err) => Err((api.remove_authentication(), err)),
-		}
+impl From<NeosApiClient> for NeosUnauthenticated {
+	fn from(inner: NeosApiClient) -> Self {
+		NeosUnauthenticated { inner }
 	}
 }
