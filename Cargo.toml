@@ -23,7 +23,7 @@ chrono = { version = "0.4", features = ["serde"] }
 strum = { version = "0.23", features = ["derive"] }
 
 # The smallest fully featured HTTPS client that was found
-minreq = { version = "2.4.2", optional = true, features = [
+minreq = { version = "2.5.1", optional = true, features = [
 	"https-rustls-probe",
 	"json-using-serde",
 ] }
