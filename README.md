@@ -1,6 +1,6 @@
 # Neos API in rust
 
-<img align="right" width="256" height="256" src="./logo.png"/>
+<img align="right" width="256" height="256" src="https://git.ljoonal.xyz/ljoonal/neos_rs/raw/logo.png"/>
 
 Rust models of [NeosVR's API](https://wiki.neosvr.com/docfx/api/).
 
