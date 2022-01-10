@@ -6,10 +6,10 @@ use minreq::{Method, Request, Response};
 ///
 /// # Example usage
 ///
-/// ```rust
+/// ```no_run
 ///     use neos::api_client::{Neos, NeosAuthenticated};
 ///     let neos_api_client: NeosAuthenticated = todo!();
-///     let online_users_count = neos_api_client.get_friends();
+///     let friends = neos_api_client.get_friends();
 /// ```
 #[derive(Clone)]
 pub struct NeosAuthenticated {

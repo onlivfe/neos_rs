@@ -4,7 +4,7 @@
 //!
 //! # Example usage
 //!
-//! ```rust
+//! ```no_run
 //!     use neos::api_client::{Neos, NeosUnauthenticated};
 //!     let neos_api_client = NeosUnauthenticated::new(
 //!         format!(
