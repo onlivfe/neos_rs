@@ -7,7 +7,11 @@
 //! ```rust
 //!     use neos::api_client::{Neos, NeosUnauthenticated};
 //!     let neos_api_client = NeosUnauthenticated::new(
-//!         format!("NeosRS/{} (test runner)", env!("CARGO_PKG_VERSION")).to_string()
+//!         format!(
+//!             "NeosRS/{} (test runner, {})",
+//!             env!("CARGO_PKG_VERSION"),
+//!             env!("CARGO_PKG_REPOSITORY")
+//!         ).to_string()
 //!     );
 //!     let online_users_count = neos_api_client.online_users_count();
 //!     match online_users_count {
