@@ -5,22 +5,24 @@
 //! # Example usage
 //!
 //! ```no_run
-//! use neos::api_client::{Neos, NeosUnauthenticated};
-//! let neos_api_client = NeosUnauthenticated::new(
-//! 	format!(
-//! 		"NeosRS/{} (test runner, {})",
-//! 		env!("CARGO_PKG_VERSION"),
-//! 		env!("CARGO_PKG_REPOSITORY")
-//! 	)
-//! 	.to_string(),
+//! const USER_AGENT: &str = concat!(
+//! 	env!("CARGO_PKG_NAME"),
+//! 	"/",
+//! 	env!("CARGO_PKG_VERSION"),
+//! 	" (",
+//! 	env!("CARGO_PKG_REPOSITORY"),
+//! 	")",
 //! );
+//!
+//! use neos::api_client::{Neos, NeosUnauthenticated};
+//! let neos_api_client = NeosUnauthenticated::new(USER_AGENT.to_string());
 //! let online_users_count = neos_api_client.online_users_count();
 //! match online_users_count {
 //! 	Ok(online_users_count) => {
-//! 		println!("Neos currently has {} online users", online_users_count)
+//! 		println!("Neos currently has {} online users", online_users_count);
 //! 	}
 //! 	Err(err) => {
-//! 		println!("Couldn't get the online users count: {} ", err)
+//! 		println!("Couldn't get the online users count: {} ", err);
 //! 	}
 //! };
 //! ```
@@ -49,6 +51,29 @@ pub use req_models::*;
 use crate::NeosSession;
 
 /// A Neos API client
+///
+/// # Example usage
+///
+/// Counts the amount of users that are active in publicly listed sessions
+///
+/// ```no_run
+/// use neos::api_client::{Neos, NeosUnauthenticated};
+/// # let USER_AGENT = String::new();
+/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+/// let sessions = neos_api_client.get_sessions();
+/// match sessions {
+/// 	Ok(sessions) => {
+/// 		let mut count = 0;
+/// 		for session in sessions {
+/// 			count += session.active_users;
+/// 		}
+/// 		println!("{} users focused on public sessions", count);
+/// 	}
+/// 	Err(err) => {
+/// 		println!("Couldn't get the session details: {} ", err);
+/// 	}
+/// };
+/// ```
 pub trait Neos {
 	#[doc(hidden)]
 	// Meant for internal use only.
@@ -60,11 +85,41 @@ pub trait Neos {
 	) -> Result<Response, RequestError>;
 
 	/// Pings the API
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// if neos_api_client.ping().is_ok() {
+	/// 	println!("Neos is reachable :)");
+	/// } else {
+	/// 	println!("Couldn't reach neos :(");
+	/// }
+	/// ```
 	fn ping(&self) -> Result<(), RequestError> {
 		self.api_request(Method::Get, "testing/ping", &mut Ok)?;
 		Ok(())
 	}
 	/// Gets the amount of users that are online.
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// let online_users_count = neos_api_client.online_users_count();
+	/// match online_users_count {
+	/// 	Ok(online_users_count) => {
+	/// 		println!("Neos currently has {} online users", online_users_count);
+	/// 	}
+	/// 	Err(err) => {
+	/// 		println!("Couldn't get the online users count: {} ", err);
+	/// 	}
+	/// };
+	/// ```
 	fn online_users_count(&self) -> Result<u32, RequestError> {
 		let resp = self.api_request(Method::Get, "stats/onlineUsers", &mut Ok)?;
 
@@ -76,11 +131,57 @@ pub trait Neos {
 		}
 	}
 
+	/// Gets details of publicly listed sessions.
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// let sessions = neos_api_client.get_sessions();
+	/// match sessions {
+	/// 	Ok(sessions) => {
+	/// 		println!("{} public sessions", sessions.len());
+	/// 	}
+	/// 	Err(err) => {
+	/// 		println!("Couldn't get the session details: {} ", err);
+	/// 	}
+	/// };
+	/// ```
+	fn get_sessions(&self) -> Result<Vec<NeosSession>, RequestError> {
+		let resp = self.api_request(Method::Get, "sessions", &mut Ok)?;
+
+		Ok(resp.json()?)
+	}
+
 	/// Gets details of a session.
-	fn get_session(&self, session_id: String) -> Result<NeosSession, RequestError> {
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// let session = neos_api_client.get_session(
+	/// 	neos::id::Session::try_from("S-totally-legit-id".to_string()).unwrap(),
+	/// );
+	/// match session {
+	/// 	Ok(session) => {
+	/// 		println!("Session has {} active_users users", &session.active_users);
+	/// 	}
+	/// 	Err(err) => {
+	/// 		println!("Couldn't get the session details: {} ", err);
+	/// 	}
+	/// };
+	/// ```
+	fn get_session(
+		&self,
+		session_id: crate::id::Session,
+	) -> Result<NeosSession, RequestError> {
 		let resp = self.api_request(
 			Method::Get,
-			&("sessions".to_owned() + &session_id),
+			&("sessions".to_owned() + session_id.as_ref()),
 			&mut Ok,
 		)?;
 
