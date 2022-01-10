@@ -38,6 +38,9 @@ pub struct NeosSession {
 	pub tags: Vec<String>,
 	/// The ID of the session (`S-{uuid}` for example)
 	pub session_id: crate::id::Session,
+	/// Normalized (capitalization) version of the session's id (`s-{uuid}` for
+	/// example)
+	pub normalized_session_id: String,
 	/// The ID of the session's host (`U-{uuid}` for example)
 	pub host_user_id: crate::id::User,
 	/// The ID of the session's host's machine (`{uuid}`)
