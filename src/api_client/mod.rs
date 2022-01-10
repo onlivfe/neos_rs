@@ -5,23 +5,24 @@
 //! # Example usage
 //!
 //! ```no_run
-//!     use neos::api_client::{Neos, NeosUnauthenticated};
-//!     let neos_api_client = NeosUnauthenticated::new(
-//!         format!(
-//!             "NeosRS/{} (test runner, {})",
-//!             env!("CARGO_PKG_VERSION"),
-//!             env!("CARGO_PKG_REPOSITORY")
-//!         ).to_string()
-//!     );
-//!     let online_users_count = neos_api_client.online_users_count();
-//!     match online_users_count {
-//!         Ok(online_users_count) => {
-//!             println!("Neos currently has {} online users", online_users_count)
-//!         }
-//!         Err(err) => {
-//!             println!("Couldn't get the online users count: {} ", err)
-//!         }
-//!     };
+//! use neos::api_client::{Neos, NeosUnauthenticated};
+//! let neos_api_client = NeosUnauthenticated::new(
+//! 	format!(
+//! 		"NeosRS/{} (test runner, {})",
+//! 		env!("CARGO_PKG_VERSION"),
+//! 		env!("CARGO_PKG_REPOSITORY")
+//! 	)
+//! 	.to_string(),
+//! );
+//! let online_users_count = neos_api_client.online_users_count();
+//! match online_users_count {
+//! 	Ok(online_users_count) => {
+//! 		println!("Neos currently has {} online users", online_users_count)
+//! 	}
+//! 	Err(err) => {
+//! 		println!("Couldn't get the online users count: {} ", err)
+//! 	}
+//! };
 //! ```
 
 // Pretty much all API calls can fail with repetitively similar errors,

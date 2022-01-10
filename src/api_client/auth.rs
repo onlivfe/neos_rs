@@ -7,9 +7,9 @@ use minreq::{Method, Request, Response};
 /// # Example usage
 ///
 /// ```no_run
-///     use neos::api_client::{Neos, NeosAuthenticated};
-///     let neos_api_client: NeosAuthenticated = todo!();
-///     let friends = neos_api_client.get_friends();
+/// use neos::api_client::{Neos, NeosAuthenticated};
+/// let neos_api_client: NeosAuthenticated = todo!();
+/// let friends = neos_api_client.get_friends();
 /// ```
 #[derive(Clone)]
 pub struct NeosAuthenticated {

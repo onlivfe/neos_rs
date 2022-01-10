@@ -12,20 +12,20 @@
 //! ## Example usage
 //!
 //! ```rust
-//!     extern crate serde_json;
-//!     use neos::{NeosSessionUser, NeosOutputDevice};
+//! extern crate serde_json;
+//! use neos::{NeosOutputDevice, NeosSessionUser};
 //!
-//!     // Normally you'd get the data by calling the API
-//!     let data = r#"{
+//! // Normally you'd get the data by calling the API
+//! let data = r#"{
 //!         "username": "ljoonal",
 //!         "userID": "U-ljoonal",
 //!         "isPresent": true,
 //!         "outputDevice": 2
 //!      }"#;
 //!
-//!     let session_user: NeosSessionUser = serde_json::from_str(data).unwrap();
+//! let session_user: NeosSessionUser = serde_json::from_str(data).unwrap();
 //!
-//!     assert_eq!(session_user.output_device, NeosOutputDevice::Screen);
+//! assert_eq!(session_user.output_device, NeosOutputDevice::Screen);
 //! ```
 
 #![feature(doc_cfg)]

@@ -41,17 +41,16 @@ impl NeosApiClient {
 		self.sleep_if_ratelimited();
 		self.sleep_between_requests();
 
+		// 2^20 ~=1MB, 2^22~=4MB
 		let response = build(
 			Request::new(method, &(API_BASE.to_owned() + url))
-			.with_header("Accept", "application/json")
-			.with_header("Content-Type", "application/json")
-			.with_header("User-Agent", &self.user_agent)
-			.with_max_redirects(5)
-			// ~1MB
-			.with_max_status_line_length(Some(2usize.pow(20)))
-			// ~4MB
-			.with_max_headers_size(Some(2usize.pow(22)))
-			.with_timeout(120),
+				.with_header("Accept", "application/json")
+				.with_header("Content-Type", "application/json")
+				.with_header("User-Agent", &self.user_agent)
+				.with_max_redirects(5)
+				.with_max_status_line_length(Some(2usize.pow(20)))
+				.with_max_headers_size(Some(2usize.pow(22)))
+				.with_timeout(120),
 		)?
 		.send()?;
 

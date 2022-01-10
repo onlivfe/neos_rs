@@ -15,14 +15,14 @@ use super::{
 /// # Example usage
 ///
 /// ```rust
-///     use neos::api_client::{Neos, NeosUnauthenticated};
-///     let neos_api_client = NeosUnauthenticated::new(
-///         format!("NeosRS/{} (test runner)", env!("CARGO_PKG_VERSION")).to_string()
-///     );
-///     match neos_api_client.ping() {
-///         Ok(_) => println!("Neos' API is reachable!"),
-///         Err(err) => println!("Couldn't reach Neos' API because: {}", err)
-///     }
+/// use neos::api_client::{Neos, NeosUnauthenticated};
+/// let neos_api_client = NeosUnauthenticated::new(
+/// 	format!("NeosRS/{} (test runner)", env!("CARGO_PKG_VERSION")).to_string(),
+/// );
+/// match neos_api_client.ping() {
+/// 	Ok(_) => println!("Neos' API is reachable!"),
+/// 	Err(err) => println!("Couldn't reach Neos' API because: {}", err),
+/// }
 /// ```
 #[derive(Clone)]
 pub struct NeosUnauthenticated {
