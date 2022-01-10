@@ -16,6 +16,12 @@ Some of the types are based solely on educated guesses even.
 
 This crate provides a blocking API client with the optional `api_client` feature.
 
+## Future plans
+
+- Better documentation in general
+- Splitting some linked `Option<T>` fields into their own sub-structs
+- Better documentation about the API request paths
+
 ## License
 
 Note that the license is `MPL-2.0` instead of the more common `MIT OR Apache-2.0`.

@@ -1,5 +1,5 @@
 #![doc(html_logo_url = "https://git.ljoonal.xyz/ljoonal/neos_rs/raw/logo.png")]
-//! Typed models for [Neos's api](https://wiki.neosvr.com/docfx/api/) with serde deserialization support.
+//! Typed models for [Neos's api](https://wiki.neosvr.com/docfx/api/) with serde support.
 //!
 //! Featuring chrono for datetimes and strum for better enums.
 //!
@@ -7,14 +7,7 @@
 //! too. Thusly this crate can't guarantee that it's necessarily fully correct.
 //! Some of the types are based solely on educated guesses.
 //!
-//! Check out <https://github.com/PolyLogiX-Studio/NeosVR-API> if you're not using Rust and just want to learn about the API.
-//!
-//! ## Future plans
-//!
-//! - Beter documentation in general
-//! - Splitting some linked `Option<T>` fields into their own sub-structs
-//! - Better documentation about the API request paths
-//! - In the future this crate might also provide an API client
+//! Check out <https://wiki.neosvr.com/docfx/api> if you're not using Rust and just want to learn about the API.
 //!
 //! ## Example usage
 //!
