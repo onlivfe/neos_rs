@@ -18,5 +18,5 @@ This crate provides a blocking API client with the optional `api_client` feature
 
 ## License
 
-The LICENSE is MPL-2.0.
-However a license change can be negotiated if the Neos team wants to use this crate or adopt it into a more official one with a different license.
+Note that the license is `MPL-2.0` instead of the more common `MIT OR Apache-2.0`.
+A license change however can be negotiated if the Neos team wants to use this crate or adopt this crate into a more official one with a different license.
