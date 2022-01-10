@@ -4,11 +4,9 @@
 //! compare different types of Neos IDs with each other like so:
 //!
 //! ```compile_fail,E0308
-//!     let user_id = neos::id::User("U-example-only-invalid-id");
-//!     let record_id = neos::id::Group("G-example-only-invalid-id");
-//!     if user_id == record_id {
-//!         println!("Logic error!");
-//!     }
+//! let user_id = neos::id::User::try_from("U-totally-legit-id".to_string()).unwrap();
+//! let record_id = neos::id::Record::try_from("R-totally-legit-id".to_string()).unwrap();
+//! assert!(user_id != record_id, "can't compare different types of IDs")
 //! ```
 //!
 //! The deserializers are also made to check that the strings start with the
@@ -27,6 +25,15 @@ macro_rules! add_id {
 		$prefix:expr
 	) => {
 		#[doc = concat!("An ID of a Neos ", stringify!($name), "(`", $prefix, "{id}`)")]
+		///
+		/// # Example usage
+		///
+		/// ```
+		#[doc = concat!("use neos::id::", stringify!($name), ";")]
+		#[doc = concat!("let id1 =", stringify!($name), "::try_from(\"", $prefix, "totally-legit-id\".to_string()).unwrap();")]
+		#[doc = concat!("let id2 =", stringify!($name), "::try_from(\"", $prefix, "other-legit-id\".to_string()).unwrap();")]
+		/// assert!(id1 != id2);
+		/// ```
 		#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 		#[serde(transparent)]
 		$(#[$meta])*
@@ -37,6 +44,16 @@ macro_rules! add_id {
 			#[must_use]
 			fn as_ref(&self) -> &str {
 				&self.0
+			}
+		}
+
+		impl TryFrom<String> for $name {
+			type Error = &'static str;
+			fn try_from(v: String) -> Result<Self, Self::Error> {
+				if !v.starts_with($prefix) {
+					return Err(concat!("should start with `", $prefix , "`"));
+				}
+				Ok($name(v))
 			}
 		}
 
@@ -72,15 +89,12 @@ macro_rules! add_id {
 					where
 						E: de::Error,
 					{
-						if !v.starts_with($prefix) {
-							return Err(
-								de::Error::invalid_value(
+						$name::try_from(v.to_owned()).map_err(|_| {
+							de::Error::invalid_value(
 								serde::de::Unexpected::Str(v),
 								&concat!("start with `", $prefix , "`"),
 							)
-							);
-						}
-						Ok($name(v.to_owned()))
+						})
 					}
 				}
 
@@ -98,7 +112,17 @@ add_id!(Record, "R-");
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(untagged)]
-/// Any Neos ID
+/// Any of the Neos IDs
+///
+/// # Example usage
+///
+/// ```
+/// let id1 = neos::id::User::try_from("U-totally-legit-id".to_string()).unwrap();
+/// let id1: neos::id::Any = id1.into();
+/// let id2 = neos::id::Record::try_from("R-totally-legit-id".to_string()).unwrap();
+/// let id2: neos::id::Any = id2.into();
+/// assert!(id1 != id2);
+/// ```
 pub enum Any {
 	/// An user ID
 	User(User),
@@ -113,6 +137,16 @@ pub enum Any {
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(untagged)]
 /// Neos IDs that can own records for example
+///
+/// # Example usage
+///
+/// ```
+/// let id1 = neos::id::User::try_from("U-totally-legit-id".to_string()).unwrap();
+/// let id1: neos::id::Owner = id1.into();
+/// let id2 = neos::id::Group::try_from("G-totally-legit-id".to_string()).unwrap();
+/// let id2: neos::id::Owner = id2.into();
+/// assert!(id1 != id2);
+/// ```
 pub enum Owner {
 	/// An user ID
 	User(User),
