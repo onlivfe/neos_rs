@@ -13,6 +13,9 @@
 //!
 //! The deserializers are also made to check that the strings start with the
 //! correct ID prefix.
+//!
+//! Note that the IDs seem to be handled as case-sensitive, so any normalized
+//! versions are represented as strings instead of IDs.
 
 use serde::de::{self, Deserializer, Visitor};
 use serde::{Deserialize, Serialize};
@@ -50,7 +53,6 @@ macro_rules! add_id {
 		}
 
 		/// The deserializer will give an error if the inner String doesn't start with the proper prefix.
-		/// Also always normalizes strings to lowercase for consistency.
 		impl<'de> serde::de::Deserialize<'de> for $name {
 			fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
 			where
@@ -70,16 +72,15 @@ macro_rules! add_id {
 					where
 						E: de::Error,
 					{
-						let normalized = v.to_lowercase();
-						if !normalized.starts_with($prefix) {
+						if !v.starts_with($prefix) {
 							return Err(
 								de::Error::invalid_value(
 								serde::de::Unexpected::Str(v),
-								&"enum str repr",
+								&concat!("start with `", $prefix , "`"),
 							)
 							);
 						}
-						Ok($name(normalized))
+						Ok($name(v.to_owned()))
 					}
 				}
 
