@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct NeosUserSession {
 	/// The Neos user that this session is for
-	pub user_id: String,
+	pub user_id: crate::id::User,
 	/// The secret token of this session
 	pub token: String,
 	/// When the session was created
@@ -37,7 +37,7 @@ impl NeosUserSession {
 	#[must_use]
 	/// The `Authorization` header required to use this `NeosUserSession`.
 	pub fn auth_header(&self) -> String {
-		"neos ".to_owned() + &self.user_id + ":" + &self.token
+		"neos ".to_owned() + self.user_id.as_ref() + ":" + &self.token
 	}
 }
 

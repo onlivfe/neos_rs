@@ -16,7 +16,7 @@ pub struct NeosSessionUser {
 	pub username: String,
 	#[serde(rename = "userID")]
 	/// The ID of the user (`U-{uuid}` for example)
-	pub user_id: String,
+	pub user_id: crate::id::User,
 	/// If the user is focused on this session
 	pub is_present: bool,
 	/// The output device type of the user
@@ -37,13 +37,10 @@ pub struct NeosSession {
 	/// The tags of the session
 	pub tags: Vec<String>,
 	/// The ID of the session (`S-{uuid}` for example)
-	pub session_id: String,
-	/// Normalized (capitalization) version of the session's id (`s-{uuid}` for
-	/// example)
-	pub normalized_session_id: String,
+	pub session_id: crate::id::Session,
 	/// The ID of the session's host (`U-{uuid}` for example)
-	pub host_user_id: String,
-	/// The ID of the session's host's machine (`i-{rand}` for example)
+	pub host_user_id: crate::id::User,
+	/// The ID of the session's host's machine (`{uuid}`)
 	pub host_machine_id: String,
 	/// The username of the session's host
 	pub host_username: String,

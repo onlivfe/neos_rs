@@ -35,6 +35,7 @@
 //!     assert_eq!(session_user.output_device, NeosOutputDevice::Screen);
 //! ```
 
+#![feature(doc_cfg)]
 #![deny(clippy::all)]
 #![deny(clippy::cargo)]
 #![warn(missing_docs)]
@@ -44,6 +45,8 @@
 #![warn(clippy::nursery)]
 // Strum macros would cause warnings
 #![allow(clippy::use_self)]
+
+pub mod id;
 
 // The models are split into slightly smaller files in order to avoid a really
 // long single file.
@@ -60,4 +63,5 @@ pub use sessions::*;
 pub use users::*;
 
 #[cfg(feature = "api_client")]
+#[doc(cfg(feature = "api_client"))]
 pub mod api_client;

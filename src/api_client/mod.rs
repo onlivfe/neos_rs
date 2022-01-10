@@ -41,6 +41,8 @@ pub use auth::*;
 pub use noauth::*;
 pub use req_models::*;
 
+use crate::NeosSession;
+
 /// A Neos API client
 pub trait Neos {
 	#[doc(hidden)]
@@ -67,5 +69,16 @@ pub trait Neos {
 			Ok(num) => Ok(num),
 			Err(err) => Err(RequestError::Deserialization(err.to_string())),
 		}
+	}
+
+	/// Gets details of a session.
+	fn get_session(&self, session_id: String) -> Result<NeosSession, RequestError> {
+		let resp = self.api_request(
+			Method::Get,
+			&("sessions".to_owned() + &session_id),
+			&mut Ok,
+		)?;
+
+		Ok(resp.json()?)
 	}
 }

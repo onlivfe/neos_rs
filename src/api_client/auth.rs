@@ -28,7 +28,7 @@ impl Neos for NeosAuthenticated {
 			build(req.with_header(
 				"Authorization",
 				&("neos ".to_owned()
-					+ &self.user_session.user_id
+					+ self.user_session.user_id.as_ref()
 					+ ":" + &self.user_session.token),
 			))
 		})
@@ -50,7 +50,7 @@ impl NeosAuthenticated {
 	pub fn logout(&self) -> Result<(), RequestError> {
 		self.api_request(
 			Method::Delete,
-			&("userSessions/".to_owned() + &self.user_session.user_id),
+			&("userSessions/".to_owned() + self.user_session.user_id.as_ref()),
 			&mut Ok,
 		)?;
 
@@ -67,9 +67,17 @@ impl NeosAuthenticated {
 	pub fn get_friends(&self) -> Result<Vec<NeosFriend>, RequestError> {
 		let response = self.api_request(
 			Method::Get,
-			&("users/".to_owned() + &self.user_session.user_id + "/friends"),
+			&("users/".to_owned() + self.user_session.user_id.as_ref() + "/friends"),
 			&mut Ok,
 		)?;
+
+		Ok(response.json()?)
+	}
+
+	/// Tells the Neos API that the user session is online with the machine id.
+	pub fn notify_instance_online(&self) -> Result<(), RequestError> {
+		let response =
+			self.api_request(Method::Get, "stats/instanceOnline/machineId", &mut Ok)?;
 
 		Ok(response.json()?)
 	}

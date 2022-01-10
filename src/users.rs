@@ -16,7 +16,7 @@ use serde::Deserialize;
 /// The response from the API at `users/{user_id}/friends`.
 pub struct NeosFriend {
 	/// The U-username form of ID
-	pub id: String,
+	pub id: crate::id::User,
 	/// The actual username
 	pub friend_username: String,
 	/// The status of the friendship
@@ -34,7 +34,7 @@ pub struct NeosFriend {
 	/// None.
 	pub latest_message_time: Option<DateTime<Utc>>,
 	/// The U-username form of ID of whose friend the details are for.
-	pub owner_id: String,
+	pub owner_id: crate::id::Owner,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -44,7 +44,7 @@ pub struct NeosFriend {
 /// The response from the API at `users/{user_id}`.
 pub struct NeosUser {
 	/// The U-username form of ID
-	pub id: String,
+	pub id: crate::id::User,
 	/// The actual username
 	pub username: String,
 	/// Normalized (capitalization) version of the username.
