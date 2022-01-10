@@ -10,18 +10,18 @@ use super::{
 	RequestError,
 };
 
-/// Neos API client with authentication
+/// Neos API client without authentication
 ///
 /// # Example usage
 ///
-/// ```rust
+/// ```no_run
 /// use neos::api_client::{Neos, NeosUnauthenticated};
-/// let neos_api_client = NeosUnauthenticated::new(
-/// 	format!("NeosRS/{} (test runner)", env!("CARGO_PKG_VERSION")).to_string(),
-/// );
-/// match neos_api_client.ping() {
-/// 	Ok(_) => println!("Neos' API is reachable!"),
-/// 	Err(err) => println!("Couldn't reach Neos' API because: {}", err),
+/// # let USER_AGENT = String::new();
+/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+/// if neos_api_client.ping().is_ok() {
+/// 	println!("Neos is reachable :)");
+/// } else {
+/// 	println!("Couldn't reach neos :(");
 /// }
 /// ```
 #[derive(Clone)]

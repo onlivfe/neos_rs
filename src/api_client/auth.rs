@@ -7,9 +7,16 @@ use minreq::{Method, Request, Response};
 /// # Example usage
 ///
 /// ```no_run
-/// use neos::api_client::{Neos, NeosAuthenticated};
-/// let neos_api_client: NeosAuthenticated = todo!();
-/// let friends = neos_api_client.get_friends();
+/// use neos::api_client::{Neos, NeosAuthenticated, NeosUnauthenticated};
+/// # let USER_AGENT = String::new();
+/// # let user_session_request = todo!();
+///
+/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+/// let user_session = neos_api_client.login(user_session_request).unwrap();
+/// let neos_api_client = neos_api_client.upgrade(user_session);
+///
+/// let friends = neos_api_client.get_friends().unwrap();
+/// println!("Neos friendcount: {} ", friends.len());
 /// ```
 #[derive(Clone)]
 pub struct NeosAuthenticated {
