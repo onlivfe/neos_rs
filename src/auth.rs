@@ -14,14 +14,14 @@ pub struct NeosUserSession {
 	pub user_id: crate::id::User,
 	/// The secret token of this session
 	pub token: String,
-	/// When the session was created
+	/// When the user session was created
 	pub created: DateTime<Utc>,
-	/// When the session is set to expire
+	/// When the user session is set to expire
 	pub expire: DateTime<Utc>,
-	/// If the session has the remember me checked (lives longer)
+	/// If the user session has the remember me checked (lives longer)
 	pub remember_me: bool,
 	#[serde(rename = "sourceIP")]
-	/// The IP address that created the session
+	/// The IP address that created the user session
 	pub source_ip: String,
 	/// Assumed to be a Neos internal field
 	pub partition_key: String,
