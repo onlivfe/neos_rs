@@ -57,6 +57,14 @@ macro_rules! add_id {
 			}
 		}
 
+		// For easier scripting, should use String otherwise.
+		impl TryFrom<&'static str> for $name {
+			type Error = &'static str;
+			fn try_from(v: &'static str) -> Result<Self, Self::Error> {
+				Self::try_from(v.to_owned())
+			}
+		}
+
 		impl From<$name> for String {
 			fn from(id: $name) -> String {
 				id.0
