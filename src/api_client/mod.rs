@@ -181,7 +181,7 @@ pub trait Neos {
 	) -> Result<NeosSession, RequestError> {
 		let resp = self.api_request(
 			Method::Get,
-			&("sessions".to_owned() + session_id.as_ref()),
+			&("sessions/".to_owned() + session_id.as_ref()),
 			&mut Ok,
 		)?;
 
