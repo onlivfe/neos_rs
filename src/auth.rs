@@ -31,6 +31,8 @@ pub struct NeosUserSession {
 	pub timestamp: DateTime<Utc>,
 	/// A standard etag, useful for caching
 	pub e_tag: String,
+	/// Returned when creating a new session
+	pub secret_machine_id: Option<String>,
 }
 
 impl NeosUserSession {

@@ -15,8 +15,8 @@ pub struct NeosSessionUser {
 	/// The username of the user
 	pub username: String,
 	#[serde(rename = "userID")]
-	/// The ID of the user (`U-{uuid}` for example)
-	pub user_id: crate::id::User,
+	/// Always always exists, but rarely inexplicably missing
+	pub user_id: Option<crate::id::User>,
 	/// If the user is focused on this session
 	pub is_present: bool,
 	/// The output device type of the user
@@ -42,7 +42,7 @@ pub struct NeosSession {
 	/// example)
 	pub normalized_session_id: String,
 	/// The ID of the session's host (`U-{uuid}` for example)
-	pub host_user_id: crate::id::User,
+	pub host_user_id: Option<crate::id::User>,
 	/// The ID of the session's host's machine (`{uuid}`)
 	pub host_machine_id: String,
 	/// The username of the session's host
@@ -62,7 +62,7 @@ pub struct NeosSession {
 	/// A link to the thumbnail of the session.
 	///
 	/// Can be https:// or neosdb:// for example
-	pub thumbnail: String,
+	pub thumbnail: Option<String>,
 	/// The amount of users that have joined the session
 	pub joined_users: u8,
 	/// The amount of users that are focused on the session
