@@ -48,7 +48,7 @@ pub use auth::*;
 pub use noauth::*;
 pub use req_models::*;
 
-use crate::{NeosSession, NeosUser, NeosUserStatus};
+use crate::{NeosGroup, NeosSession, NeosUser, NeosUserStatus};
 
 /// A Neos API client
 ///
@@ -297,6 +297,39 @@ pub trait Neos {
 		let resp = self.api_request(
 			Method::Get,
 			&("sessions/".to_owned() + session_id.as_ref()),
+			&mut Ok,
+		)?;
+
+		Ok(resp.json()?)
+	}
+
+	/// Gets details of a group.
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// let group = neos_api_client
+	/// 	.get_group(neos::id::Group::try_from("G-totally-legit-id".to_string()).unwrap());
+	/// match group {
+	/// 	Ok(group) => {
+	/// 		println!(
+	/// 			"The admin of the group {} is {}",
+	/// 			&group.name,
+	/// 			group.admin_user_id.as_ref()
+	/// 		);
+	/// 	}
+	/// 	Err(err) => {
+	/// 		println!("Couldn't get the session details: {} ", err);
+	/// 	}
+	/// };
+	/// ```
+	fn get_group(&self, group_id: crate::id::Group) -> Result<NeosGroup, RequestError> {
+		let resp = self.api_request(
+			Method::Get,
+			&("groups/".to_owned() + group_id.as_ref()),
 			&mut Ok,
 		)?;
 

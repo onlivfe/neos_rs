@@ -86,3 +86,12 @@ fn sessions() -> Result<(), neos::api_client::RequestError> {
 
 	Ok(())
 }
+
+#[test]
+#[ignore]
+fn get_group() -> Result<(), neos::api_client::RequestError> {
+	let group_id = neos::id::Group::try_from("G-Neos".to_string()).unwrap();
+	let _group = common::UNAUTHENTICATED_API_CLIENT.get_group(group_id)?;
+
+	Ok(())
+}
