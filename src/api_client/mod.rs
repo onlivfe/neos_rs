@@ -102,6 +102,7 @@ pub trait Neos {
 		self.api_request(Method::Get, "testing/ping", &mut Ok)?;
 		Ok(())
 	}
+
 	/// Gets the amount of users that are online.
 	///
 	/// # Example usage
@@ -110,7 +111,7 @@ pub trait Neos {
 	/// use neos::api_client::{Neos, NeosUnauthenticated};
 	/// # let USER_AGENT = String::new();
 	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let online_users_count = neos_api_client.online_users_count();
+	/// let online_users_count = neos_api_client.online_user_count();
 	/// match online_users_count {
 	/// 	Ok(online_users_count) => {
 	/// 		println!("Neos currently has {} online users", online_users_count);
@@ -120,12 +121,41 @@ pub trait Neos {
 	/// 	}
 	/// };
 	/// ```
-	fn online_users_count(&self) -> Result<u32, RequestError> {
+	fn online_user_count(&self) -> Result<u32, RequestError> {
 		let resp = self.api_request(Method::Get, "stats/onlineUsers", &mut Ok)?;
 
 		// The API responds in JSON due to our Accept header, so need to go
 		// trough a string
-		match resp.json::<String>()?.parse::<u32>() {
+		match resp.json::<&str>()?.parse::<u32>() {
+			Ok(num) => Ok(num),
+			Err(err) => Err(RequestError::Deserialization(err.to_string())),
+		}
+	}
+
+	/// Gets the amount of online instances
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// let online_instance_count = neos_api_client.online_instance_count();
+	/// match online_instance_count {
+	/// 	Ok(online_instance_count) => {
+	/// 		println!("Neos currently has {} online instances", online_instance_count);
+	/// 	}
+	/// 	Err(err) => {
+	/// 		println!("Couldn't get the online instance count: {} ", err);
+	/// 	}
+	/// };
+	/// ```
+	fn online_instance_count(&self) -> Result<u32, RequestError> {
+		let resp = self.api_request(Method::Get, "stats/onlineInstances", &mut Ok)?;
+
+		// The API responds in JSON due to our Accept header, so need to go
+		// trough a string
+		match resp.json::<&str>()?.parse::<u32>() {
 			Ok(num) => Ok(num),
 			Err(err) => Err(RequestError::Deserialization(err.to_string())),
 		}

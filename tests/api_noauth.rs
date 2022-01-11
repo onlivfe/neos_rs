@@ -3,7 +3,6 @@
 mod common;
 
 use neos::api_client::Neos;
-use once_cell::sync::Lazy;
 
 #[test]
 #[ignore]
@@ -14,7 +13,7 @@ fn ping() -> Result<(), neos::api_client::RequestError> {
 #[test]
 #[ignore]
 fn online_user_count() -> Result<(), neos::api_client::RequestError> {
-	assert!(common::UNAUTHENTICATED_API_CLIENT.online_users_count()? > 0);
+	assert!(common::UNAUTHENTICATED_API_CLIENT.online_user_count()? > 0);
 
 	Ok(())
 }
