@@ -20,8 +20,8 @@ pub static UNAUTHENTICATED_API_CLIENT: Lazy<NeosUnauthenticated> =
 
 pub static AUTHENTICATED_API_CLIENT: Lazy<NeosAuthenticated> = Lazy::new(|| {
 	let user_session: NeosUserSession = serde_json::from_slice(
-		&std::fs::read("../user-session.json")
-			.expect("a prepared `user-session.json` file for live API testing"),
+		&std::fs::read("user-session.json")
+			.expect("must have a prepared `user-session.json` file for live API testing"),
 	)
 	.expect("`user-session.json` file to parse into a user session");
 
