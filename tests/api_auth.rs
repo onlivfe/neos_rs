@@ -4,6 +4,12 @@ mod common;
 
 #[test]
 #[ignore]
+fn extend_session() -> Result<(), neos::api_client::RequestError> {
+	common::AUTHENTICATED_API_CLIENT.extend_session()
+}
+
+#[test]
+#[ignore]
 fn friends() -> Result<(), neos::api_client::RequestError> {
 	let friends = common::AUTHENTICATED_API_CLIENT.get_friends()?;
 
