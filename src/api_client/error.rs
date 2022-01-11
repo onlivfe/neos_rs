@@ -1,9 +1,9 @@
 // Re-exported in super module.
 #[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone)]
-/// An error that might happen when communicating with the API
+/// An error that might happen when communicating with the Neos API
 pub enum RequestError {
-	/// The response code to the request indicated a failure.
+	/// The response code of the request indicated a failure.
 	ResponseCode((i32, String)),
 	/// The response data could not be deserialized.
 	Deserialization(String),

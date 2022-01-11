@@ -12,10 +12,12 @@ use minreq::{Method, Request, Response};
 /// # let user_session_request = todo!();
 ///
 /// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-/// let user_session = neos_api_client.login(user_session_request).unwrap();
+/// let user_session =
+/// 	neos_api_client.login(user_session_request).expect("to be able to login to Neos");
 /// let neos_api_client = neos_api_client.upgrade(user_session);
 ///
-/// let friends = neos_api_client.get_friends().unwrap();
+/// let friends =
+/// 	neos_api_client.get_friends().expect("to be able to fetch friends from Neos");
 /// println!("Neos friendcount: {} ", friends.len());
 /// ```
 #[derive(Clone)]
@@ -52,8 +54,8 @@ impl NeosAuthenticated {
 
 	/// Sends a logout request to the API.
 	///
-	/// If you just want to get rid of the authentication, consider just
-	/// creating a new session.
+	/// If you just want to get rid of the authentication, consider using
+	/// [`downgrade`](Self::downgrade)
 	pub fn logout(&self) -> Result<(), RequestError> {
 		self.api_request(
 			Method::Delete,
@@ -82,15 +84,12 @@ impl NeosAuthenticated {
 	}
 
 	#[must_use]
-	/// Downgrades the client to an unauthenticated version without an user
-	/// session.
+	/// Removes the authentication from the API client.
 	pub fn downgrade(self) -> (NeosUnauthenticated, NeosUserSession) {
 		(NeosUnauthenticated::from(self.inner), self.user_session)
 	}
 }
 
-/// Downgrade an authenticated API client to an unauthenticated one, losing the
-/// user session.
 impl From<(NeosApiClient, NeosUserSession)> for NeosAuthenticated {
 	fn from((inner, user_session): (NeosApiClient, NeosUserSession)) -> Self {
 		NeosAuthenticated { inner, user_session }

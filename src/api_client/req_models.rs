@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 /// An identifier to use when requesting a session from the Neos API.
 ///
-/// So used when logging in for example, in
+/// Used when logging in for example in
 /// [`NeosRequestUserSession`](NeosRequestUserSession::identifier).
 pub enum NeosRequestUserSessionIdentifier {
 	/// Identify using the username
@@ -55,6 +55,9 @@ impl NeosRequestUserSessionIdentifier {
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// Data for a user session request to the Neos api.
+///
+/// Used in
+#[doc = "[`NeosUnauthenticated::login`](crate::api_client::NeosUnauthenticated::login)"]
 pub struct NeosRequestUserSession {
 	#[serde(flatten)]
 	/// The way to identify the user account the request is for
@@ -133,14 +136,14 @@ impl NeosRequestUserSession {
 	}
 
 	#[must_use]
-	/// Sets the totp field's value
+	/// Sets the secret machine ID field's value
 	pub fn machine_id(mut self, machine_id: impl Into<Option<String>>) -> Self {
 		self.secret_machine_id = machine_id.into();
 		self
 	}
 
 	#[must_use]
-	/// Sets the totp field's value
+	/// Sets the remember me field's value
 	pub fn remember_me(mut self, remember_me: impl Into<bool>) -> Self {
 		self.remember_me = remember_me.into();
 		self
@@ -148,6 +151,8 @@ impl NeosRequestUserSession {
 }
 
 /// An user's ID or their username
+///
+/// Used in [`Neos::search_users`](super::Neos::search_users).
 pub enum UserIdOrUsername {
 	/// An user's ID
 	Id(crate::id::User),
@@ -163,7 +168,7 @@ impl UserIdOrUsername {
 	}
 
 	#[must_use]
-	/// If it's an ID
+	/// If it's an username
 	pub const fn is_username(&self) -> bool {
 		matches!(self, Self::Username(_))
 	}
@@ -178,7 +183,7 @@ impl AsRef<str> for UserIdOrUsername {
 	}
 }
 
-// For easier scripting, should use String otherwise.
+/// For easier scripting, should use String otherwise.
 impl From<&'static str> for UserIdOrUsername {
 	fn from(v: &'static str) -> Self {
 		Self::Username(v.to_owned())
