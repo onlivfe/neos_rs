@@ -81,14 +81,6 @@ impl NeosAuthenticated {
 		Ok(response.json()?)
 	}
 
-	/// Tells the Neos API that the user session is online with the machine id.
-	pub fn notify_instance_online(&self) -> Result<(), RequestError> {
-		let response =
-			self.api_request(Method::Get, "stats/instanceOnline/machineId", &mut Ok)?;
-
-		Ok(response.json()?)
-	}
-
 	#[must_use]
 	/// Downgrades the client to an unauthenticated version without an user
 	/// session.
