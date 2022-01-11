@@ -16,7 +16,7 @@
 //!
 //! use neos::api_client::{Neos, NeosUnauthenticated};
 //! let neos_api_client = NeosUnauthenticated::new(USER_AGENT.to_string());
-//! let online_users_count = neos_api_client.online_users_count();
+//! let online_users_count = neos_api_client.online_user_count();
 //! match online_users_count {
 //! 	Ok(online_users_count) => {
 //! 		println!("Neos currently has {} online users", online_users_count);
@@ -193,9 +193,9 @@ pub trait Neos {
 	/// use neos::api_client::{Neos, NeosUnauthenticated};
 	/// # let USER_AGENT = String::new();
 	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let neos_bot = neos_api_client
-	/// 	.get_user_status(neos::id::User::try_from("U-neos".to_string()).unwrap());
-	/// match neos_bot_status {
+	/// let neos_bot =
+	/// 	neos_api_client.get_user(neos::id::User::try_from("U-neos".to_string()).unwrap());
+	/// match neos_bot {
 	/// 	Ok(neos_bot) => {
 	/// 		println!("Fetched the account of {}", &neos_bot.username);
 	/// 	}
