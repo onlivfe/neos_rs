@@ -3,6 +3,7 @@
 mod common;
 
 use neos::api_client::Neos;
+use once_cell::sync::Lazy;
 
 #[test]
 #[ignore]
@@ -24,17 +25,21 @@ fn sessions() -> Result<(), neos::api_client::RequestError> {
 	// Test that listing public sessions work
 	let sessions = common::UNAUTHENTICATED_API_CLIENT.get_sessions()?;
 
-	// Test that the sessions response isn't just an empty vec
-	let first_session = sessions.first().expect("there should be at least one session");
+	let public_session = sessions
+		.iter()
+		.find(|session| {
+			session.access_level == neos::SessionAccessLevel::Anyone && session.is_valid
+		})
+		.expect("there should be at least one public session");
 
 	// Test that getting a specific session works.
 	let session = common::UNAUTHENTICATED_API_CLIENT
-		.get_session(first_session.session_id.clone())?;
+		.get_session(public_session.session_id.clone())?;
 
 	// Some basic sanity checks, can't do full eq since some data might've changed
-	assert!(session.session_id == first_session.session_id);
-	assert!(session.host_user_id == first_session.host_user_id);
-	assert!(session.compatibility_hash == first_session.compatibility_hash);
+	assert!(session.session_id == public_session.session_id);
+	assert!(session.host_user_id == public_session.host_user_id);
+	assert!(session.compatibility_hash == public_session.compatibility_hash);
 
 	Ok(())
 }
