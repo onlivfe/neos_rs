@@ -4,8 +4,8 @@
 //! compare different types of Neos IDs with each other like so:
 //!
 //! ```compile_fail,E0308
-//! let user_id = neos::id::User::try_from("U-totally-legit-id".to_string()).unwrap();
-//! let record_id = neos::id::Record::try_from("R-totally-legit-id".to_string()).unwrap();
+//! let user_id = neos::id::User::try_from("U-totally-legit-id").unwrap();
+//! let record_id = neos::id::Record::try_from("R-totally-legit-id").unwrap();
 //! assert!(user_id != record_id, "can't compare different types of IDs")
 //! ```
 //!
@@ -30,8 +30,8 @@ macro_rules! add_id {
 		///
 		/// ```
 		#[doc = concat!("use neos::id::", stringify!($name), ";")]
-		#[doc = concat!("let id1 =", stringify!($name), "::try_from(\"", $prefix, "totally-legit-id\".to_string()).unwrap();")]
-		#[doc = concat!("let id2 =", stringify!($name), "::try_from(\"", $prefix, "other-legit-id\".to_string()).unwrap();")]
+		#[doc = concat!("let id1 =", stringify!($name), "::try_from(\"", $prefix, "totally-legit-id\").unwrap();")]
+		#[doc = concat!("let id2 =", stringify!($name), "::try_from(\"", $prefix, "other-legit-id\").unwrap();")]
 		/// assert!(id1 != id2);
 		/// ```
 		#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -125,9 +125,9 @@ add_id!(Record, "R-");
 /// # Example usage
 ///
 /// ```
-/// let id1 = neos::id::User::try_from("U-totally-legit-id".to_string()).unwrap();
+/// let id1 = neos::id::User::try_from("U-totally-legit-id").unwrap();
 /// let id1: neos::id::Any = id1.into();
-/// let id2 = neos::id::Record::try_from("R-totally-legit-id".to_string()).unwrap();
+/// let id2 = neos::id::Record::try_from("R-totally-legit-id").unwrap();
 /// let id2: neos::id::Any = id2.into();
 /// assert!(id1 != id2);
 /// ```
@@ -149,9 +149,9 @@ pub enum Any {
 /// # Example usage
 ///
 /// ```
-/// let id1 = neos::id::User::try_from("U-totally-legit-id".to_string()).unwrap();
+/// let id1 = neos::id::User::try_from("U-totally-legit-id").unwrap();
 /// let id1: neos::id::Owner = id1.into();
-/// let id2 = neos::id::Group::try_from("G-totally-legit-id".to_string()).unwrap();
+/// let id2 = neos::id::Group::try_from("G-totally-legit-id").unwrap();
 /// let id2: neos::id::Owner = id2.into();
 /// assert!(id1 != id2);
 /// ```

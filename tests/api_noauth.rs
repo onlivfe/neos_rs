@@ -29,7 +29,7 @@ fn online_instance_count() -> Result<(), neos::api_client::RequestError> {
 #[test]
 #[ignore]
 fn get_user() -> Result<(), neos::api_client::RequestError> {
-	let user_id = neos::id::User::try_from("U-Neos".to_string()).unwrap();
+	let user_id = neos::id::User::try_from("U-Neos").unwrap();
 	let user_from_id = common::UNAUTHENTICATED_API_CLIENT.get_user(user_id)?;
 	let user_from_username = common::UNAUTHENTICATED_API_CLIENT.get_user("Neos")?;
 
@@ -42,7 +42,7 @@ fn get_user() -> Result<(), neos::api_client::RequestError> {
 #[test]
 #[ignore]
 fn get_user_status() -> Result<(), neos::api_client::RequestError> {
-	let user_id = neos::id::User::try_from("U-Neos".to_string()).unwrap();
+	let user_id = neos::id::User::try_from("U-Neos").unwrap();
 	let _user_status = common::UNAUTHENTICATED_API_CLIENT.get_user_status(user_id)?;
 
 	Ok(())
@@ -90,7 +90,7 @@ fn sessions() -> Result<(), neos::api_client::RequestError> {
 #[test]
 #[ignore]
 fn get_group() -> Result<(), neos::api_client::RequestError> {
-	let group_id = neos::id::Group::try_from("G-Neos".to_string()).unwrap();
+	let group_id = neos::id::Group::try_from("G-Neos").unwrap();
 	let _group = common::UNAUTHENTICATED_API_CLIENT.get_group(group_id)?;
 
 	Ok(())
