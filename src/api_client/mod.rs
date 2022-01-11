@@ -204,10 +204,16 @@ pub trait Neos {
 	/// 	}
 	/// };
 	/// ```
-	fn get_user(&self, user_id: crate::id::User) -> Result<NeosUser, RequestError> {
+	fn get_user(
+		&self,
+		user: impl Into<UserIdOrUsername>,
+	) -> Result<NeosUser, RequestError> {
+		let user = user.into();
 		let resp = self.api_request(
 			Method::Get,
-			&("users/".to_owned() + user_id.as_ref()),
+			&("users/".to_owned()
+				+ user.as_ref() + "?byUsername="
+				+ &(!user.is_id()).to_string()),
 			&mut Ok,
 		)?;
 

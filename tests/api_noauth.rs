@@ -30,7 +30,11 @@ fn online_instance_count() -> Result<(), neos::api_client::RequestError> {
 #[ignore]
 fn get_user() -> Result<(), neos::api_client::RequestError> {
 	let user_id = neos::id::User::try_from("U-Neos".to_string()).unwrap();
-	let _user_status = common::UNAUTHENTICATED_API_CLIENT.get_user(user_id)?;
+	let user_from_id = common::UNAUTHENTICATED_API_CLIENT.get_user(user_id)?;
+	let user_from_username = common::UNAUTHENTICATED_API_CLIENT.get_user("Neos")?;
+
+	assert_eq!(user_from_id.id, user_from_username.id);
+	assert_eq!(user_from_id.username, user_from_username.username);
 
 	Ok(())
 }
