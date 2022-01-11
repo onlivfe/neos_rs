@@ -23,7 +23,8 @@ use minreq::{Method, Request, Response};
 #[derive(Clone)]
 pub struct NeosAuthenticated {
 	inner: NeosApiClient,
-	user_session: NeosUserSession,
+	user_id: crate::id::User,
+	token: String,
 }
 
 impl Neos for NeosAuthenticated {
@@ -36,9 +37,7 @@ impl Neos for NeosAuthenticated {
 		self.inner.basic_api_request(method, url, &mut |req: Request| {
 			build(req.with_header(
 				"Authorization",
-				&("neos ".to_owned()
-					+ self.user_session.user_id.as_ref()
-					+ ":" + &self.user_session.token),
+				&("neos ".to_owned() + self.user_id.as_ref() + ":" + &self.token),
 			))
 		})
 	}
@@ -59,7 +58,7 @@ impl NeosAuthenticated {
 	pub fn logout(&self) -> Result<(), RequestError> {
 		self.api_request(
 			Method::Delete,
-			&("userSessions/".to_owned() + self.user_session.user_id.as_ref()),
+			&("userSessions/".to_owned() + self.user_id.as_ref()),
 			&mut Ok,
 		)?;
 
@@ -76,7 +75,7 @@ impl NeosAuthenticated {
 	pub fn get_friends(&self) -> Result<Vec<NeosFriend>, RequestError> {
 		let response = self.api_request(
 			Method::Get,
-			&("users/".to_owned() + self.user_session.user_id.as_ref() + "/friends"),
+			&("users/".to_owned() + self.user_id.as_ref() + "/friends"),
 			&mut Ok,
 		)?;
 
@@ -85,13 +84,17 @@ impl NeosAuthenticated {
 
 	#[must_use]
 	/// Removes the authentication from the API client.
-	pub fn downgrade(self) -> (NeosUnauthenticated, NeosUserSession) {
-		(NeosUnauthenticated::from(self.inner), self.user_session)
+	pub fn downgrade(self) -> NeosUnauthenticated {
+		NeosUnauthenticated::from(self.inner)
 	}
 }
 
 impl From<(NeosApiClient, NeosUserSession)> for NeosAuthenticated {
 	fn from((inner, user_session): (NeosApiClient, NeosUserSession)) -> Self {
-		NeosAuthenticated { inner, user_session }
+		NeosAuthenticated {
+			inner,
+			token: user_session.token,
+			user_id: user_session.user_id,
+		}
 	}
 }

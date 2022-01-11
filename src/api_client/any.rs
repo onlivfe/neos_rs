@@ -10,7 +10,7 @@ pub enum AnyNeos {
 	/// The API client without authentication
 	Unauthenticated(NeosUnauthenticated),
 	/// The API client with authentication
-	Authenticated(Box<NeosAuthenticated>),
+	Authenticated(NeosAuthenticated),
 }
 
 impl From<NeosUnauthenticated> for AnyNeos {
@@ -21,7 +21,7 @@ impl From<NeosUnauthenticated> for AnyNeos {
 
 impl From<NeosAuthenticated> for AnyNeos {
 	fn from(api: NeosAuthenticated) -> Self {
-		Self::Authenticated(Box::new(api))
+		Self::Authenticated(api)
 	}
 }
 
@@ -29,7 +29,7 @@ impl From<AnyNeos> for NeosUnauthenticated {
 	fn from(api: AnyNeos) -> Self {
 		match api {
 			AnyNeos::Unauthenticated(v) => v,
-			AnyNeos::Authenticated(v) => v.downgrade().0,
+			AnyNeos::Authenticated(v) => v.downgrade(),
 		}
 	}
 }
@@ -57,7 +57,7 @@ impl AnyNeos {
 	/// Gets the API client instance if it has been authenticated.
 	pub const fn authenticated(&self) -> Option<&NeosAuthenticated> {
 		match self {
-			Self::Authenticated(api) => Some(&*api),
+			Self::Authenticated(api) => Some(api),
 			Self::Unauthenticated(_) => None,
 		}
 	}
