@@ -79,6 +79,7 @@ pub struct NeosUser {
 	pub is_locked: bool,
 	/// If ban evasion is supressed for the user.
 	pub supress_ban_evasion: bool,
+	#[serde(with = "serde_with::rust::default_on_error")]
 	/// How much storage quota the user has used.
 	///
 	/// The api returns -1 for no permissions, which is deserialized into None
