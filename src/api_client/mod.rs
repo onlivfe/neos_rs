@@ -193,8 +193,7 @@ pub trait Neos {
 	/// use neos::api_client::{Neos, NeosUnauthenticated};
 	/// # let USER_AGENT = String::new();
 	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let neos_bot =
-	/// 	neos_api_client.get_user(neos::id::User::try_from("U-neos".to_string()).unwrap());
+	/// let neos_bot = neos_api_client.get_user("Neos");
 	/// match neos_bot {
 	/// 	Ok(neos_bot) => {
 	/// 		println!("Fetched the account of {}", &neos_bot.username);
@@ -216,6 +215,25 @@ pub trait Neos {
 				+ &(!user.is_id()).to_string()),
 			&mut Ok,
 		)?;
+
+		Ok(resp.json()?)
+	}
+
+	/// Searches users by name
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// let matching_users = neos_api_client.search_users("Neos").unwrap();
+	/// let neos_bot = matching_users.iter().find(|user| user.username == "Neos").unwrap();
+	/// println!("Fetched the account of {}", &neos_bot.username);
+	/// ```
+	fn search_users(&self, name: &str) -> Result<Vec<NeosUser>, RequestError> {
+		let resp =
+			self.api_request(Method::Get, &("users?name=".to_owned() + name), &mut Ok)?;
 
 		Ok(resp.json()?)
 	}

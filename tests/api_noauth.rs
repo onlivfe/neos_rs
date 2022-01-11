@@ -50,6 +50,20 @@ fn get_user_status() -> Result<(), neos::api_client::RequestError> {
 
 #[test]
 #[ignore]
+fn search_users() -> Result<(), neos::api_client::RequestError> {
+	let users = common::UNAUTHENTICATED_API_CLIENT.search_users("Neos")?;
+
+	assert!(!users.is_empty());
+
+	let neos_bot_user = users.iter().find(|user| user.username == "Neos");
+
+	assert!(neos_bot_user.is_some());
+
+	Ok(())
+}
+
+#[test]
+#[ignore]
 fn sessions() -> Result<(), neos::api_client::RequestError> {
 	// Test that listing public sessions work
 	let sessions = common::UNAUTHENTICATED_API_CLIENT.get_sessions()?;
