@@ -11,3 +11,6 @@ Cargo.lock
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
+
+# For running tests against the live API with your own credentials
+user-session.json

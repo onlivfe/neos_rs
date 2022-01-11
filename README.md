@@ -22,6 +22,53 @@ This crate provides a blocking API client with the optional `api_client` feature
 - Splitting some linked `Option<T>` fields into their own sub-structs
 - Better documentation about the API request paths
 
+## Testing
+
+The integration tests contact the live API.
+That's why they are ignored by default.
+
+Some of them also require authentication.
+
+Sadly not all the things can even be reliably tested without creating a mock API.
+Which in turn defeats the purpose of the tests in the first place.
+
+### Creating a user session manually
+
+You can generate a `user-sesion.json` file with logging in via curl for example:
+
+```shell
+curl --request POST \
+  --url https://www.neosvr-api.com/api/userSessions \
+  --header 'Content-Type: application/json' \
+  --header 'Accept: application/json' \
+  --data '{
+  "password": "pa$$word",
+  "secretMachineId": "string",
+  "rememberMe": true,
+  "ownerId": "string",
+  "email": "user@example.com",
+  "username": "string"
+}' > user-session.json
+```
+
+Only use a single identification method (username/email/ownerId).
+Also be sure to replace the rest of the values with your own.
+Using a secretMachineId is also recommended to not log out your other sessions.
+You can generate a random one for example with:
+
+```shell
+openssl rand -hex 32
+```
+
+### Running ignored tests
+
+Make sure that you've got:
+
+- an internet connection
+- a valid `user-sesion.json`
+
+Then just run `cargo test --all-features -- --ignored`
+
 ## License
 
 Note that the license is `MPL-2.0` instead of the more common `MIT OR Apache-2.0`.
