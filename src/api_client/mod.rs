@@ -48,7 +48,7 @@ pub use auth::*;
 pub use noauth::*;
 pub use req_models::*;
 
-use crate::NeosSession;
+use crate::{NeosSession, NeosUser, NeosUserStatus};
 
 /// A Neos API client
 ///
@@ -181,6 +181,67 @@ pub trait Neos {
 	/// ```
 	fn get_sessions(&self) -> Result<Vec<NeosSession>, RequestError> {
 		let resp = self.api_request(Method::Get, "sessions", &mut Ok)?;
+
+		Ok(resp.json()?)
+	}
+
+	/// Gets the an user
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// let neos_bot = neos_api_client
+	/// 	.get_user_status(neos::id::User::try_from("U-neos".to_string()).unwrap());
+	/// match neos_bot_status {
+	/// 	Ok(neos_bot) => {
+	/// 		println!("Fetched the account of {}", &neos_bot.username);
+	/// 	}
+	/// 	Err(err) => {
+	/// 		println!("Couldn't get the session details: {} ", err);
+	/// 	}
+	/// };
+	/// ```
+	fn get_user(&self, user_id: crate::id::User) -> Result<NeosUser, RequestError> {
+		let resp = self.api_request(
+			Method::Get,
+			&("users/".to_owned() + user_id.as_ref()),
+			&mut Ok,
+		)?;
+
+		Ok(resp.json()?)
+	}
+
+	/// Gets the status of a user
+	///
+	/// # Example usage
+	///
+	/// ```no_run
+	/// use neos::api_client::{Neos, NeosUnauthenticated};
+	/// # let USER_AGENT = String::new();
+	/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
+	/// let neos_bot_status = neos_api_client
+	/// 	.get_user_status(neos::id::User::try_from("U-neos".to_string()).unwrap());
+	/// match neos_bot_status {
+	/// 	Ok(neos_bot_status) => {
+	/// 		println!("Neos bot account is: {}", &neos_bot_status.online_status);
+	/// 	}
+	/// 	Err(err) => {
+	/// 		println!("Couldn't get the session details: {} ", err);
+	/// 	}
+	/// };
+	/// ```
+	fn get_user_status(
+		&self,
+		user_id: crate::id::User,
+	) -> Result<NeosUserStatus, RequestError> {
+		let resp = self.api_request(
+			Method::Get,
+			&("users/".to_owned() + user_id.as_ref() + "/status"),
+			&mut Ok,
+		)?;
 
 		Ok(resp.json()?)
 	}
