@@ -28,7 +28,7 @@
 //! assert_eq!(session_user.output_device, NeosOutputDevice::Screen);
 //! ```
 
-#![feature(doc_cfg)]
+#![cfg_attr(nightly, feature(doc_cfg))]
 #![deny(clippy::all)]
 #![deny(clippy::cargo)]
 #![warn(missing_docs)]
@@ -60,5 +60,5 @@ pub use sessions::*;
 pub use users::*;
 
 #[cfg(feature = "api_client")]
-#[doc(cfg(feature = "api_client"))]
+#[cfg_attr(nightly, doc(cfg(feature = "api_client")))]
 pub mod api_client;

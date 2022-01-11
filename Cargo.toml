@@ -40,3 +40,4 @@ once_cell = "^1.9"
 
 [package.metadata.docs.rs]
 features = ["api_client"]
+rustdoc-args = ["--cfg", "nightly"]
