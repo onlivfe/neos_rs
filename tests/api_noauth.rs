@@ -20,6 +20,32 @@ fn online_user_count() -> Result<(), neos::api_client::RequestError> {
 
 #[test]
 #[ignore]
+fn online_instance_count() -> Result<(), neos::api_client::RequestError> {
+	assert!(common::UNAUTHENTICATED_API_CLIENT.online_instance_count()? > 0);
+
+	Ok(())
+}
+
+#[test]
+#[ignore]
+fn get_user() -> Result<(), neos::api_client::RequestError> {
+	let user_id = neos::id::User::try_from("U-Neos".to_string()).unwrap();
+	let _user_status = common::UNAUTHENTICATED_API_CLIENT.get_user(user_id)?;
+
+	Ok(())
+}
+
+#[test]
+#[ignore]
+fn get_user_status() -> Result<(), neos::api_client::RequestError> {
+	let user_id = neos::id::User::try_from("U-Neos".to_string()).unwrap();
+	let _user_status = common::UNAUTHENTICATED_API_CLIENT.get_user_status(user_id)?;
+
+	Ok(())
+}
+
+#[test]
+#[ignore]
 fn sessions() -> Result<(), neos::api_client::RequestError> {
 	// Test that listing public sessions work
 	let sessions = common::UNAUTHENTICATED_API_CLIENT.get_sessions()?;
