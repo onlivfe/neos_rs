@@ -46,6 +46,7 @@ pub mod id;
 // The models are split into slightly smaller files in order to avoid a really
 // long single file.
 mod auth;
+mod groups;
 mod records;
 mod sessions;
 mod users;
@@ -53,6 +54,7 @@ mod users;
 // They are re-exported at the top level though to make importing them easier /
 // less confusing.
 pub use auth::*;
+pub use groups::*;
 pub use records::*;
 pub use sessions::*;
 pub use users::*;
