@@ -103,7 +103,7 @@ pub trait Neos {
 		Ok(())
 	}
 
-	/// Gets the amount of users that are online.
+	/// Gets the amount of users that are online
 	///
 	/// # Example usage
 	///
@@ -151,7 +151,7 @@ pub trait Neos {
 		}
 	}
 
-	/// Gets details of publicly listed sessions.
+	/// Gets details of publicly listed sessions
 	///
 	/// # Example usage
 	///
@@ -177,7 +177,7 @@ pub trait Neos {
 		Ok(resp.json()?)
 	}
 
-	/// Gets the an user
+	/// Gets details of an user by either username or ID
 	///
 	/// # Example usage
 	///
@@ -230,7 +230,7 @@ pub trait Neos {
 		Ok(resp.json()?)
 	}
 
-	/// Gets the status of a user
+	/// Gets the status of an user
 	///
 	/// # Example usage
 	///
@@ -256,7 +256,7 @@ pub trait Neos {
 		Ok(resp.json()?)
 	}
 
-	/// Gets details of a session.
+	/// Gets details of a session
 	///
 	/// # Example usage
 	///
@@ -282,7 +282,7 @@ pub trait Neos {
 		Ok(resp.json()?)
 	}
 
-	/// Gets details of a group.
+	/// Gets details of a group
 	///
 	/// # Example usage
 	///
