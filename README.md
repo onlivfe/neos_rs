@@ -20,7 +20,6 @@ This crate provides a blocking API client with the optional `api_client` feature
 
 - Better documentation in general
 - Splitting some linked `Option<T>` fields into their own sub-structs
-- Better documentation about the API request paths
 
 ## Testing
 
@@ -54,11 +53,7 @@ curl --request POST \
 Only use a single identification method (username/email/ownerId).
 Also be sure to replace the rest of the values with your own.
 Using a secretMachineId is also recommended to not log out your other sessions.
-You can generate a random one for example with:
-
-```shell
-openssl rand -hex 32
-```
+You can generate a random one for example with: `openssl rand -hex 32`
 
 ### Running ignored tests
 
