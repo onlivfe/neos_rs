@@ -27,6 +27,13 @@ pub struct NeosSessionUser {
 #[serde(rename_all = "camelCase")]
 /// A Neos session.
 ///
+/// The response from the API at `sessions` & `sessions/{session_id}`.
+#[cfg_attr(
+	feature = "api_client",
+	doc = "Can be gotten with
+	[`api_client::Neos::get_sessions`](crate::api_client::Neos::get_sessions) &
+	[`api_client::Neos::get_session`](crate::api_client::Neos::get_session)."
+)]
 /// Found for example in
 /// [`NeosUserStatus`](crate::NeosUserStatus::active_sessions)
 pub struct NeosSession {

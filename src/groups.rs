@@ -5,6 +5,12 @@ use serde::Deserialize;
 /// Details about a Neos group.
 ///
 /// The response from the API at `groups/{group_id}`.
+#[cfg_attr(
+	feature = "api_client",
+	doc = "Can be gotten with
+	[`api_client::Neos::get_group`](crate::api_client::Neos::get_group)."
+)]
+
 pub struct NeosGroup {
 	/// The G-groupname form of ID
 	pub id: crate::id::Group,

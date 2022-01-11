@@ -14,6 +14,11 @@ use serde::Deserialize;
 /// Details about a friend/contact.
 ///
 /// The response from the API at `users/{user_id}/friends`.
+#[cfg_attr(
+	feature = "api_client",
+	doc = "Can be gotten with
+	[`crate::api_client::NeosAuthenticated::get_friends`]."
+)]
 pub struct NeosFriend {
 	/// The U-username form of ID
 	pub id: crate::id::User,
@@ -42,6 +47,12 @@ pub struct NeosFriend {
 /// Details about a Neos user.
 ///
 /// The response from the API at `users/{user_id}`.
+#[cfg_attr(
+	feature = "api_client",
+	doc = "Can be gotten with
+	[`api_client::Neos::search_users`](crate::api_client::Neos::search_users) &
+	[`api_client::Neos::get_user`](crate::api_client::Neos::get_user)."
+)]
 pub struct NeosUser {
 	/// The U-username form of ID
 	pub id: crate::id::User,
@@ -109,6 +120,11 @@ pub struct NeosUser {
 /// A Neos user/friend's status.
 ///
 /// The response from the API at `users/{user_id}/status`.
+#[cfg_attr(
+	feature = "api_client",
+	doc = "Can be gotten with
+	[`api_client::Neos::get_user_status`](crate::api_client::Neos::get_user_status)"
+)]
 /// Also found in [`NeosFriend`](NeosFriend::user_status).
 pub struct NeosUserStatus {
 	/// "Online" / "Offline" and so on
