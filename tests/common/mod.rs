@@ -1,4 +1,6 @@
 #![cfg(feature = "api_client")]
+// Something's funky with checking if these are used or not.
+#![allow(dead_code)]
 
 use neos::{
 	api_client::{NeosAuthenticated, NeosUnauthenticated},
