@@ -48,8 +48,8 @@ impl NeosApiClient {
 				.with_header("Content-Type", "application/json")
 				.with_header("User-Agent", &self.user_agent)
 				.with_max_redirects(5)
-				.with_max_status_line_length(Some(2usize.pow(20)))
-				.with_max_headers_size(Some(2usize.pow(22)))
+				.with_max_status_line_length(Some(2_usize.pow(20)))
+				.with_max_headers_size(Some(2_usize.pow(22)))
 				.with_timeout(120),
 		)?
 		.send()?;
