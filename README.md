@@ -6,7 +6,7 @@
 [![Crates.io](https://img.shields.io/crates/v/neos.svg)](https://crates.io/crates/neos)
 [![Docs](https://docs.rs/neos/badge.svg)](https://docs.rs/crate/neos/)
 
-Rust models of [NeosVR's API](https://wiki.neosvr.com/docfx/api/).
+Rust models of [NeosVR's API](https://wiki.neosvr.com/docfx/api).
 
 Featuring full serde support, chrono for datetimes, and strum for better enums.
 

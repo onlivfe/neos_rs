@@ -1,5 +1,5 @@
 #![doc(html_logo_url = "https://git.ljoonal.xyz/ljoonal/neos_rs/raw/logo.png")]
-//! Typed models for [Neos's api](https://wiki.neosvr.com/docfx/api/) with serde support.
+//! Typed models for [Neos's api](https://wiki.neosvr.com/docfx/api) with serde support.
 //!
 //! Featuring chrono for datetimes and strum for better enums.
 //!
