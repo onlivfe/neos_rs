@@ -1,12 +1,13 @@
 [package]
 name = "neos"
-version = "0.1.0-alpha.3"
+version = "0.1.0"
 edition = "2021"
 license = "MPL-2.0"
 authors = ["ljoonal"]
-description = "Rust models of NeosVR's API"
+description = "NeosVR's API in rust"
 repository = "https://git.ljoonal.xyz/ljoonal/neos_rs"
-keywords = ["neos"]
+documentation = "https://docs.rs/neos"
+keywords = ["neos", "neosvr", "api", "rest"]
 categories = ["api-bindings", "games"]
 
 include = ["src", "Cargo.toml", "LICENSE", "README.md"]
