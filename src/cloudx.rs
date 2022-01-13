@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, serde::Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Deserialize)]
 /// An url for a neos asset such as a profile picture.
 pub struct AssetUrl(String);
 
