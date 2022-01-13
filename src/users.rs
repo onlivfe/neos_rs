@@ -4,7 +4,7 @@
 
 use crate::{
 	sessions::{NeosSession, SessionAccessLevel},
-	NeosPublicBanType,
+	AssetUrl, NeosPublicBanType,
 };
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
@@ -175,7 +175,7 @@ pub struct NeosUserPublicRSA {
 /// Found for example in [`NeosFriend`](NeosFriend::profile)
 pub struct NeosUserProfile {
 	/// The url seems to be in a Neos' own neosdb:// format
-	pub icon_url: String,
+	pub icon_url: AssetUrl,
 	/// If the user has opted out of "NCR" or "KCR" for example.
 	pub token_opt_out: Option<Vec<String>>,
 }

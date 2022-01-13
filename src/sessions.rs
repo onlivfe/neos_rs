@@ -2,7 +2,7 @@
 
 #![allow(clippy::struct_excessive_bools)]
 
-use crate::{NeosOutputDevice, NeosRecordId};
+use crate::{AssetUrl, NeosOutputDevice, NeosRecordId};
 use serde::de::{self, Deserialize, Deserializer, Visitor};
 use std::fmt;
 
@@ -69,7 +69,7 @@ pub struct NeosSession {
 	/// A link to the thumbnail of the session.
 	///
 	/// Can be https:// or neosdb:// for example
-	pub thumbnail: Option<String>,
+	pub thumbnail: Option<AssetUrl>,
 	/// The amount of users that have joined the session
 	pub joined_users: u8,
 	/// The amount of users that are focused on the session
