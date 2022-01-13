@@ -22,7 +22,9 @@ impl TryFrom<&str> for AssetUrl {
 			}
 		}
 
-		Err(concat!("should start with `neosdb:///` `https://cloudxstorage.blob.core.windows.net/assets/`"))
+		Err(concat!(
+			"should start with `neosdb:///` `https://cloudxstorage.blob.core.windows.net/assets/`"
+		))
 	}
 }
 

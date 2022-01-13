@@ -4,7 +4,8 @@
 
 use crate::{
 	sessions::{NeosSession, SessionAccessLevel},
-	AssetUrl, NeosPublicBanType,
+	AssetUrl,
+	NeosPublicBanType,
 };
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
