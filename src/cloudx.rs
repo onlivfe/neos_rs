@@ -66,7 +66,7 @@ impl AssetUrl {
 	}
 
 	#[must_use]
-	/// Gets the filename
+	/// Gets the filename without the extension
 	pub fn id(&self) -> &str {
 		&self.id
 	}
