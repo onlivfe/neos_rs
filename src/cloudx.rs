@@ -1,44 +1,86 @@
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 /// An url for a neos asset such as a profile picture.
-pub struct AssetUrl(String);
+pub struct AssetUrl {
+	/// The last URL part without the file extension
+	id: String,
+	/// The file extension
+	ext: Option<String>,
+	/// The URL before the last URL part
+	url_prefix: String,
+}
 
 impl AssetUrl {
 	const URL_PREFIX: &'static str =
 		"https://cloudxstorage.blob.core.windows.net/assets/";
+
+	fn from_url(url: impl AsRef<str>) -> Result<Self, &'static str> {
+		// Extract the last / part and put the rest back together
+		let mut path_split = url.as_ref().split('/').rev();
+		let last_path = path_split.next().ok_or("Couldn't parse url path")?;
+		let url_prefix = path_split.rev().collect::<Vec<&str>>().join("/") + "/";
+
+		// Extract the last . part and put the rest back together from the last path part
+		let mut ext_split = last_path.split('.').rev();
+		let ext_split_last = ext_split.next().ok_or("Couldn't parse url ext")?.to_owned();
+		let ext_split_rest = ext_split.rev().collect::<Vec<&str>>().join(".");
+
+		// If there was no ext handle that, map the split result to the id and ext
+		let (id, ext) = if ext_split_rest.is_empty() {
+			(ext_split_last, None)
+		} else {
+			(ext_split_rest, Some(ext_split_last))
+		};
+
+		Ok(Self { id, ext, url_prefix })
+	}
 }
 
 impl TryFrom<&str> for AssetUrl {
 	type Error = &'static str;
 	fn try_from(url: &str) -> Result<Self, Self::Error> {
-		if let Some(split) = url.split_once("neosdb:///") {
-			if split.0.is_empty() && !split.1.is_empty() {
-				return Ok(AssetUrl(split.1.to_owned()));
+		if url.starts_with("neosdb:///") {
+			if let Some(split) = url.split_once("neosdb:///") {
+				if split.0.is_empty() && !split.1.is_empty() {
+					return Self::from_url(Self::URL_PREFIX.to_owned() + split.1);
+				}
 			}
 		}
 
-		if let Some(split) = url.split_once(Self::URL_PREFIX) {
-			if split.0.is_empty() && !split.1.is_empty() {
-				return Ok(AssetUrl(split.1.to_owned()));
-			}
+		if url.starts_with("https://") {
+			return Self::from_url(url);
 		}
 
-		Err(concat!(
-			"should start with `neosdb:///` `https://cloudxstorage.blob.core.windows.net/assets/`"
-		))
+		Err(concat!("should start with `neosdb:///` `https://`"))
 	}
 }
 
 impl AssetUrl {
 	#[must_use]
-	/// Gets the filename/"ID" part of this url.
-	pub fn filename(&self) -> &str {
-		&self.0
+	/// Gets the filename
+	pub fn filename(&self) -> String {
+		match &self.ext {
+			Some(ext) => self.id.clone() + ext,
+			None => self.id.clone(),
+		}
+	}
+
+	#[must_use]
+	/// Gets the filename
+	pub fn id(&self) -> &str {
+		&self.id
+	}
+
+	#[must_use]
+	/// Gets the extension
+	pub const fn ext(&self) -> &Option<String> {
+		&self.ext
 	}
 }
 
 impl ToString for AssetUrl {
+	/// The https:// URL needed to retrieve the asset.
 	fn to_string(&self) -> String {
-		Self::URL_PREFIX.to_owned() + self.0.split('.').next().unwrap()
+		self.url_prefix.clone() + &self.id
 	}
 }
 
