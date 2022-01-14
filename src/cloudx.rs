@@ -19,7 +19,8 @@ impl AssetUrl {
 		let last_path = path_split.next().ok_or("Couldn't parse url path")?;
 		let url_prefix = path_split.rev().collect::<Vec<&str>>().join("/") + "/";
 
-		// Extract the last . part and put the rest back together from the last path part
+		// Extract the last . part and put the rest back together from the last path
+		// part
 		let mut ext_split = last_path.split('.').rev();
 		let ext_split_last = ext_split.next().ok_or("Couldn't parse url ext")?.to_owned();
 		let ext_split_rest = ext_split.rev().collect::<Vec<&str>>().join(".");
