@@ -33,7 +33,7 @@
 
 use minreq::{Method, Request, Response};
 
-const API_BASE: &str = "https://www.neosvr-api.com/api/";
+const API_BASE: &str = "https://api.neos.com/api/";
 
 mod error;
 mod inner;

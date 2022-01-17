@@ -45,8 +45,8 @@ pub mod id;
 
 // The models are split into slightly smaller files in order to avoid a really
 // long single file.
+mod assets;
 mod auth;
-mod cloudx;
 mod groups;
 mod records;
 mod sessions;
@@ -54,8 +54,8 @@ mod users;
 
 // They are re-exported at the top level though to make importing them easier /
 // less confusing.
+pub use assets::*;
 pub use auth::*;
-pub use cloudx::*;
 pub use groups::*;
 pub use records::*;
 pub use sessions::*;

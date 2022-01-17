@@ -10,8 +10,7 @@ pub struct AssetUrl {
 }
 
 impl AssetUrl {
-	const URL_PREFIX: &'static str =
-		"https://cloudxstorage.blob.core.windows.net/assets/";
+	const URL_PREFIX: &'static str = "https://asset.neos.com/assets/";
 
 	fn from_url(url: impl AsRef<str>) -> Result<Self, &'static str> {
 		// Extract the last / part and put the rest back together
