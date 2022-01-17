@@ -5,14 +5,18 @@ pub struct AssetUrl {
 	id: String,
 	/// The file extension
 	ext: Option<String>,
+	use_ext_in_url: bool,
 	/// The URL before the last URL part
 	url_prefix: String,
 }
 
 impl AssetUrl {
-	const URL_PREFIX: &'static str = "https://asset.neos.com/assets/";
+	const URL_PREFIX: &'static str = "https://assets.neos.com/assets/";
 
-	fn from_url(url: impl AsRef<str>) -> Result<Self, &'static str> {
+	fn from_url(
+		url: impl AsRef<str>,
+		use_ext_in_url: bool,
+	) -> Result<Self, &'static str> {
 		// Extract the last / part and put the rest back together
 		let mut path_split = url.as_ref().split('/').rev();
 		let last_path = path_split.next().ok_or("Couldn't parse url path")?;
@@ -31,7 +35,7 @@ impl AssetUrl {
 			(ext_split_rest, Some(ext_split_last))
 		};
 
-		Ok(Self { id, ext, url_prefix })
+		Ok(Self { id, ext, url_prefix, use_ext_in_url })
 	}
 }
 
@@ -41,13 +45,13 @@ impl TryFrom<&str> for AssetUrl {
 		if url.starts_with("neosdb:///") {
 			if let Some(split) = url.split_once("neosdb:///") {
 				if split.0.is_empty() && !split.1.is_empty() {
-					return Self::from_url(Self::URL_PREFIX.to_owned() + split.1);
+					return Self::from_url(Self::URL_PREFIX.to_owned() + split.1, false);
 				}
 			}
 		}
 
 		if url.starts_with("https://") {
-			return Self::from_url(url);
+			return Self::from_url(url, true);
 		}
 
 		Err(concat!("should start with `neosdb:///` `https://`"))
@@ -80,7 +84,10 @@ impl AssetUrl {
 impl ToString for AssetUrl {
 	/// The https:// URL needed to retrieve the asset.
 	fn to_string(&self) -> String {
-		self.url_prefix.clone() + &self.id
+		match (self.use_ext_in_url, &self.ext) {
+			(true, Some(ext)) => self.url_prefix.clone() + &self.id + "." + ext,
+			_ => self.url_prefix.clone() + &self.id,
+		}
 	}
 }
 
