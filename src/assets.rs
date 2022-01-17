@@ -35,7 +35,7 @@ impl AssetUrl {
 			(ext_split_rest, Some(ext_split_last))
 		};
 
-		Ok(Self { id, ext, url_prefix, use_ext_in_url })
+		Ok(Self { id, ext, use_ext_in_url, url_prefix })
 	}
 }
 
