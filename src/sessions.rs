@@ -94,6 +94,32 @@ pub struct NeosSession {
 	pub is_valid: bool,
 }
 
+#[must_use]
+/// Tries to strip XML tags out of a string.
+///
+/// Not using an actual XML parser though, just a simple '<' and '>' char search.
+fn bad_xml_strip(str: &str) -> String {
+	let start_indexes = str.match_indices('<');
+	let end_indexes = str.match_indices('>');
+
+	let mut stripped_name = str.to_owned();
+	start_indexes.rev().zip(end_indexes.rev()).for_each(|((start, _), (end, _))| {
+		stripped_name.replace_range(start..=end, "");
+	});
+
+	stripped_name
+}
+
+impl NeosSession {
+	#[must_use]
+	/// Tries to remove the XML notation-like parts from a session's name.
+	///
+	/// Note that this is imperfect and not using an actual XML parser to remain lightweight.
+	pub fn stripped_name(&self) -> String {
+		bad_xml_strip(&self.name)
+	}
+}
+
 #[derive(
 	Debug,
 	Clone,
