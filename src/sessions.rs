@@ -15,7 +15,7 @@ pub struct NeosSessionUser {
 	/// The username of the user
 	pub username: String,
 	#[serde(rename = "userID")]
-	/// Always always exists, but rarely inexplicably missing
+	/// Almost always exists, but rarely inexplicably missing
 	pub user_id: Option<crate::id::User>,
 	/// If the user is focused on this session
 	pub is_present: bool,
