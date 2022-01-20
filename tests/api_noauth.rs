@@ -76,12 +76,12 @@ fn sessions() -> Result<(), neos::api_client::RequestError> {
 		.expect("there should be at least one public session");
 
 	// Test that getting a specific session works.
-	let session = common::UNAUTHENTICATED_API_CLIENT
-		.get_session(public_session.session_id.clone())?;
+	let session =
+		common::UNAUTHENTICATED_API_CLIENT.get_session(public_session.id.clone())?;
 
 	// Some basic sanity checks, can't do full eq since some data might've changed
-	assert!(session.session_id == public_session.session_id);
-	assert!(session.host_user_id == public_session.host_user_id);
+	assert!(session.id == public_session.id);
+	assert!(session.host_id == public_session.host_id);
 	assert!(session.compatibility_hash == public_session.compatibility_hash);
 
 	Ok(())

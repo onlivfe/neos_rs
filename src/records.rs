@@ -7,8 +7,9 @@ use serde::Deserialize;
 /// Found for example in
 /// [`NeosSession`](crate::NeosSession::corresponding_world_id)
 pub struct NeosRecordId {
+	#[serde(rename = "recordId")]
 	/// The ID of the record (`R-{uuid}` for example)
-	pub record_id: crate::id::Record,
+	pub id: crate::id::Record,
 	/// The ID of the owner (`U-{uuid}` or `G-{uuid}` for example)
 	pub owner_id: crate::id::Owner,
 }

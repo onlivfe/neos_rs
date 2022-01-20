@@ -4,8 +4,7 @@
 
 use crate::{
 	sessions::{NeosSession, SessionAccessLevel},
-	AssetUrl,
-	NeosPublicBanType,
+	AssetUrl, NeosPublicBanType,
 };
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
@@ -23,14 +22,17 @@ use serde::Deserialize;
 pub struct NeosFriend {
 	/// The U-username form of ID
 	pub id: crate::id::User,
+	#[serde(rename = "friendUsername")]
 	/// The actual username
-	pub friend_username: String,
+	pub username: String,
+	#[serde(rename = "friendStatus")]
 	/// The status of the friendship
-	pub friend_status: String,
+	pub friendship_status: String,
 	/// If the friendship has been accepted
 	pub is_accepted: bool,
+	#[serde(rename = "userStatus")]
 	/// The status of the user
-	pub user_status: NeosUserStatus,
+	pub status: NeosUserStatus,
 	/// The profile of the user
 	pub profile: Option<NeosUserProfile>,
 	#[serde(with = "serde_with::rust::default_on_error")]
@@ -65,8 +67,9 @@ pub struct NeosUser {
 	pub alternate_normalized_names: Option<Vec<String>>,
 	/// The email address of the user. Only visible when logged in.
 	pub email: Option<String>,
+	#[serde(rename = "registrationDate")]
 	/// When the user registered their Neos account.
-	pub registration_date: DateTime<Utc>,
+	pub registration_time: DateTime<Utc>,
 	/// If the account is verified
 	pub is_verified: bool,
 	/// When the account ban expires
@@ -130,17 +133,20 @@ pub struct NeosUser {
 pub struct NeosUserStatus {
 	/// "Online" / "Offline" and so on
 	pub online_status: NeosUserOnlineStatus,
+	#[serde(rename = "lastStatusChange")]
 	#[serde(with = "serde_with::rust::default_on_error")]
 	/// When the user's status last changed
 	///
 	/// Wrong/Invalid dates such as `2018-01-01T00:00:00` are expressed as None
-	pub last_status_change: Option<DateTime<Utc>>,
+	pub last_status_change_time: Option<DateTime<Utc>>,
 	/// The access level of the session that the user is currently in
 	pub current_session_access_level: SessionAccessLevel,
+	#[serde(rename = "currentSessionHidden")]
 	/// If the session that the user is currently in is hidden
-	pub current_session_hidden: bool,
+	pub is_current_session_hidden: bool,
+	#[serde(rename = "currentHosting")]
 	/// If the user is currently hosting a session
-	pub current_hosting: bool,
+	pub is_current_hosting: bool,
 	/// "Screen" or "VR" for example
 	pub output_device: NeosOutputDevice,
 	/// Only seems to exist when the user is online

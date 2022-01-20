@@ -14,10 +14,12 @@ pub struct NeosUserSession {
 	pub user_id: crate::id::User,
 	/// The secret token of this session
 	pub token: String,
+	#[serde(rename = "created")]
 	/// When the user session was created
-	pub created: DateTime<Utc>,
+	pub creation_time: DateTime<Utc>,
+	#[serde(rename = "expire")]
 	/// When the user session is set to expire
-	pub expire: DateTime<Utc>,
+	pub expiration: DateTime<Utc>,
 	/// If the user session has the remember me checked (lives longer)
 	pub remember_me: bool,
 	#[serde(rename = "sourceIP")]
@@ -49,8 +51,8 @@ impl std::fmt::Debug for NeosUserSession {
 		f.debug_struct("NeosUserSession")
 			.field("user_id", &self.user_id)
 			.field("token", &"*****")
-			.field("created", &self.created)
-			.field("expire", &self.expire)
+			.field("created", &self.creation_time)
+			.field("expire", &self.expiration)
 			.field("remember_me", &self.remember_me)
 			.field("source_ip", &self.source_ip)
 			.field("partition_key", &self.partition_key)

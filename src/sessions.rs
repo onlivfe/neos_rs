@@ -16,7 +16,7 @@ pub struct NeosSessionUser {
 	pub username: String,
 	#[serde(rename = "userID")]
 	/// Almost always exists, but rarely inexplicably missing
-	pub user_id: Option<crate::id::User>,
+	pub id: Option<crate::id::User>,
 	/// If the user is focused on this session
 	pub is_present: bool,
 	/// The output device type of the user
@@ -39,17 +39,21 @@ pub struct NeosSessionUser {
 pub struct NeosSession {
 	/// The name of the session
 	pub name: String,
+	#[serde(rename = "correspondingWorldId")]
 	/// The ID of the session's world
-	pub corresponding_world_id: Option<NeosRecordId>,
+	pub world: Option<NeosRecordId>,
 	/// The tags of the session
 	pub tags: Vec<String>,
+	#[serde(rename = "sessionId")]
 	/// The ID of the session (`S-{uuid}` for example)
-	pub session_id: crate::id::Session,
+	pub id: crate::id::Session,
+	#[serde(rename = "normalizedSessionId")]
 	/// Normalized (capitalization) version of the session's id (`s-{uuid}` for
 	/// example)
-	pub normalized_session_id: String,
+	pub normalized_id: String,
+	#[serde(rename = "hostUserId")]
 	/// The ID of the session's host (`U-{uuid}` for example)
-	pub host_user_id: Option<crate::id::User>,
+	pub host_id: Option<crate::id::User>,
 	/// The ID of the session's host's machine (`{uuid}`)
 	pub host_machine_id: String,
 	/// The username of the session's host
@@ -58,14 +62,16 @@ pub struct NeosSession {
 	pub compatibility_hash: String,
 	/// The version of Neos that session is hosting
 	pub neos_version: String,
+	#[serde(rename = "headlessHost")]
 	/// If the host is a headless (server) instance or not.
-	pub headless_host: bool,
+	pub is_headless_host: bool,
 	#[serde(rename = "sessionURLs")]
 	/// Links to the session, in custom protocols such as `lnl-nat:///` and
 	/// `neos-steam://`
-	pub session_urls: Vec<String>,
+	pub urls: Vec<String>,
+	#[serde(rename = "sessionUsers")]
 	/// A list of the session's users very basic details.
-	pub session_users: Vec<NeosSessionUser>,
+	pub users: Vec<NeosSessionUser>,
 	/// A link to the thumbnail of the session.
 	///
 	/// Can be https:// or neosdb:// for example
@@ -80,12 +86,14 @@ pub struct NeosSession {
 	pub total_active_users: u8,
 	/// The max limit of users in the session
 	pub max_users: u8,
+	#[serde(rename = "mobileFriendly")]
 	/// If the session is suitable for mobile clients
-	pub mobile_friendly: bool,
+	pub is_mobile_friendly: bool,
 	/// When the session began
 	pub session_begin_time: chrono::DateTime<chrono::Utc>,
+	#[serde(rename = "lastUpdate")]
 	/// When the session was last updated
-	pub last_update: chrono::DateTime<chrono::Utc>,
+	pub last_update_time: chrono::DateTime<chrono::Utc>,
 	/// Who can access the session
 	pub access_level: SessionAccessLevel,
 	/// If the session has ended
