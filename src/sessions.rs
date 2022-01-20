@@ -10,7 +10,7 @@ use std::fmt;
 #[serde(rename_all = "camelCase")]
 /// Short description of a session's user.
 ///
-/// Found for example in [`NeosSession`](NeosSession::session_users)
+/// Found for example in [`NeosSession`](NeosSession::users)
 pub struct NeosSessionUser {
 	/// The username of the user
 	pub username: String,

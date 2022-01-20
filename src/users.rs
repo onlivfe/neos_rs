@@ -129,7 +129,7 @@ pub struct NeosUser {
 	doc = "Can be gotten with
 	[`api_client::Neos::get_user_status`](crate::api_client::Neos::get_user_status)"
 )]
-/// Also found in [`NeosFriend`](NeosFriend::user_status).
+/// Also found in [`NeosFriend`](NeosFriend::status).
 pub struct NeosUserStatus {
 	/// "Online" / "Offline" and so on
 	pub online_status: NeosUserOnlineStatus,

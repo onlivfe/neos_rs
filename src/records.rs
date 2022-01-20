@@ -5,7 +5,7 @@ use serde::Deserialize;
 /// A generic Neos record, used for storage related things.
 ///
 /// Found for example in
-/// [`NeosSession`](crate::NeosSession::corresponding_world_id)
+/// [`NeosSession`](crate::NeosSession::world)
 pub struct NeosRecordId {
 	#[serde(rename = "recordId")]
 	/// The ID of the record (`R-{uuid}` for example)
