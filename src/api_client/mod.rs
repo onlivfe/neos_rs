@@ -293,11 +293,7 @@ pub trait Neos {
 	/// let group = neos_api_client
 	/// 	.get_group(neos::id::Group::try_from("G-Neos").unwrap())
 	/// 	.expect("to be able to get the Neos group details from Neos");
-	/// println!(
-	/// 	"The admin of the group {} is {}",
-	/// 	&group.name,
-	/// 	group.admin_id.as_ref()
-	/// );
+	/// println!("The admin of the group {} is {}", &group.name, group.admin_id.as_ref());
 	/// ```
 	fn get_group(&self, group_id: crate::id::Group) -> Result<NeosGroup, RequestError> {
 		let resp = self.api_request(
