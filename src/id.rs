@@ -160,6 +160,8 @@ pub enum Owner {
 	User(User),
 	/// A group ID
 	Group(Group),
+	/// A weird one that begins with `M-`
+	M(String),
 }
 
 impl From<User> for Owner {
