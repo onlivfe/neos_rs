@@ -188,7 +188,7 @@ pub trait Neos {
 	/// let neos_bot = neos_api_client
 	/// 	.get_user("Neos")
 	/// 	.expect("to be able to get the Neos bot account from Neos");
-	/// println!("The Neos bot supposedly registered on {}", &neos_bot.registration_date);
+	/// println!("The Neos bot supposedly registered on {}", &neos_bot.registration_time);
 	/// ```
 	fn get_user(
 		&self,
@@ -296,7 +296,7 @@ pub trait Neos {
 	/// println!(
 	/// 	"The admin of the group {} is {}",
 	/// 	&group.name,
-	/// 	group.admin_user_id.as_ref()
+	/// 	group.admin_id.as_ref()
 	/// );
 	/// ```
 	fn get_group(&self, group_id: crate::id::Group) -> Result<NeosGroup, RequestError> {
