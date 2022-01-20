@@ -117,6 +117,7 @@ add_id!(User, "U-");
 add_id!(Group, "G-");
 add_id!(Session, "S-");
 add_id!(Record, "R-");
+add_id!(Machine, "M-");
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(untagged)]
@@ -140,6 +141,8 @@ pub enum Any {
 	Session(Session),
 	/// A record ID
 	Record(Record),
+	/// A machine ID
+	Machine(Machine),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
@@ -160,8 +163,8 @@ pub enum Owner {
 	User(User),
 	/// A group ID
 	Group(Group),
-	/// A weird one that begins with `M-`
-	M(String),
+	/// A machine ID
+	Machine(Machine),
 }
 
 impl From<User> for Owner {
