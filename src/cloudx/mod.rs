@@ -1,8 +1,10 @@
 #![allow(clippy::struct_excessive_bools)]
 
 mod friend;
+mod friend_status;
 mod group;
 mod login_credentials;
+mod message;
 mod online_status;
 mod output_device;
 mod public_ban_type;
@@ -18,8 +20,10 @@ mod user_session;
 mod user_status;
 
 pub use friend::*;
+pub use friend_status::*;
 pub use group::*;
 pub use login_credentials::*;
+pub use message::*;
 pub use online_status::*;
 pub use output_device::*;
 pub use public_ban_type::*;

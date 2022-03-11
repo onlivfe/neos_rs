@@ -81,6 +81,63 @@ impl NeosAuthenticated {
 		Ok(response.json()?)
 	}
 
+	/// Sends a friend request
+	pub fn add_friend(&self, user_id: &crate::id::User) -> Result<(), RequestError> {
+		let response = self.api_request(
+			Method::Put,
+			&("users/".to_owned()
+				+ self.user_id.as_ref()
+				+ "/friends/" + user_id.as_ref()),
+			&mut |req| {
+				// Body is a partial of Friend
+				req.with_json(&serde_json::json!({
+					"ownerId": self.user_id.as_ref(),
+					"friendStatus": crate::FriendStatus::Accepted
+				}))
+			},
+		)?;
+
+		Ok(response.json()?)
+	}
+
+	/// Sends a request to remove a friend
+	pub fn remove_friend(&self, user_id: &crate::id::User) -> Result<(), RequestError> {
+		let response = self.api_request(
+			Method::Delete,
+			&("users/".to_owned()
+				+ self.user_id.as_ref()
+				+ "/friends/" + user_id.as_ref()),
+			&mut |req| {
+				// Body is a partial of Friend
+				req.with_json(&serde_json::json!({
+					"ownerId": self.user_id.as_ref(),
+					"friendStatus": crate::FriendStatus::Ignored
+				}))
+			},
+		)?;
+
+		Ok(response.json()?)
+	}
+
+	/// Sends a message
+	pub fn send_message(&self, user_id: &crate::id::User) -> Result<(), RequestError> {
+		let response = self.api_request(
+			Method::Delete,
+			&("users/".to_owned()
+				+ self.user_id.as_ref()
+				+ "/friends/" + user_id.as_ref()),
+			&mut |req| {
+				// Body is a partial of Friend
+				req.with_json(&serde_json::json!({
+					"ownerId": self.user_id.as_ref(),
+					"friendStatus": crate::FriendStatus::Ignored
+				}))
+			},
+		)?;
+
+		Ok(response.json()?)
+	}
+
 	#[must_use]
 	/// Removes the authentication from the API client.
 	pub fn downgrade(self) -> NeosUnauthenticated {
