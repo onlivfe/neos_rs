@@ -20,7 +20,6 @@ pub enum OutputDevice {
 	/// Output device not known
 	Unknown = 0,
 	/// No visual output, server machine
-	/// No visual output, server machine
 	Headless = 1,
 	/// Desktop
 	Screen = 2,
