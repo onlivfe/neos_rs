@@ -47,6 +47,7 @@ pub mod id;
 // long single file.
 mod assets;
 mod auth;
+mod friends;
 mod groups;
 mod records;
 mod sessions;
@@ -56,6 +57,7 @@ mod users;
 // less confusing.
 pub use assets::*;
 pub use auth::*;
+pub use friends::*;
 pub use groups::*;
 pub use records::*;
 pub use sessions::*;
