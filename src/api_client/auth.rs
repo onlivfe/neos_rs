@@ -139,14 +139,14 @@ impl NeosAuthenticated {
 		&self,
 		max_amount: u16,
 		unread_only: bool,
-		from_time: Option<DateTime<Utc>>,
+		from_time: &Option<DateTime<Utc>>,
 		user: &Option<crate::id::User>,
 	) -> Result<Vec<crate::Message>, RequestError> {
 		let response = self.api_request(
 			Method::Get,
 			&("users/".to_owned() + self.user_id.as_ref() + "/messages"),
 			&mut |mut req| {
-				if let Some(from_time) = from_time {
+				if let Some(from_time) = &from_time {
 					req = req.with_param("fromTime", from_time.to_string());
 				}
 				if let Some(user) = user {
