@@ -1,14 +1,9 @@
 use crate::UserSession;
 
 use super::Neos;
+use super::{inner::NeosApiClient, NeosAuthenticated, RequestError};
+use crate::LoginCredentials;
 use minreq::Method;
-
-use super::{
-	inner::NeosApiClient,
-	NeosAuthenticated,
-	NeosRequestUserSession,
-	RequestError,
-};
 
 /// Neos API client without authentication
 ///
@@ -50,10 +45,10 @@ impl NeosUnauthenticated {
 	/// Sends a login request to the API.
 	pub fn login(
 		&self,
-		user_session_request: &NeosRequestUserSession,
+		login_credentials: &LoginCredentials,
 	) -> Result<UserSession, RequestError> {
 		let res = self.api_request(Method::Post, "userSessions", &mut |req| {
-			req.with_json(&user_session_request)
+			req.with_json(&login_credentials)
 		})?;
 
 		Ok(res.json()?)

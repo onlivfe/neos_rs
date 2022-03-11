@@ -2,6 +2,7 @@
 
 mod friend;
 mod group;
+mod login_credentials;
 mod online_status;
 mod output_device;
 mod public_ban_type;
@@ -18,6 +19,7 @@ mod user_status;
 
 pub use friend::*;
 pub use group::*;
+pub use login_credentials::*;
 pub use online_status::*;
 pub use output_device::*;
 pub use public_ban_type::*;
