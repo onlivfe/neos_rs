@@ -1,10 +1,11 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(
 	Debug,
 	Clone,
 	PartialEq,
 	Eq,
+	Serialize,
 	strum::FromRepr,
 	strum::Display,
 	strum::EnumString,

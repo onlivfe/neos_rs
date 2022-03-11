@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(
 	Debug,
@@ -6,6 +6,7 @@ use serde::Deserialize;
 	PartialEq,
 	Eq,
 	Deserialize,
+	Serialize,
 	strum::Display,
 	strum::EnumString,
 	strum::AsRefStr,

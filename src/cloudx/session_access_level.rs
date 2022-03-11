@@ -8,6 +8,7 @@ use std::fmt;
 	Eq,
 	PartialOrd,
 	Ord,
+	serde::Serialize,
 	strum::Display,
 	strum::FromRepr,
 	strum::EnumString,
