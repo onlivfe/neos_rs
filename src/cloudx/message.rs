@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_with::{serde_as, FromInto};
 
 use crate::SessionInfo;
 
@@ -27,6 +28,7 @@ pub struct Message {
 }
 
 #[allow(clippy::module_name_repetitions)]
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "messageType", content = "content")]
 /// The contents of a message combined with the `MessageType`
@@ -40,7 +42,8 @@ pub enum MessageContents {
 	/// Invite to a session
 	SessionInvite(Box<SessionInfo>),
 	/// NCR/KFC related most likely
-	CreditTransfer(String),
+	#[serde(with = "serde_with::json::nested")]
+	CreditTransfer(crate::CreditTransaction),
 	/// Kofi/tipping related..?
 	SugarCubes(String),
 }
