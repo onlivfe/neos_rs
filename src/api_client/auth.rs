@@ -1,4 +1,5 @@
 use super::{inner::NeosApiClient, Neos, NeosUnauthenticated, RequestError};
+use chrono::{DateTime, Utc};
 use minreq::{Method, Request, Response};
 
 /// Neos API client with authentication
@@ -120,18 +121,42 @@ impl NeosAuthenticated {
 	}
 
 	/// Sends a message
-	pub fn send_message(&self, user_id: &crate::id::User) -> Result<(), RequestError> {
+	pub fn send_message(&self, message: &crate::Message) -> Result<(), RequestError> {
 		let response = self.api_request(
 			Method::Delete,
-			&("users/".to_owned()
-				+ self.user_id.as_ref()
-				+ "/friends/" + user_id.as_ref()),
+			&("users/".to_owned() + message.recipient_id.as_ref() + "/messages"),
 			&mut |req| {
 				// Body is a partial of Friend
-				req.with_json(&serde_json::json!({
-					"ownerId": self.user_id.as_ref(),
-					"friendStatus": crate::FriendStatus::Ignored
-				}))
+				req.with_json(message)
+			},
+		)?;
+
+		Ok(response.json()?)
+	}
+
+	/// Fetches messages from the API
+	pub fn get_messages(
+		&self,
+		max_amount: u16,
+		unread_only: bool,
+		from_time: Option<DateTime<Utc>>,
+		user: &Option<crate::id::User>,
+	) -> Result<Vec<crate::Message>, RequestError> {
+		let response = self.api_request(
+			Method::Get,
+			&("users/".to_owned() + self.user_id.as_ref() + "/messages"),
+			&mut |mut req| {
+				if let Some(from_time) = from_time {
+					req = req.with_param("fromTime", from_time.to_string());
+				}
+				if let Some(user) = user {
+					req = req.with_param("user", user.as_ref());
+				}
+				if unread_only {
+					req = req.with_param("unread", "true");
+				}
+
+				Ok(req.with_param("maxItems", max_amount.to_string()))
 			},
 		)?;
 
