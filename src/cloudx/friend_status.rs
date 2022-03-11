@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 	strum::AsRefStr,
 	strum::EnumVariantNames,
 )]
-/// The friendship status with a neos user
+/// The friendship status with a Neos user
 pub enum FriendStatus {
 	/// Not friends
 	None,
