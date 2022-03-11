@@ -30,8 +30,8 @@ macro_rules! add_id {
 		///
 		/// ```
 		#[doc = concat!("use neos::id::", stringify!($name), ";")]
-		#[doc = concat!("let id1 =", stringify!($name), "::try_from(\"", $prefix, "totally-legit-id\").unwrap();")]
-		#[doc = concat!("let id2 =", stringify!($name), "::try_from(\"", $prefix, "other-legit-id\").unwrap();")]
+		#[doc = concat!("let id1 = ", stringify!($name), "::try_from(\"", $prefix, "totally-legit-id\").unwrap();")]
+		#[doc = concat!("let id2 = ", stringify!($name), "::try_from(\"", $prefix, "other-legit-id\").unwrap();")]
 		/// assert!(id1 != id2);
 		/// ```
 		#[derive(Clone, Debug, PartialEq, Eq, Serialize, Hash)]
