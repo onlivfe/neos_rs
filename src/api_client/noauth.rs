@@ -1,4 +1,4 @@
-use crate::NeosUserSession;
+use crate::UserSession;
 
 use super::Neos;
 use minreq::Method;
@@ -51,7 +51,7 @@ impl NeosUnauthenticated {
 	pub fn login(
 		&self,
 		user_session_request: &NeosRequestUserSession,
-	) -> Result<NeosUserSession, RequestError> {
+	) -> Result<UserSession, RequestError> {
 		let res = self.api_request(Method::Post, "userSessions", &mut |req| {
 			req.with_json(&user_session_request)
 		})?;
@@ -62,7 +62,7 @@ impl NeosUnauthenticated {
 	#[must_use]
 	/// Upgrades the client to an authenticated version with an user session.
 	/// Does not check the user session validity.
-	pub fn upgrade(self, user_session: NeosUserSession) -> NeosAuthenticated {
+	pub fn upgrade(self, user_session: UserSession) -> NeosAuthenticated {
 		NeosAuthenticated::from((self.inner, user_session))
 	}
 }

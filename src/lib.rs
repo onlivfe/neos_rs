@@ -13,7 +13,6 @@
 //!
 //! ```rust
 //! extern crate serde_json;
-//! use neos::{NeosOutputDevice, NeosSessionUser};
 //!
 //! // Normally you'd get the data by calling the API
 //! let data = r#"{
@@ -23,9 +22,9 @@
 //!         "outputDevice": 2
 //!      }"#;
 //!
-//! let session_user: NeosSessionUser = serde_json::from_str(data).unwrap();
+//! let session_user: neos::SessionUser = serde_json::from_str(data).unwrap();
 //!
-//! assert_eq!(session_user.output_device, NeosOutputDevice::Screen);
+//! assert_eq!(session_user.output_device, neos::OutputDevice::Screen);
 //! ```
 
 #![cfg_attr(nightly, feature(doc_cfg))]
@@ -46,22 +45,14 @@ pub mod id;
 // The models are split into slightly smaller files in order to avoid a really
 // long single file.
 mod assets;
-mod auth;
-mod friends;
-mod groups;
-mod records;
-mod sessions;
-mod users;
+
+// Models that should match up with Neos' CloudX ones.
+mod cloudx;
 
 // They are re-exported at the top level though to make importing them easier /
 // less confusing.
 pub use assets::*;
-pub use auth::*;
-pub use friends::*;
-pub use groups::*;
-pub use records::*;
-pub use sessions::*;
-pub use users::*;
+pub use cloudx::*;
 
 #[cfg(feature = "api_client")]
 #[cfg_attr(nightly, doc(cfg(feature = "api_client")))]

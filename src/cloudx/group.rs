@@ -10,7 +10,7 @@ use serde::Deserialize;
 	doc = "Can be gotten with
 	[`api_client::Neos::get_group`](crate::api_client::Neos::get_group)."
 )]
-pub struct NeosGroup {
+pub struct Group {
 	/// The G-groupname form of ID
 	pub id: crate::id::Group,
 	#[serde(rename = "adminUserId")]

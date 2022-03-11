@@ -1,5 +1,4 @@
 use super::{inner::NeosApiClient, Neos, NeosUnauthenticated, RequestError};
-use crate::{NeosFriend, NeosUserSession};
 use minreq::{Method, Request, Response};
 
 /// Neos API client with authentication
@@ -47,7 +46,7 @@ impl NeosAuthenticated {
 	#[must_use]
 	/// Creates a new authenticated Neos API client instance. Does not check the
 	/// user session validity.
-	pub fn new(user_agent: String, session: NeosUserSession) -> Self {
+	pub fn new(user_agent: String, session: crate::UserSession) -> Self {
 		Self::from((NeosApiClient::new(user_agent), session))
 	}
 
@@ -72,7 +71,7 @@ impl NeosAuthenticated {
 	}
 
 	/// Gets the current session's user's friends.
-	pub fn get_friends(&self) -> Result<Vec<NeosFriend>, RequestError> {
+	pub fn get_friends(&self) -> Result<Vec<crate::Friend>, RequestError> {
 		let response = self.api_request(
 			Method::Get,
 			&("users/".to_owned() + self.user_id.as_ref() + "/friends"),
@@ -89,8 +88,8 @@ impl NeosAuthenticated {
 	}
 }
 
-impl From<(NeosApiClient, NeosUserSession)> for NeosAuthenticated {
-	fn from((inner, user_session): (NeosApiClient, NeosUserSession)) -> Self {
+impl From<(NeosApiClient, crate::UserSession)> for NeosAuthenticated {
+	fn from((inner, user_session): (NeosApiClient, crate::UserSession)) -> Self {
 		NeosAuthenticated {
 			inner,
 			token: user_session.token,

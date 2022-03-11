@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 /// The response from the API at POST `userSessions`.
 #[derive(Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct NeosUserSession {
+pub struct UserSession {
 	/// The Neos user that this session is for
 	pub user_id: crate::id::User,
 	/// The secret token of this session
@@ -37,7 +37,7 @@ pub struct NeosUserSession {
 	pub secret_machine_id: Option<String>,
 }
 
-impl NeosUserSession {
+impl UserSession {
 	#[must_use]
 	/// The `Authorization` header required to use this `NeosUserSession`.
 	pub fn auth_header(&self) -> String {
@@ -46,7 +46,7 @@ impl NeosUserSession {
 }
 
 // Need to do manual impl to censor out secret token.
-impl std::fmt::Debug for NeosUserSession {
+impl std::fmt::Debug for UserSession {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 		f.debug_struct("NeosUserSession")
 			.field("user_id", &self.user_id)
@@ -61,28 +61,4 @@ impl std::fmt::Debug for NeosUserSession {
 			.field("e_tag", &self.e_tag)
 			.finish()
 	}
-}
-
-#[derive(
-	Debug,
-	Clone,
-	PartialEq,
-	Eq,
-	Deserialize,
-	strum::Display,
-	strum::EnumString,
-	strum::AsRefStr,
-	strum::EnumVariantNames,
-)]
-/// The type of a ban.
-///
-/// Found for example in
-/// [`NeosUser`](crate::NeosUser::public_ban_type)
-pub enum NeosPublicBanType {
-	/// A standard ban
-	Standard,
-	/// A soft ban
-	Soft,
-	/// A hard ban
-	Hard,
 }

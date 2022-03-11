@@ -1,8 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
-use crate::{NeosUserProfile, NeosUserStatus};
-
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 /// Details about a friend/contact.
@@ -13,7 +11,7 @@ use crate::{NeosUserProfile, NeosUserStatus};
 	doc = "Can be gotten with
 	[`crate::api_client::NeosAuthenticated::get_friends`]."
 )]
-pub struct NeosFriend {
+pub struct Friend {
 	/// The U-username form of ID
 	pub id: crate::id::User,
 	#[serde(rename = "friendUsername")]
@@ -26,9 +24,9 @@ pub struct NeosFriend {
 	pub is_accepted: bool,
 	#[serde(rename = "userStatus")]
 	/// The status of the user
-	pub status: NeosUserStatus,
+	pub status: crate::UserStatus,
 	/// The profile of the user
-	pub profile: Option<NeosUserProfile>,
+	pub profile: Option<crate::UserProfile>,
 	#[serde(with = "serde_with::rust::default_on_error")]
 	/// When the latest message with the friend was at.
 	///

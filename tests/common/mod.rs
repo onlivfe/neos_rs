@@ -4,7 +4,7 @@
 
 use neos::{
 	api_client::{NeosAuthenticated, NeosUnauthenticated},
-	NeosUserSession,
+	UserSession,
 };
 use once_cell::sync::Lazy;
 
@@ -20,8 +20,8 @@ const USER_AGENT: &str = concat!(
 pub static UNAUTHENTICATED_API_CLIENT: Lazy<NeosUnauthenticated> =
 	Lazy::new(|| NeosUnauthenticated::new(USER_AGENT.to_string()));
 
-pub static USER_SESSION: Lazy<NeosUserSession> = Lazy::new(|| {
-	let user_session: NeosUserSession = serde_json::from_slice(
+pub static USER_SESSION: Lazy<UserSession> = Lazy::new(|| {
+	let user_session: UserSession = serde_json::from_slice(
 		&std::fs::read("user-session.json")
 			.expect("must have a prepared `user-session.json` file for live API testing"),
 	)

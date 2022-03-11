@@ -48,8 +48,6 @@ pub use auth::*;
 pub use noauth::*;
 pub use req_models::*;
 
-use crate::{NeosGroup, NeosSession, NeosUser, NeosUserStatus};
-
 /// A Neos API client
 ///
 /// # Example usage
@@ -171,7 +169,7 @@ pub trait Neos {
 	/// 	}
 	/// }
 	/// ```
-	fn get_sessions(&self) -> Result<Vec<NeosSession>, RequestError> {
+	fn get_sessions(&self) -> Result<Vec<crate::SessionInfo>, RequestError> {
 		let resp = self.api_request(Method::Get, "sessions", &mut Ok)?;
 
 		Ok(resp.json()?)
@@ -193,7 +191,7 @@ pub trait Neos {
 	fn get_user(
 		&self,
 		user: impl Into<UserIdOrUsername>,
-	) -> Result<NeosUser, RequestError> {
+	) -> Result<crate::User, RequestError> {
 		let user = user.into();
 		let resp = self.api_request(
 			Method::Get,
@@ -223,7 +221,7 @@ pub trait Neos {
 	/// 	.expect("for the search results to contain the Neos bot account");
 	/// println!("Fetched the account of {}", &neos_bot.username);
 	/// ```
-	fn search_users(&self, name: &str) -> Result<Vec<NeosUser>, RequestError> {
+	fn search_users(&self, name: &str) -> Result<Vec<crate::User>, RequestError> {
 		let resp =
 			self.api_request(Method::Get, &("users?name=".to_owned() + name), &mut Ok)?;
 
@@ -246,7 +244,7 @@ pub trait Neos {
 	fn get_user_status(
 		&self,
 		user_id: crate::id::User,
-	) -> Result<NeosUserStatus, RequestError> {
+	) -> Result<crate::UserStatus, RequestError> {
 		let resp = self.api_request(
 			Method::Get,
 			&("users/".to_owned() + user_id.as_ref() + "/status"),
@@ -272,7 +270,7 @@ pub trait Neos {
 	fn get_session(
 		&self,
 		session_id: crate::id::Session,
-	) -> Result<NeosSession, RequestError> {
+	) -> Result<crate::SessionInfo, RequestError> {
 		let resp = self.api_request(
 			Method::Get,
 			&("sessions/".to_owned() + session_id.as_ref()),
@@ -295,7 +293,10 @@ pub trait Neos {
 	/// 	.expect("to be able to get the Neos group details from Neos");
 	/// println!("The admin of the group {} is {}", &group.name, group.admin_id.as_ref());
 	/// ```
-	fn get_group(&self, group_id: crate::id::Group) -> Result<NeosGroup, RequestError> {
+	fn get_group(
+		&self,
+		group_id: crate::id::Group,
+	) -> Result<crate::Group, RequestError> {
 		let resp = self.api_request(
 			Method::Get,
 			&("groups/".to_owned() + group_id.as_ref()),
