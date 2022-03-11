@@ -37,7 +37,7 @@ You can generate a `user-sesion.json` file with logging in via curl for example:
 
 ```shell
 curl --request POST \
-  --url https://www.neosvr-api.com/api/userSessions \
+  --url https://api.neos.com/api/userSessions \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
   --data '{
