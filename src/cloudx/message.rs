@@ -27,6 +27,40 @@ pub struct Message {
 	pub read_time: Option<DateTime<Utc>>,
 }
 
+#[cfg(feature = "rand_util")]
+impl Message {
+	#[must_use]
+	/// Creates a new message with a random id and time set to now
+	pub fn new(
+		content: MessageContents,
+		owner_and_sender: crate::id::User,
+		recipient: crate::id::User,
+	) -> Self {
+		let now = Utc::now();
+
+		Message {
+			owner_id: owner_and_sender.clone(),
+			sender_id: owner_and_sender,
+			recipient_id: recipient,
+			content,
+			id: Self::new_id(),
+			send_time: now,
+			last_update_time: now,
+			read_time: None,
+		}
+	}
+
+	#[must_use]
+	/// Generares a new pseudorandom ID for a message
+	pub fn new_id() -> String {
+		use nanorand::Rng;
+		let rand = [0u8; 48];
+		// Not crypto safe, but good enough for the ID, and fast
+		nanorand::tls_rng().fill_bytes(rand);
+		"MSG-".to_owned() + &String::from_utf8_lossy(&rand)
+	}
+}
+
 #[allow(clippy::module_name_repetitions)]
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
