@@ -16,6 +16,8 @@ use serde::{Deserialize, Serialize};
 pub enum OnlineStatus {
 	/// The user is online
 	Online,
+	/// The user is invisible
+	Invisible,
 	/// The user is away
 	Away,
 	/// The user is busy offline
@@ -32,7 +34,7 @@ impl OnlineStatus {
 			Self::Online => (0, 255, 0),
 			Self::Away => (255, 200, 0),
 			Self::Busy => (255, 0, 0),
-			Self::Offline => (127, 127, 127),
+			Self::Offline | Self::Invisible => (127, 127, 127),
 		}
 	}
 }
