@@ -18,12 +18,12 @@ use serde::{Deserialize, Serialize};
 pub enum TransactionType {
 	/// An user sending monies to another user
 	User2User,
-	// Taking monies out
+	/// Taking monies out
 	Withdrawal,
-	// Putting monies in
+	/// Putting monies in
 	Deposit,
-	// Giving monies to express gratitude
+	/// Giving monies to express gratitude
 	Tip,
-	// Exhanging monies for goods/services
+	/// Exhanging monies for goods/services
 	Purchase,
 }
