@@ -28,6 +28,7 @@ pub struct Message {
 }
 
 #[cfg(feature = "rand_util")]
+#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 impl Message {
 	#[must_use]
 	/// Creates a new message with a random id and time set to now
