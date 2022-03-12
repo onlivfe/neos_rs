@@ -119,6 +119,14 @@ add_id!(Session, "S-");
 add_id!(Record, "R-");
 add_id!(Machine, "M-");
 
+impl Session {
+	#[must_use]
+	/// If the session is hosted by an user.
+	pub fn is_custom_user(&self) -> bool {
+		self.0.starts_with("S-U-")
+	}
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(untagged)]
 /// Any of the Neos IDs
