@@ -1,4 +1,5 @@
 use std::{
+	borrow::Borrow,
 	sync::{Arc, RwLock},
 	time::{Duration, Instant},
 };
@@ -35,7 +36,7 @@ impl NeosApiClient {
 	pub fn basic_api_request(
 		&self,
 		method: Method,
-		url: &str,
+		url: impl Borrow<str>,
 		build: &mut dyn FnMut(Request) -> Result<Request, minreq::Error>,
 	) -> Result<Response, RequestError> {
 		self.sleep_if_ratelimited();
@@ -43,7 +44,7 @@ impl NeosApiClient {
 
 		// 2^20 ~=1MB, 2^22~=4MB
 		let response = build(
-			Request::new(method, &(API_BASE.to_owned() + url))
+			Request::new(method, &(API_BASE.to_owned() + url.borrow()))
 				.with_header("Accept", "application/json")
 				.with_header("Content-Type", "application/json")
 				.with_header("User-Agent", &self.user_agent)

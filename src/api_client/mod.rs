@@ -31,6 +31,8 @@
 // documenting them all only adds bloat without much more value.
 #![allow(clippy::missing_errors_doc)]
 
+use std::borrow::Borrow;
+
 use minreq::{Method, Request, Response};
 
 const API_BASE: &str = "https://api.neos.com/api/";
@@ -221,9 +223,15 @@ pub trait Neos {
 	/// 	.expect("for the search results to contain the Neos bot account");
 	/// println!("Fetched the account of {}", &neos_bot.username);
 	/// ```
-	fn search_users(&self, name: &str) -> Result<Vec<crate::User>, RequestError> {
-		let resp =
-			self.api_request(Method::Get, &("users?name=".to_owned() + name), &mut Ok)?;
+	fn search_users(
+		&self,
+		name: impl Borrow<str>,
+	) -> Result<Vec<crate::User>, RequestError> {
+		let resp = self.api_request(
+			Method::Get,
+			&("users?name=".to_owned() + name.borrow()),
+			&mut Ok,
+		)?;
 
 		Ok(resp.json()?)
 	}
@@ -243,11 +251,11 @@ pub trait Neos {
 	/// ```
 	fn get_user_status(
 		&self,
-		user_id: crate::id::User,
+		user_id: impl Borrow<crate::id::User>,
 	) -> Result<crate::UserStatus, RequestError> {
 		let resp = self.api_request(
 			Method::Get,
-			&("users/".to_owned() + user_id.as_ref() + "/status"),
+			&("users/".to_owned() + user_id.borrow().as_ref() + "/status"),
 			&mut Ok,
 		)?;
 
@@ -269,11 +277,11 @@ pub trait Neos {
 	/// ```
 	fn get_session(
 		&self,
-		session_id: crate::id::Session,
+		session_id: impl Borrow<crate::id::Session>,
 	) -> Result<crate::SessionInfo, RequestError> {
 		let resp = self.api_request(
 			Method::Get,
-			&("sessions/".to_owned() + session_id.as_ref()),
+			&("sessions/".to_owned() + session_id.borrow().as_ref()),
 			&mut Ok,
 		)?;
 
@@ -295,11 +303,11 @@ pub trait Neos {
 	/// ```
 	fn get_group(
 		&self,
-		group_id: crate::id::Group,
+		group_id: impl Borrow<crate::id::Group>,
 	) -> Result<crate::Group, RequestError> {
 		let resp = self.api_request(
 			Method::Get,
-			&("groups/".to_owned() + group_id.as_ref()),
+			&("groups/".to_owned() + group_id.borrow().as_ref()),
 			&mut Ok,
 		)?;
 

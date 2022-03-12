@@ -1,3 +1,5 @@
+use std::borrow::Borrow;
+
 use crate::UserSession;
 
 use super::Neos;
@@ -45,10 +47,10 @@ impl NeosUnauthenticated {
 	/// Sends a login request to the API.
 	pub fn login(
 		&self,
-		login_credentials: &LoginCredentials,
+		login_credentials: impl Borrow<LoginCredentials>,
 	) -> Result<UserSession, RequestError> {
 		let res = self.api_request(Method::Post, "userSessions", &mut |req| {
-			req.with_json(&login_credentials)
+			req.with_json(login_credentials.borrow())
 		})?;
 
 		Ok(res.json()?)
