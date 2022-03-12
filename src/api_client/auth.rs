@@ -19,7 +19,7 @@ use minreq::{Method, Request, Response};
 /// let neos_api_client = neos_api_client.upgrade(user_session);
 ///
 /// let friends =
-/// 	neos_api_client.get_friends().expect("to be able to fetch friends from Neos");
+/// 	neos_api_client.get_friends(None).expect("to be able to fetch friends from Neos");
 /// println!("Neos friendcount: {} ", friends.len());
 /// ```
 #[derive(Clone)]
