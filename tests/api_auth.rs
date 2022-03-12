@@ -25,7 +25,7 @@ fn get_messages() -> Result<(), neos::api_client::RequestError> {
 	let messages =
 		common::AUTHENTICATED_API_CLIENT.get_messages(10, false, &None, &None)?;
 
-	println!("Messages: {:?}", messages);
+	//println!("Messages: {:?}", messages);
 
 	// Test user should have at least a single message
 	assert!(!messages.is_empty());
