@@ -11,7 +11,7 @@ use minreq::{Method, Request, Response};
 /// ```no_run
 /// use neos::api_client::{Neos, NeosAuthenticated, NeosUnauthenticated};
 /// # let USER_AGENT = String::new();
-/// # let user_session_request = todo!();
+/// # let user_session_request: neos::LoginCredentials = todo!();
 ///
 /// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
 /// let user_session =
