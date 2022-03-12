@@ -20,6 +20,8 @@ pub struct UserStatus {
 	///
 	/// Wrong/Invalid dates such as `2018-01-01T00:00:00` are expressed as None
 	pub last_status_change_time: Option<DateTime<Utc>>,
+	/// The id of the session that the user is currently in
+	pub current_session_id: Option<crate::id::Session>,
 	/// The access level of the session that the user is currently in
 	pub current_session_access_level: crate::SessionAccessLevel,
 	#[serde(rename = "currentSessionHidden")]
