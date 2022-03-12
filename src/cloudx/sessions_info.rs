@@ -11,6 +11,11 @@
 pub struct SessionInfo {
 	/// The name of the session
 	pub name: String,
+	#[serde(default)]
+	/// The description of the session
+	///
+	/// Defaulted to empty string if the API returns none for the session.
+	pub description: String,
 	#[serde(rename = "correspondingWorldId")]
 	/// The ID of the session's world
 	pub world: Option<crate::RecordId>,
@@ -66,12 +71,24 @@ pub struct SessionInfo {
 	#[serde(rename = "lastUpdate")]
 	/// When the session was last updated
 	pub last_update_time: chrono::DateTime<chrono::Utc>,
+	/// Since when has the host been away most likely
+	pub away_since: Option<chrono::DateTime<chrono::Utc>>,
 	/// Who can access the session
 	pub access_level: crate::SessionAccessLevel,
 	/// If the session has ended
 	pub has_ended: bool,
 	/// If the session is valid
 	pub is_valid: bool,
+	#[serde(default)]
+	/// Sessions that this session is a child of
+	///
+	/// Defaulted to empty vec if the API returns none for the session.
+	pub parent_session_ids: Vec<crate::id::Session>,
+	#[serde(default)]
+	/// Sessions that are the child of this session
+	///
+	/// Defaulted to empty vec if the API returns none for the session.
+	pub nested_session_ids: Vec<crate::id::Session>,
 }
 
 #[must_use]
