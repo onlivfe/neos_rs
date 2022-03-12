@@ -64,7 +64,7 @@ impl Message {
 
 #[allow(clippy::module_name_repetitions)]
 #[serde_as]
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, strum::EnumVariantNames)]
 #[serde(tag = "messageType", content = "content")]
 /// The contents of a message combined with the `MessageType`
 pub enum MessageContents {

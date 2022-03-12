@@ -28,7 +28,9 @@ pub struct LoginCredentials {
 }
 
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug, Clone, Serialize, Deserialize, strum::AsRefStr)]
+#[derive(
+	Debug, Clone, Serialize, Deserialize, strum::AsRefStr, strum::EnumVariantNames,
+)]
 #[serde(rename_all = "camelCase")]
 /// An identifier to use when requesting a session from the Neos API.
 ///
