@@ -84,6 +84,7 @@ pub enum MessageContents {
 	/// Voice recording
 	Sound(String),
 	/// Invite to a session
+	#[serde(with = "serde_with::json::nested")]
 	SessionInvite(Box<SessionInfo>),
 	/// NCR/KFC related most likely
 	#[serde(with = "serde_with::json::nested")]
