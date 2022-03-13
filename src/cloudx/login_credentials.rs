@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 /// Data for a user session request to the Neos api.
 #[cfg_attr(feature = "api_client", doc = "")]
@@ -25,6 +25,24 @@ pub struct LoginCredentials {
 	/// If the session should be remembered. Meaning it'll last for a longer
 	/// time.
 	pub remember_me: bool,
+}
+
+impl std::fmt::Debug for LoginCredentials {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		f.debug_struct("LoginCredentials")
+			.field("identifier", &self.identifier)
+			.field("password", &"*****")
+			.field("totp", &self.totp)
+			.field(
+				"secret_machine_id",
+				match &self.secret_machine_id {
+					Some(_) => &"Some(*****)",
+					None => &"None",
+				},
+			)
+			.field("remember_me", &self.remember_me)
+			.finish()
+	}
 }
 
 #[allow(clippy::module_name_repetitions)]
