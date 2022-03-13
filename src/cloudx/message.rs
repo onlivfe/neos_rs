@@ -27,9 +27,20 @@ pub struct Message {
 	pub read_time: Option<DateTime<Utc>>,
 }
 
-#[cfg(feature = "rand_util")]
-#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 impl Message {
+	#[must_use]
+	/// Gets the ID recipient's if the owners ID doesn't match it, otherwise the
+	/// sender's id is returned
+	pub fn non_owner_id(&self) -> &crate::id::User {
+		if self.owner_id == self.recipient_id {
+			&self.sender_id
+		} else {
+			&self.recipient_id
+		}
+	}
+
+	#[cfg(feature = "rand_util")]
+	#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 	#[must_use]
 	/// Creates a new message with a random id and time set to now
 	pub fn new(
@@ -51,6 +62,8 @@ impl Message {
 		}
 	}
 
+	#[cfg(feature = "rand_util")]
+	#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 	#[must_use]
 	/// Generares a new pseudorandom ID for a message
 	pub fn new_id() -> String {
