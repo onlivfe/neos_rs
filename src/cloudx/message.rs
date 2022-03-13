@@ -54,11 +54,7 @@ impl Message {
 	#[must_use]
 	/// Generares a new pseudorandom ID for a message
 	pub fn new_id() -> String {
-		use nanorand::Rng;
-		let rand = [0u8; 48];
-		// Not crypto safe, but good enough for the ID, and fast
-		nanorand::tls_rng().fill_bytes(rand);
-		"MSG-".to_owned() + &String::from_utf8_lossy(&rand)
+		"MSG-".to_owned() + &crate::random_ascii_string(24)
 	}
 }
 

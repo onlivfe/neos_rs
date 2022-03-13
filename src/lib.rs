@@ -57,3 +57,32 @@ pub use cloudx::*;
 #[cfg(feature = "api_client")]
 #[cfg_attr(nightly, doc(cfg(feature = "api_client")))]
 pub mod api_client;
+
+#[must_use]
+/// Generates a new (not cryptographically safe) pseudorandom string
+///
+/// The output string's char count is `bytes_count` multiplied by two
+pub fn random_ascii_string(bytes_count: u8) -> String {
+	// By using nanorand we avoid pulling in really heavy deps.
+	use nanorand::Rng;
+
+	const DICT: &[char; 16] =
+		&['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'];
+
+	let mut bits = Vec::with_capacity(bytes_count as usize);
+	bits.push(0u8);
+	bits.repeat(bytes_count as usize);
+
+	nanorand::tls_rng().fill(&mut bits);
+
+	let mut string = String::with_capacity(bytes_count as usize * 2);
+
+	for byte in bits {
+		let first_char_index = byte & 0xF;
+		let second_char_index = byte >> 4;
+		string.push(DICT[first_char_index as usize]);
+		string.push(DICT[second_char_index as usize]);
+	}
+
+	string
+}

@@ -62,28 +62,15 @@ impl LoginCredentials {
 		self.remember_me = remember_me.into();
 		self
 	}
-}
 
-#[cfg(feature = "rand_util")]
-#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
-impl LoginCredentials {
+	#[cfg(feature = "rand_util")]
+	#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 	#[must_use]
 	/// Sets the `machine_id` to a not cryptographically safe generated
 	/// pseudorandom value.
 	pub fn use_generated_machine_id(mut self) -> Self {
-		self.secret_machine_id = Some(Self::generate_machine_id());
+		self.secret_machine_id = Some(crate::random_ascii_string(32));
 		self
-	}
-
-	#[must_use]
-	/// Generares a new (not cryptographically safe) pseudorandom machine id
-	pub fn generate_machine_id() -> String {
-		use nanorand::Rng;
-		let rand = [0u8; 64];
-		// Not crypto safe, but good enough most likely as secret_machine_id doesn't
-		// seem to be used for anything cryptographic.
-		nanorand::tls_rng().fill_bytes(rand);
-		String::from_utf8_lossy(&rand).into()
 	}
 }
 
