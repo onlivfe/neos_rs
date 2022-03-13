@@ -4,7 +4,7 @@ use serde_with::serde_as;
 
 use crate::SessionInfo;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// Short description of a session's user.
 pub struct Message {
@@ -64,7 +64,7 @@ impl Message {
 
 #[allow(clippy::module_name_repetitions)]
 #[serde_as]
-#[derive(Debug, Clone, Serialize, Deserialize, strum::EnumVariantNames)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, strum::EnumVariantNames)]
 #[serde(tag = "messageType", content = "content")]
 /// The contents of a message combined with the `MessageType`
 pub enum MessageContents {

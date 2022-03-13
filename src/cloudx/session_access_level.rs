@@ -6,6 +6,7 @@ use std::fmt;
 	Clone,
 	PartialEq,
 	Eq,
+	Hash,
 	PartialOrd,
 	Ord,
 	serde::Serialize,

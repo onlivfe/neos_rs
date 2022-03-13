@@ -127,7 +127,7 @@ impl Session {
 	}
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Deserialize, Serialize)]
 #[serde(untagged)]
 /// Any of the Neos IDs
 ///
@@ -153,7 +153,7 @@ pub enum Any {
 	Machine(Machine),
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Deserialize, Serialize)]
 #[serde(untagged)]
 /// Neos IDs that can own records for example
 ///

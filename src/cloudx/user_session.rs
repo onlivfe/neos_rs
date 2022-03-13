@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 /// This is the response to logging in for example.
 ///
 /// The response from the API at POST `userSessions`.
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UserSession {
 	/// The Neos user that this session is for

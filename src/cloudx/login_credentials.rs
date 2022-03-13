@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 /// Data for a user session request to the Neos api.
 #[cfg_attr(feature = "api_client", doc = "")]
@@ -107,7 +107,15 @@ impl std::fmt::Debug for LoginCredentials {
 
 #[allow(clippy::module_name_repetitions)]
 #[derive(
-	Debug, Clone, Serialize, Deserialize, strum::AsRefStr, strum::EnumVariantNames,
+	Debug,
+	Clone,
+	PartialEq,
+	Eq,
+	Hash,
+	Serialize,
+	Deserialize,
+	strum::AsRefStr,
+	strum::EnumVariantNames,
 )]
 #[serde(rename_all = "camelCase")]
 /// An identifier to use when requesting a session from the Neos API.

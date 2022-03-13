@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 	Clone,
 	PartialEq,
 	Eq,
+	Hash,
 	Serialize,
 	Deserialize,
 	strum::Display,
