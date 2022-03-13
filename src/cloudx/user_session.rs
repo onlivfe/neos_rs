@@ -22,16 +22,20 @@ pub struct UserSession {
 	pub expiration: DateTime<Utc>,
 	/// If the user session has the remember me checked (lives longer)
 	pub remember_me: bool,
+	#[serde(default)]
 	#[serde(rename = "sourceIP")]
 	/// The IP address that created the user session
+	///
+	///Not found in standard CloudX models, defaults to an empty String if
+	/// none.
 	pub source_ip: String,
-	/// Assumed to be a Neos internal field
-	pub partition_key: String,
-	/// Assumed to be a Neos internal field
-	pub row_key: String,
 	/// A timestamp of the session
 	pub timestamp: DateTime<Utc>,
+	#[serde(default)]
 	/// A standard etag, useful for caching
+	///
+	/// Not found in standard CloudX models, defaults to an empty String if
+	/// none.
 	pub e_tag: String,
 	/// Returned when creating a new session
 	pub secret_machine_id: Option<String>,
@@ -51,12 +55,17 @@ impl std::fmt::Debug for UserSession {
 		f.debug_struct("NeosUserSession")
 			.field("user_id", &self.user_id)
 			.field("token", &"*****")
-			.field("created", &self.creation_time)
-			.field("expire", &self.expiration)
+			.field(
+				"secret_machine_id",
+				match &self.secret_machine_id {
+					Some(_) => &"Some(*****)",
+					None => &"None",
+				},
+			)
+			.field("creation_time", &self.creation_time)
+			.field("expiration", &self.expiration)
 			.field("remember_me", &self.remember_me)
 			.field("source_ip", &self.source_ip)
-			.field("partition_key", &self.partition_key)
-			.field("row_key", &self.row_key)
 			.field("timestamp", &self.timestamp)
 			.field("e_tag", &self.e_tag)
 			.finish()
