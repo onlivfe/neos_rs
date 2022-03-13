@@ -27,6 +27,66 @@ pub struct LoginCredentials {
 	pub remember_me: bool,
 }
 
+impl LoginCredentials {
+	#[must_use]
+	/// Creates a new instance of `LoginCredentials` with the identifier,
+	/// password and other values set to defaults.
+	pub fn new(
+		identifier: impl Into<LoginCredentialsIdentifier>,
+		password: impl Into<String>,
+	) -> Self {
+		Self {
+			identifier: identifier.into(),
+			password: password.into(),
+			totp: None,
+			secret_machine_id: None,
+			remember_me: false,
+		}
+	}
+
+	#[must_use]
+	/// Sets the totp field's value
+	pub fn totp(mut self, totp: impl Into<Option<String>>) -> Self {
+		self.totp = totp.into();
+		self
+	}
+	#[must_use]
+	/// Sets the secret machine ID field's value
+	pub fn machine_id(mut self, machine_id: impl Into<Option<String>>) -> Self {
+		self.secret_machine_id = machine_id.into();
+		self
+	}
+	#[must_use]
+	/// Sets the remember me field's value
+	pub fn remember_me(mut self, remember_me: impl Into<bool>) -> Self {
+		self.remember_me = remember_me.into();
+		self
+	}
+}
+
+#[cfg(feature = "rand_util")]
+#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
+impl LoginCredentials {
+	#[must_use]
+	/// Sets the `machine_id` to a not cryptographically safe generated
+	/// pseudorandom value.
+	pub fn use_generated_machine_id(mut self) -> Self {
+		self.secret_machine_id = Some(Self::generate_machine_id());
+		self
+	}
+
+	#[must_use]
+	/// Generares a new (not cryptographically safe) pseudorandom machine id
+	pub fn generate_machine_id() -> String {
+		use nanorand::Rng;
+		let rand = [0u8; 64];
+		// Not crypto safe, but good enough most likely as secret_machine_id doesn't
+		// seem to be used for anything cryptographic.
+		nanorand::tls_rng().fill_bytes(rand);
+		String::from_utf8_lossy(&rand).into()
+	}
+}
+
 impl std::fmt::Debug for LoginCredentials {
 	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 		f.debug_struct("LoginCredentials")
