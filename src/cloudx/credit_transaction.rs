@@ -13,9 +13,11 @@ pub struct CreditTransaction {
 	/// Who received the credits
 	pub transaction_type: crate::TransactionType,
 	/// A message attached to the transaction
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	pub comment: String,
 	/// If the transaction is anonymous or not
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	pub anonymous: bool,
 }

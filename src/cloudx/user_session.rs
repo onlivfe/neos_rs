@@ -22,6 +22,7 @@ pub struct UserSession {
 	pub expiration: DateTime<Utc>,
 	/// If the user session has the remember me checked (lives longer)
 	pub remember_me: bool,
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	#[serde(rename = "sourceIP")]
 	/// The IP address that created the user session
@@ -31,6 +32,7 @@ pub struct UserSession {
 	pub source_ip: String,
 	/// A timestamp of the session
 	pub timestamp: DateTime<Utc>,
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	/// A standard etag, useful for caching
 	///

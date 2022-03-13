@@ -11,6 +11,7 @@
 pub struct SessionInfo {
 	/// The name of the session
 	pub name: String,
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	/// The description of the session
 	///
@@ -76,19 +77,30 @@ pub struct SessionInfo {
 	/// Who can access the session
 	pub access_level: crate::SessionAccessLevel,
 	/// If the session has ended
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
+	#[serde(default = "has_ended_default")]
 	pub has_ended: bool,
 	/// If the session is valid
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
+	#[serde(default)]
 	pub is_valid: bool,
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	/// Sessions that this session is a child of
 	///
 	/// Defaulted to empty vec if the API returns none for the session.
 	pub parent_session_ids: Vec<crate::id::Session>,
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	/// Sessions that are the child of this session
 	///
 	/// Defaulted to empty vec if the API returns none for the session.
 	pub nested_session_ids: Vec<crate::id::Session>,
+}
+
+// If the field is missing, it probably has ended...
+const fn has_ended_default() -> bool {
+	true
 }
 
 #[must_use]

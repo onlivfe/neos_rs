@@ -60,6 +60,7 @@ pub struct User {
 	#[serde(rename = "2fa_login")]
 	/// If the user has two factor authentication turned on.
 	pub two_factor_login: bool,
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	/// Tags of the user. Seem to match up with the badges.
 	pub tags: Vec<String>,

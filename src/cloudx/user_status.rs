@@ -42,6 +42,7 @@ pub struct UserStatus {
 	/// If the user is using a mobile client.
 	pub is_mobile: bool,
 	/// Only seems to exist when the user is online
+	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
 	#[serde(default)]
 	pub active_sessions: Vec<crate::SessionInfo>,
 }
