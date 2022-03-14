@@ -154,7 +154,7 @@ impl NeosAuthenticated {
 	) -> Result<(), RequestError> {
 		let message = message.borrow();
 		let response = self.api_request(
-			Method::Delete,
+			Method::Post,
 			&("users/".to_owned() + message.recipient_id.as_ref() + "/messages"),
 			&mut |req| req.with_json(message),
 		)?;
