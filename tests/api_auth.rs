@@ -23,7 +23,7 @@ fn friends() -> Result<(), neos::api_client::RequestError> {
 #[ignore]
 fn get_messages() -> Result<(), neos::api_client::RequestError> {
 	let messages =
-		common::AUTHENTICATED_API_CLIENT.get_messages(10, false, &None, &None)?;
+		common::AUTHENTICATED_API_CLIENT.get_messages(100, false, &None, &None)?;
 
 	//println!("Messages: {:?}", messages);
 
