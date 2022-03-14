@@ -69,9 +69,7 @@ pub fn random_ascii_string(bytes_count: u8) -> String {
 	const DICT: &[char; 16] =
 		&['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'];
 
-	let mut bits = Vec::with_capacity(bytes_count as usize);
-	bits.push(0u8);
-	bits.repeat(bytes_count as usize);
+	let mut bits = [0u8].repeat(bytes_count as usize);
 
 	nanorand::tls_rng().fill(&mut bits);
 
