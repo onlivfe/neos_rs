@@ -2,8 +2,6 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 
-use crate::SessionInfo;
-
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// Short description of a session's user.
@@ -80,12 +78,14 @@ pub enum MessageContents {
 	/// A normal message
 	Text(String),
 	/// ???
-	Object(String),
+	#[serde(with = "serde_with::json::nested")]
+	Object(Box<crate::Record>),
 	/// Voice recording
-	Sound(String),
+	#[serde(with = "serde_with::json::nested")]
+	Sound(Box<crate::Record>),
 	/// Invite to a session
 	#[serde(with = "serde_with::json::nested")]
-	SessionInvite(Box<SessionInfo>),
+	SessionInvite(Box<crate::SessionInfo>),
 	/// NCR/KFC related most likely
 	#[serde(with = "serde_with::json::nested")]
 	CreditTransfer(crate::CreditTransaction),
