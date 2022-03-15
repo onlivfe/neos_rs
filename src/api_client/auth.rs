@@ -153,13 +153,13 @@ impl NeosAuthenticated {
 		message: impl Borrow<crate::Message>,
 	) -> Result<(), RequestError> {
 		let message = message.borrow();
-		let response = self.api_request(
+		self.api_request(
 			Method::Post,
 			&("users/".to_owned() + message.recipient_id.as_ref() + "/messages"),
 			&mut |req| req.with_json(message),
 		)?;
 
-		Ok(response.json()?)
+		Ok(())
 	}
 
 	/// Fetches messages from the API
