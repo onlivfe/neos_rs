@@ -114,7 +114,9 @@ fn bad_xml_strip(str: &str) -> String {
 
 	let mut stripped_name = str.to_owned();
 	start_indexes.rev().zip(end_indexes.rev()).for_each(|((start, _), (end, _))| {
-		stripped_name.replace_range(start..=end, "");
+		if start < end {
+			stripped_name.replace_range(start..=end, "");
+		}
 	});
 
 	stripped_name
