@@ -122,7 +122,7 @@ impl NeosAuthenticated {
 			},
 		)?;
 
-		Ok(response.json()?)
+		Ok(())
 	}
 
 	/// Sends a request to remove a friend
@@ -144,7 +144,7 @@ impl NeosAuthenticated {
 			},
 		)?;
 
-		Ok(response.json()?)
+		Ok(())
 	}
 
 	/// Sends a message
