@@ -108,7 +108,7 @@ impl NeosAuthenticated {
 		&self,
 		user_id: impl Borrow<crate::id::User>,
 	) -> Result<(), RequestError> {
-		let response = self.api_request(
+		self.api_request(
 			Method::Put,
 			&("users/".to_owned()
 				+ self.user_id.as_ref()
@@ -130,7 +130,7 @@ impl NeosAuthenticated {
 		&self,
 		user_id: impl Borrow<crate::id::User>,
 	) -> Result<(), RequestError> {
-		let response = self.api_request(
+		self.api_request(
 			Method::Delete,
 			&("users/".to_owned()
 				+ self.user_id.as_ref()
