@@ -29,15 +29,37 @@ platform:
   arch: amd64
 
 steps:
+- name: clippy
+  image: rust:latest
+  commands:
+  - cargo clippy --all-features
+
+- name: fmt
+  image: rust:latest
+  commands:
+  - cargo fmt --check
+
+- name: deny
+  image: rust:latest
+  commands:
+  - cargo install --locked cargo-deny
+  - cargo deny check
+
 - name: build
   image: rust:latest
   commands:
   - cargo build --all-features
+  depends_on:
+  - deny
+  - clippy
+  - fmt
 
 - name: test
   image: rust:latest
   commands:
   - cargo test --all-features
+  depends_on:
+  - build
 
 trigger:
   event:
