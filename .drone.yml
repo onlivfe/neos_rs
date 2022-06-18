@@ -32,11 +32,13 @@ steps:
 - name: clippy
   image: rust:latest
   commands:
+  - rustup component add clippy
   - cargo clippy --all-features
 
 - name: fmt
   image: rust:latest
   commands:
+  - rustup component add rustfmt
   - cargo fmt --check
 
 - name: deny
