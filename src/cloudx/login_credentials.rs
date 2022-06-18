@@ -69,7 +69,7 @@ impl LoginCredentials {
 	/// Sets the `machine_id` to a not cryptographically safe generated
 	/// pseudorandom value.
 	pub fn use_generated_machine_id(mut self) -> Self {
-		self.secret_machine_id = Some(crate::random_ascii_string(32));
+		self.secret_machine_id = Some(crate::util::random_ascii_string(32));
 		self
 	}
 }

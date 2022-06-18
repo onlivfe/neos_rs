@@ -1,5 +1,5 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use time::{serde::rfc3339, OffsetDateTime};
 
 /// An users login/auth session.
 ///
@@ -15,11 +15,13 @@ pub struct UserSession {
 	/// The secret token of this session
 	pub token: String,
 	#[serde(rename = "created")]
+	#[serde(with = "rfc3339")]
 	/// When the user session was created
-	pub creation_time: DateTime<Utc>,
+	pub creation_time: OffsetDateTime,
 	#[serde(rename = "expire")]
+	#[serde(with = "rfc3339")]
 	/// When the user session is set to expire
-	pub expiration: DateTime<Utc>,
+	pub expiration: OffsetDateTime,
 	/// If the user session has the remember me checked (lives longer)
 	pub remember_me: bool,
 	#[serde(default)]
@@ -29,8 +31,9 @@ pub struct UserSession {
 	///Not found in standard CloudX models, defaults to an empty String if
 	/// none.
 	pub source_ip: String,
+	#[serde(with = "rfc3339")]
 	/// A timestamp of the session
-	pub timestamp: DateTime<Utc>,
+	pub timestamp: OffsetDateTime,
 	#[serde(default)]
 	/// A standard etag, useful for caching
 	///

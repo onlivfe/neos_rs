@@ -1,6 +1,6 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use time::{serde::rfc3339, OffsetDateTime};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -25,22 +25,33 @@ pub struct User {
 	/// The email address of the user. Only visible when logged in.
 	pub email: Option<String>,
 	#[serde(rename = "registrationDate")]
+	#[serde(with = "rfc3339")]
 	/// When the user registered their Neos account.
-	pub registration_time: DateTime<Utc>,
+	pub registration_time: OffsetDateTime,
 	/// If the account is verified
 	pub is_verified: bool,
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the account ban expires
-	pub account_ban_expiration: Option<DateTime<Utc>>,
+	pub account_ban_expiration: Option<OffsetDateTime>,
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the public ban expires
-	pub public_ban_expiration: Option<DateTime<Utc>>,
+	pub public_ban_expiration: Option<OffsetDateTime>,
 	/// The type of public ban
 	pub public_ban_type: Option<crate::PublicBanType>,
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the spectator ban expires
-	pub spectator_ban_expiration: Option<DateTime<Utc>>,
+	pub spectator_ban_expiration: Option<OffsetDateTime>,
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the mute ban expires
-	pub mute_ban_expiration: Option<DateTime<Utc>>,
+	pub mute_ban_expiration: Option<OffsetDateTime>,
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the listing ban expires
-	pub listing_ban_expiration: Option<DateTime<Utc>>,
+	pub listing_ban_expiration: Option<OffsetDateTime>,
 	#[serde(with = "serde_with::rust::default_on_error")]
 	/// How much large is the users storage quota.
 	///

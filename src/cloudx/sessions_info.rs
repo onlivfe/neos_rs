@@ -1,3 +1,5 @@
+use time::{serde::rfc3339, OffsetDateTime};
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 /// A Neos session.
@@ -67,13 +69,17 @@ pub struct SessionInfo {
 	#[serde(rename = "mobileFriendly")]
 	/// If the session is suitable for mobile clients
 	pub is_mobile_friendly: bool,
+	#[serde(with = "rfc3339")]
 	/// When the session began
-	pub session_begin_time: chrono::DateTime<chrono::Utc>,
+	pub session_begin_time: OffsetDateTime,
 	#[serde(rename = "lastUpdate")]
+	#[serde(with = "rfc3339")]
 	/// When the session was last updated
-	pub last_update_time: chrono::DateTime<chrono::Utc>,
+	pub last_update_time: OffsetDateTime,
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// Since when has the host been away most likely
-	pub away_since: Option<chrono::DateTime<chrono::Utc>>,
+	pub away_since: Option<OffsetDateTime>,
 	/// Who can access the session
 	pub access_level: crate::SessionAccessLevel,
 	/// If the session has ended

@@ -1,6 +1,5 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
+use time::{serde::rfc3339, OffsetDateTime};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -17,12 +16,16 @@ pub struct Message {
 	/// The contents of the message
 	#[serde(flatten)]
 	pub content: MessageContents,
+	#[serde(with = "rfc3339")]
 	/// When the message was sent
-	pub send_time: DateTime<Utc>,
+	pub send_time: OffsetDateTime,
+	#[serde(with = "rfc3339")]
 	/// When the message was sent
-	pub last_update_time: DateTime<Utc>,
+	pub last_update_time: OffsetDateTime,
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the message was sent
-	pub read_time: Option<DateTime<Utc>>,
+	pub read_time: Option<OffsetDateTime>,
 }
 
 impl Message {
@@ -46,7 +49,7 @@ impl Message {
 		owner_and_sender: crate::id::User,
 		recipient: crate::id::User,
 	) -> Self {
-		let now = Utc::now();
+		let now = OffsetDateTime::now_utc();
 
 		Message {
 			owner_id: owner_and_sender.clone(),
@@ -65,12 +68,11 @@ impl Message {
 	#[must_use]
 	/// Generares a new pseudorandom ID for a message
 	pub fn new_id() -> String {
-		"MSG-".to_owned() + &crate::random_ascii_string(24)
+		"MSG-".to_owned() + &crate::util::random_ascii_string(24)
 	}
 }
 
 #[allow(clippy::module_name_repetitions)]
-#[serde_as]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, strum::EnumVariantNames)]
 #[serde(tag = "messageType", content = "content")]
 /// The contents of a message combined with the `MessageType`

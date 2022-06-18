@@ -1,5 +1,5 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -15,11 +15,10 @@ pub struct UserStatus {
 	/// "Online" / "Offline" and so on
 	pub online_status: crate::OnlineStatus,
 	#[serde(rename = "lastStatusChange")]
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the user's status last changed
-	///
-	/// Wrong/Invalid dates such as `2018-01-01T00:00:00` are expressed as None
-	pub last_status_change_time: Option<DateTime<Utc>>,
+	pub last_status_change_time: Option<OffsetDateTime>,
 	/// The id of the session that the user is currently in
 	pub current_session_id: Option<crate::id::Session>,
 	/// The access level of the session that the user is currently in

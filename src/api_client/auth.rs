@@ -1,8 +1,8 @@
 use std::borrow::Borrow;
 
 use super::{inner::NeosApiClient, Neos, NeosUnauthenticated, RequestError};
-use chrono::{DateTime, Utc};
 use minreq::{Method, Request, Response};
+use time::OffsetDateTime;
 
 /// Neos API client with authentication
 ///
@@ -76,7 +76,7 @@ impl NeosAuthenticated {
 	/// Gets the current session's user's friends.
 	pub fn get_friends(
 		&self,
-		last_status_update: impl Borrow<Option<DateTime<Utc>>>,
+		last_status_update: impl Borrow<Option<OffsetDateTime>>,
 	) -> Result<Vec<crate::Friend>, RequestError> {
 		self.get_friends_for(&self.user_id, last_status_update)
 	}
@@ -85,7 +85,7 @@ impl NeosAuthenticated {
 	pub fn get_friends_for(
 		&self,
 		user: impl Borrow<crate::id::User>,
-		last_status_update: impl Borrow<Option<DateTime<Utc>>>,
+		last_status_update: impl Borrow<Option<OffsetDateTime>>,
 	) -> Result<Vec<crate::Friend>, RequestError> {
 		let response = self.api_request(
 			Method::Get,
@@ -167,7 +167,7 @@ impl NeosAuthenticated {
 		&self,
 		max_amount: u16,
 		unread_only: bool,
-		from_time: impl Borrow<Option<DateTime<Utc>>>,
+		from_time: impl Borrow<Option<OffsetDateTime>>,
 		user: impl Borrow<Option<crate::id::User>>,
 	) -> Result<Vec<crate::Message>, RequestError> {
 		let response = self.api_request(

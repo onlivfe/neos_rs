@@ -1,5 +1,5 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -27,12 +27,13 @@ pub struct Friend {
 	pub status: crate::UserStatus,
 	/// The profile of the user
 	pub profile: Option<crate::UserProfile>,
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde(default)]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the latest message with the friend was at.
 	///
 	/// Wrong/Invalid dates such as `0001-01-01T00:00:00` are expressed as
 	/// None.
-	pub latest_message_time: Option<DateTime<Utc>>,
+	pub latest_message_time: Option<OffsetDateTime>,
 	/// The U-username form of ID of whose friend the details are for.
 	pub owner_id: crate::id::Owner,
 }

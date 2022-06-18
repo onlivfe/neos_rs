@@ -1,5 +1,5 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use time::{serde::rfc3339, OffsetDateTime};
 
 #[derive(Debug, PartialEq, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -49,16 +49,17 @@ pub struct Record {
 	pub path: String,
 	/// The URI that this record's thumbnail is at
 	pub thumbnail_uri: Option<crate::AssetUrl>,
+	#[serde(with = "rfc3339")]
 	/// When the record was last modified at
-	pub last_modification_time: DateTime<Utc>,
+	pub last_modification_time: OffsetDateTime,
 	#[serde(default)]
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the record was created at
-	pub creation_time: Option<DateTime<Utc>>,
+	pub creation_time: Option<OffsetDateTime>,
 	#[serde(default)]
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the record was first published at
-	pub first_publish_time: Option<DateTime<Utc>>,
+	pub first_publish_time: Option<OffsetDateTime>,
 	/// If the record is public or not
 	pub is_public: bool,
 	/// If the record is intended for patrons

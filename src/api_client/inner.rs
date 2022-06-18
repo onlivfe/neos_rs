@@ -5,8 +5,8 @@ use std::{
 };
 
 use super::{RequestError, API_BASE};
-use chrono::{DateTime, Local};
 use minreq::{Method, Request, Response};
+use time::{format_description::well_known::Rfc3339, OffsetDateTime};
 
 #[derive(Clone)]
 #[warn(clippy::module_name_repetitions)]
@@ -98,12 +98,10 @@ impl NeosApiClient {
 			if let Some(Ok(rate_limit_resets)) = response
 				.headers
 				.get("X-Rate-Limit-Reset")
-				.map(|time| time.parse::<DateTime<Local>>())
+				.map(|time| OffsetDateTime::parse(time, &Rfc3339))
 			{
-				if let Ok(duration) = (rate_limit_resets - Local::now()).to_std() {
-					*self.rate_limit_expiration.write().unwrap() =
-						Instant::now() + duration;
-				}
+				*self.rate_limit_expiration.write().unwrap() =
+					Instant::now() + (rate_limit_resets - OffsetDateTime::now_utc());
 			} else if let Some(Ok(retry_after)) =
 				response.headers.get("Retry-After").map(|time| time.parse::<u64>())
 			{
