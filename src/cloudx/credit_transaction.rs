@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+#[serde_with::serde_as]
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// Details a transfer of credits (KFC/NCR)
@@ -13,11 +14,11 @@ pub struct CreditTransaction {
 	/// Who received the credits
 	pub transaction_type: crate::TransactionType,
 	/// A message attached to the transaction
-	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnNull")]
 	#[serde(default)]
 	pub comment: String,
 	/// If the transaction is anonymous or not
-	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnNull")]
 	#[serde(default)]
 	pub anonymous: bool,
 }

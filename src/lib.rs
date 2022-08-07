@@ -29,6 +29,7 @@
 
 #![cfg_attr(nightly, feature(doc_cfg))]
 #![deny(clippy::all)]
+#![deny(unsafe_code)]
 #![deny(clippy::cargo)]
 #![warn(missing_docs)]
 #![deny(rustdoc::invalid_html_tags)]

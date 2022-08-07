@@ -72,6 +72,7 @@ impl Message {
 	}
 }
 
+#[serde_with::serde_as]
 #[allow(clippy::module_name_repetitions)]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, strum::EnumVariantNames)]
 #[serde(tag = "messageType", content = "content")]
@@ -80,16 +81,16 @@ pub enum MessageContents {
 	/// A normal message
 	Text(String),
 	/// ???
-	#[serde(with = "serde_with::json::nested")]
+	#[serde_as(as = "serde_with::json::JsonString")]
 	Object(Box<crate::Record>),
 	/// Voice recording
-	#[serde(with = "serde_with::json::nested")]
+	#[serde_as(as = "serde_with::json::JsonString")]
 	Sound(Box<crate::Record>),
 	/// Invite to a session
-	#[serde(with = "serde_with::json::nested")]
+	#[serde_as(as = "serde_with::json::JsonString")]
 	SessionInvite(Box<crate::SessionInfo>),
 	/// NCR/KFC related most likely
-	#[serde(with = "serde_with::json::nested")]
+	#[serde_as(as = "serde_with::json::JsonString")]
 	CreditTransfer(crate::CreditTransaction),
 	/// Kofi/tipping related..?
 	SugarCubes(String),

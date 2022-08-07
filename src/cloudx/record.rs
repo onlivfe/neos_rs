@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use time::{serde::rfc3339, OffsetDateTime};
 
+#[serde_with::serde_as]
 #[derive(Debug, PartialEq, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// A Neos record, used for all kinds of storage objects
@@ -24,7 +25,7 @@ pub struct Record {
 	/// The user readable name of the record
 	pub name: String,
 	#[serde(default)]
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// The user readable description of the record
 	///
 	/// Defaults to an empty string if null/none in the API.
@@ -32,16 +33,16 @@ pub struct Record {
 	/// The type of the record
 	pub record_type: String,
 	#[serde(default)]
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// The user readable name of the owner
 	///
 	/// Defaults to an empty string if null/none in the API.
 	pub owner_name: String,
 	#[serde(default)]
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// The tags of the record
 	pub tags: Vec<String>,
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	#[serde(default)]
 	/// The path to this record
 	///
@@ -73,11 +74,11 @@ pub struct Record {
 	/// Number for random ordering
 	pub random_order: u32,
 	#[serde(default)]
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// The record's submissions to groups
 	pub submissions: Vec<crate::Submission>,
 	#[serde(default)]
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	#[serde(rename = "neosDBmanifest")]
 	/// Details about the asset
 	pub neos_db_manifest: Vec<crate::NeosDBAsset>,

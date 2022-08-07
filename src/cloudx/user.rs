@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use time::{serde::rfc3339, OffsetDateTime};
 
+#[serde_with::serde_as]
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// Details about a Neos user.
@@ -52,7 +53,7 @@ pub struct User {
 	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the listing ban expires
 	pub listing_ban_expiration: Option<OffsetDateTime>,
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// How much large is the users storage quota.
 	///
 	/// The api returns -1 for no permissions, which is deserialized into None
@@ -62,7 +63,7 @@ pub struct User {
 	pub is_locked: bool,
 	/// If ban evasion is supressed for the user.
 	pub supress_ban_evasion: bool,
-	#[serde(with = "serde_with::rust::default_on_error")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// How much storage quota the user has used.
 	///
 	/// The api returns -1 for no permissions, which is deserialized into None
@@ -71,7 +72,7 @@ pub struct User {
 	#[serde(rename = "2fa_login")]
 	/// If the user has two factor authentication turned on.
 	pub two_factor_login: bool,
-	#[serde(deserialize_with = "serde_with::rust::default_on_null::deserialize")]
+	#[serde_as(deserialize_as = "serde_with::DefaultOnNull")]
 	#[serde(default)]
 	/// Tags of the user. Seem to match up with the badges.
 	pub tags: Vec<String>,
