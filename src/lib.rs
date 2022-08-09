@@ -1,7 +1,7 @@
 #![doc(html_logo_url = "https://git.ljoonal.xyz/ljoonal/neos_rs/raw/logo.png")]
 //! Typed models for [Neos's api](https://wiki.neosvr.com/docfx/api) with serde support.
 //!
-//! Featuring chrono for datetimes and strum for better enums.
+//! Featuring time for datetimes and strum for better enums.
 //!
 //! Actual documentation of the API is lacking, and the API is still changing
 //! too. Thusly this crate can't guarantee that it's necessarily fully correct.

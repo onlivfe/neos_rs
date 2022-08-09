@@ -8,7 +8,7 @@
 
 Rust models of [NeosVR's API](https://wiki.neosvr.com/docfx/api).
 
-Featuring full serde support, chrono for datetimes, and strum for better enums.
+Featuring full serde support, time for datetimes, and strum for better enums.
 
 Any official documentation of Neos' API is lacking, and the API is still changing too.
 So this crate can't guarantee correctness.
