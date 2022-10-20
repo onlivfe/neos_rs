@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use time::{serde::rfc3339, OffsetDateTime};
 
-/// An users login/auth session.
+/// An users login/authorization session.
 ///
 /// Not to be confused with a Neos session that's "an instance of a world".
 /// This is the response to logging in for example.
@@ -32,7 +32,7 @@ pub struct UserSession {
 	/// none.
 	pub source_ip: String,
 	#[serde(with = "rfc3339")]
-	/// A timestamp of the session
+	/// A time-stamp of the session
 	pub timestamp: OffsetDateTime,
 	#[serde(default)]
 	/// A standard etag, useful for caching

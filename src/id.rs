@@ -9,7 +9,7 @@
 //! assert!(user_id != record_id, "can't compare different types of IDs")
 //! ```
 //!
-//! The deserializers are also made to check that the strings start with the
+//! The deserializer implementations also check that the strings start with the
 //! correct ID prefix.
 //!
 //! Note that the IDs seem to be handled as case-sensitive, so any normalized

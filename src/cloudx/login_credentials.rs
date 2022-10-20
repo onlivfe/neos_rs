@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-/// Data for a user session request to the Neos api.
+/// Data for a user session request to Neos' API.
 #[cfg_attr(feature = "api_client", doc = "")]
 #[cfg_attr(
 	feature = "api_client",
@@ -45,7 +45,7 @@ impl LoginCredentials {
 	}
 
 	#[must_use]
-	/// Sets the totp field's value
+	/// Sets the TOTP field's value
 	pub fn totp(mut self, totp: impl Into<Option<String>>) -> Self {
 		self.totp = totp.into();
 		self
@@ -113,7 +113,7 @@ pub enum LoginCredentialsIdentifier {
 	/// Identify using the username
 	Username(String),
 	#[serde(rename = "ownerID")]
-	/// Identify using the UserID
+	/// Identify using the user's ID
 	OwnerID(String),
 	/// Identify using an email address
 	Email(String),

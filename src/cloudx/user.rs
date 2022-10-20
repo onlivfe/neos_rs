@@ -56,17 +56,17 @@ pub struct User {
 	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// How much large is the users storage quota.
 	///
-	/// The api returns -1 for no permissions, which is deserialized into None
+	/// The API returns -1 for no permissions, which is de-serialized into None
 	/// here.
 	pub quota_bytes: Option<u64>,
 	/// If the account is prevented from logging in
 	pub is_locked: bool,
-	/// If ban evasion is supressed for the user.
+	/// If ban evasion is suppressed for the user.
 	pub supress_ban_evasion: bool,
 	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// How much storage quota the user has used.
 	///
-	/// The api returns -1 for no permissions, which is deserialized into None
+	/// The API returns -1 for no permissions, which is de-serialized into None
 	/// here.
 	pub used_bytes: Option<u64>,
 	#[serde(rename = "2fa_login")]
@@ -78,13 +78,13 @@ pub struct User {
 	pub tags: Vec<String>,
 	/// The profile of the user
 	pub profile: Option<crate::UserProfile>,
-	/// NCR crypto referral id probably
+	/// NCR related referral id probably
 	pub referral_id: Option<String>,
-	/// Data about the user's patreon subscription
+	/// Data about the user's Patreon subscription
 	pub patreon_data: Option<crate::UserPatreonData>,
 	/// Credits, seems to exist only when authenticated.
 	pub credits: Option<HashMap<String, f64>>,
 	#[serde(rename = "NCRdepositAddress")]
-	/// NCR crypto address, seems to exist only when authenticated.
+	/// NCR address, seems to exist only when authenticated.
 	pub ncr_deposit_address: Option<String>,
 }

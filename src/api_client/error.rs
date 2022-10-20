@@ -5,7 +5,7 @@
 pub enum RequestError {
 	/// The response code of the request indicated a failure.
 	ResponseCode((i32, String)),
-	/// The response data could not be deserialized.
+	/// The response data could not be de-serialized.
 	Deserialization(String),
 	/// An unexpected/unknown/other error happened.
 	Other(String),

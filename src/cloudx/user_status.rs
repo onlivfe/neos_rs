@@ -4,7 +4,7 @@ use time::OffsetDateTime;
 #[serde_with::serde_as]
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-/// A Neos user/friend's status.
+/// A Neos user's or friend's status.
 ///
 /// The response from the API at `users/{user_id}/status`.
 #[cfg_attr(

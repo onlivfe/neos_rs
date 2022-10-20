@@ -1,5 +1,5 @@
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-/// An url for a neos asset such as a profile picture.
+/// An URI for a Neos asset such as a profile picture.
 pub struct AssetUrl {
 	/// The last URL part without the file extension
 	id: String,
@@ -57,7 +57,7 @@ impl TryFrom<&str> for AssetUrl {
 
 impl AssetUrl {
 	#[must_use]
-	/// Gets the filename
+	/// Gets the file's name
 	pub fn filename(&self) -> String {
 		match &self.ext {
 			Some(ext) => self.id.clone() + ext,
@@ -66,7 +66,7 @@ impl AssetUrl {
 	}
 
 	#[must_use]
-	/// Gets the filename without the extension
+	/// Gets the file's name without the extension
 	pub fn id(&self) -> &str {
 		&self.id
 	}
@@ -79,7 +79,7 @@ impl AssetUrl {
 }
 
 impl ToString for AssetUrl {
-	/// The https:// URL needed to retrieve the asset.
+	/// The `https://` URL needed to retrieve the asset.
 	fn to_string(&self) -> String {
 		match (self.is_neosdb, &self.ext) {
 			(false, Some(ext)) => self.url_prefix.clone() + &self.id + "." + ext,

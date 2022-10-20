@@ -72,7 +72,7 @@ impl AnyNeos {
 	}
 
 	#[must_use]
-	/// Gets the API client instance as mutatable if it has been authenticated.
+	/// Gets the API client instance as mutable if it has been authenticated.
 	pub fn authenticated_mut(&mut self) -> Option<&mut NeosAuthenticated> {
 		match self {
 			Self::Authenticated(api) => Some(&mut *api),
@@ -81,7 +81,7 @@ impl AnyNeos {
 	}
 
 	#[must_use]
-	/// Gets the API client instance as mutatable if it has not been
+	/// Gets the API client instance as mutable if it has not been
 	/// authenticated.
 	pub fn unauthenticated_mut(&mut self) -> Option<&mut NeosUnauthenticated> {
 		match self {

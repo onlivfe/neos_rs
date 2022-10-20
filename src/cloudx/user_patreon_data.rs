@@ -3,7 +3,7 @@ use time::OffsetDateTime;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-/// Data about a Neos user's patreon subscription.
+/// Data about a Neos user's Patreon subscription.
 pub struct UserPatreonData {
 	/// If the user is current supporting Neos on Patreon
 	pub is_patreon_supporter: bool,
@@ -11,7 +11,7 @@ pub struct UserPatreonData {
 	pub has_supported: bool,
 	/// Guess: If the user has donated enough to be a board member
 	pub last_is_anorak: bool,
-	/// The ID of the github issue that this user has set as their priority
+	/// The ID of the GitHub issue that this user has set as their priority
 	pub priority_issue: u32,
 	#[serde(default)]
 	#[serde(with = "crate::util::opt_rfc3339")]

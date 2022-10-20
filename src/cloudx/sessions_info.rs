@@ -39,7 +39,7 @@ pub struct SessionInfo {
 	pub host_machine_id: String,
 	/// The username of the session's host
 	pub host_username: String,
-	/// A hash to check if the sessios is compatible (version, plugins, etc)
+	/// A hash to check if the session is compatible (version, plugins, etc)
 	pub compatibility_hash: String,
 	/// The version of Neos that session is hosting
 	pub neos_version: String,
@@ -55,15 +55,15 @@ pub struct SessionInfo {
 	pub users: Vec<crate::SessionUser>,
 	/// A link to the thumbnail of the session.
 	///
-	/// Can be https:// or neosdb:// for example
+	/// Can be `https://` or `neosdb://` for example
 	pub thumbnail: Option<crate::AssetUrl>,
 	/// The amount of users that have joined the session
 	pub joined_users: u8,
 	/// The amount of users that are focused on the session
 	pub active_users: u8,
-	/// Total of joined_users..?
+	/// Total of `joined_users`..?
 	pub total_joined_users: u8,
-	/// Total of active_users...?
+	/// Total of `active_users`...?
 	pub total_active_users: u8,
 	/// The max limit of users in the session
 	pub max_users: u8,
@@ -95,13 +95,13 @@ pub struct SessionInfo {
 	#[serde(default)]
 	/// Sessions that this session is a child of
 	///
-	/// Defaulted to empty vec if the API returns none for the session.
+	/// Defaulted to empty vector if the API returns none for the session.
 	pub parent_session_ids: Vec<crate::id::Session>,
 	#[serde_as(deserialize_as = "serde_with::DefaultOnNull")]
 	#[serde(default)]
 	/// Sessions that are the child of this session
 	///
-	/// Defaulted to empty vec if the API returns none for the session.
+	/// Defaulted to empty vector if the API returns none for the session.
 	pub nested_session_ids: Vec<crate::id::Session>,
 }
 
@@ -113,7 +113,7 @@ const fn has_ended_default() -> bool {
 #[must_use]
 /// Tries to strip XML tags out of a string.
 ///
-/// Not using an actual XML parser though, just a simple '<' and '>' char
+/// Not using an actual XML parser though, just a simple `<` and `>` character
 /// search.
 fn bad_xml_strip(str: &str) -> String {
 	let start_indexes = str.match_indices('<');

@@ -17,7 +17,7 @@ pub struct NeosApiClient {
 	/// When the last request was send.
 	last_request_time: Arc<RwLock<Instant>>,
 	/// Arc since we want all the API clients to share the same rate limit if
-	/// possible. RwLock to enable modifying it.
+	/// possible. `RwLock` to enable modifying it.
 	rate_limit_expiration: Arc<RwLock<Instant>>,
 }
 
@@ -78,7 +78,7 @@ impl NeosApiClient {
 		}
 	}
 
-	/// Makes the thread sleep until the ratelimit has expired
+	/// Makes the thread sleep until the rate limit has expired
 	fn sleep_if_ratelimited(&self) {
 		// TODO: set a max limit for the sleeping, and/or a request cancel
 		// mechanism?
@@ -92,7 +92,7 @@ impl NeosApiClient {
 		}
 	}
 
-	/// Handles updating the ratelimit and figuring out other errors
+	/// Handles updating the rate limit and figuring out other errors
 	fn handle_response(&self, res: Response) -> Result<Response, RequestError> {
 		let apply_rate_limit = |response: &Response| {
 			if let Some(Ok(rate_limit_resets)) = response

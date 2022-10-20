@@ -1,10 +1,10 @@
 #![doc(html_logo_url = "https://git.ljoonal.xyz/ljoonal/neos_rs/raw/logo.png")]
-//! Typed models for [Neos's api](https://wiki.neosvr.com/docfx/api) with serde support.
+//! Typed models for [Neos' API](https://wiki.neosvr.com/docfx/api) with serde support.
 //!
-//! Featuring time for datetimes and strum for better enums.
+//! Featuring time for date times and strum for better enums.
 //!
 //! Actual documentation of the API is lacking, and the API is still changing
-//! too. Thusly this crate can't guarantee that it's necessarily fully correct.
+//! too. Thus this crate can't guarantee that it's necessarily fully correct.
 //! Some of the types are based solely on educated guesses.
 //!
 //! Check out <https://wiki.neosvr.com/docfx/api> if you're not using Rust and just want to learn about the API.

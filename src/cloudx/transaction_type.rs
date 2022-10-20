@@ -25,6 +25,6 @@ pub enum TransactionType {
 	Deposit,
 	/// Giving monies to express gratitude
 	Tip,
-	/// Exhanging monies for goods/services
+	/// Exchanging monies for goods/services
 	Purchase,
 }

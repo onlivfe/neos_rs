@@ -66,7 +66,7 @@ impl Message {
 	#[cfg(feature = "rand_util")]
 	#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 	#[must_use]
-	/// Generares a new pseudorandom ID for a message
+	/// Generates a new pseudorandom ID for a message
 	pub fn new_id() -> String {
 		"MSG-".to_owned() + &crate::util::random_ascii_string(24)
 	}
