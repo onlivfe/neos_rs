@@ -59,10 +59,7 @@ impl AssetUrl {
 	#[must_use]
 	/// Gets the file's name
 	pub fn filename(&self) -> String {
-		match &self.ext {
-			Some(ext) => self.id.clone() + ext,
-			None => self.id.clone(),
-		}
+		self.ext.as_ref().map_or_else(|| self.id.clone(), |ext| self.id.clone() + ext)
 	}
 
 	#[must_use]

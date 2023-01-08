@@ -39,7 +39,7 @@ impl Neos for NeosAuthenticated {
 		self.inner.basic_api_request(method, url, &mut |req: Request| {
 			build(req.with_header(
 				"Authorization",
-				&("neos ".to_owned() + self.user_id.as_ref() + ":" + &self.token),
+				"neos ".to_owned() + self.user_id.as_ref() + ":" + &self.token,
 			))
 		})
 	}

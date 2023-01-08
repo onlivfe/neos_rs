@@ -44,7 +44,7 @@ impl NeosApiClient {
 
 		// 2^20 ~=1MB, 2^22~=4MB
 		let response = build(
-			Request::new(method, &(API_BASE.to_owned() + url.borrow()))
+			Request::new(method, API_BASE.to_owned() + url.borrow())
 				.with_header("Accept", "application/json")
 				.with_header("Content-Type", "application/json")
 				.with_header("User-Agent", &self.user_agent)

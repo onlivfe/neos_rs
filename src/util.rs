@@ -7,10 +7,7 @@ pub mod opt_rfc3339 {
 	pub fn deserialize<'a, D: Deserializer<'a>>(
 		deserializer: D,
 	) -> Result<Option<OffsetDateTime>, D::Error> {
-		match rfc3339::option::deserialize(deserializer) {
-			Ok(v) => Ok(v),
-			Err(_) => Ok(None),
-		}
+		rfc3339::option::deserialize(deserializer).map_or_else(|_| Ok(None), Ok)
 	}
 
 	pub fn serialize<S: Serializer>(

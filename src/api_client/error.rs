@@ -17,12 +17,12 @@ impl std::fmt::Display for RequestError {
 	fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
 		match self {
 			Self::ResponseCode((code, msg)) => {
-				write!(f, "RequestError: Status code {} - {}", code, msg)
+				write!(f, "RequestError: Status code {code} - {msg}")
 			}
 			Self::Deserialization(err) => {
-				write!(f, "RequestError: {}", err)
+				write!(f, "RequestError: {err}")
 			}
-			Self::Other(err) => write!(f, "RequestError: {}", err),
+			Self::Other(err) => write!(f, "RequestError: {err}"),
 		}
 	}
 }
