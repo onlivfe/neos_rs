@@ -27,7 +27,9 @@ impl NeosApiClient {
 		Self {
 			user_agent: user_agent.into(),
 			last_request_time: Arc::new(RwLock::new(
-				Instant::now() - Self::MIN_BETWEEN_REQUESTS,
+				Instant::now()
+					.checked_sub(Self::MIN_BETWEEN_REQUESTS)
+					.expect("should be able to get instant from 100ms ago"),
 			)),
 			rate_limit_expiration: Arc::new(RwLock::new(Instant::now())),
 		}
