@@ -8,12 +8,6 @@ use time::{serde::rfc3339, OffsetDateTime};
 /// Details about a Neos user.
 ///
 /// The response from the API at `users/{user_id}`.
-#[cfg_attr(
-	feature = "api_client",
-	doc = "Can be gotten with
-	[`api_client::Neos::search_users`](crate::api_client::Neos::search_users) &
-	[`api_client::Neos::get_user`](crate::api_client::Neos::get_user)."
-)]
 pub struct User {
 	/// The U-username form of ID
 	pub id: crate::id::User,
@@ -40,7 +34,7 @@ pub struct User {
 	/// When the public ban expires
 	pub public_ban_expiration: Option<OffsetDateTime>,
 	/// The type of public ban
-	pub public_ban_type: Option<crate::PublicBanType>,
+	pub public_ban_type: Option<crate::model::PublicBanType>,
 	#[serde(default)]
 	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the spectator ban expires
@@ -77,14 +71,24 @@ pub struct User {
 	/// Tags of the user. Seem to match up with the badges.
 	pub tags: Vec<String>,
 	/// The profile of the user
-	pub profile: Option<crate::UserProfile>,
+	pub profile: Option<crate::model::UserProfile>,
 	/// NCR related referral id probably
 	pub referral_id: Option<String>,
 	/// Data about the user's Patreon subscription
-	pub patreon_data: Option<crate::UserPatreonData>,
+	pub patreon_data: Option<crate::model::UserPatreonData>,
 	/// Credits, seems to exist only when authenticated.
 	pub credits: Option<HashMap<String, f64>>,
 	#[serde(rename = "NCRdepositAddress")]
 	/// NCR address, seems to exist only when authenticated.
 	pub ncr_deposit_address: Option<String>,
 }
+
+#[serde_with::serde_as]
+#[derive(Debug, Clone, serde::Deserialize)]
+/// A list of users that skips deserializing items with errors when not in debug
+/// mode
+
+pub struct Users(
+	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
+	pub Vec<User>,
+);

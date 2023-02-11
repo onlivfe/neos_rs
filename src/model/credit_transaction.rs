@@ -12,7 +12,7 @@ pub struct CreditTransaction {
 	/// How much of the token was involved in the transaction
 	pub amount: f64,
 	/// Who received the credits
-	pub transaction_type: crate::TransactionType,
+	pub transaction_type: crate::model::TransactionType,
 	/// A message attached to the transaction
 	#[serde_as(deserialize_as = "serde_with::DefaultOnNull")]
 	#[serde(default)]

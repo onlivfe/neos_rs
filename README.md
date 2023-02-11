@@ -14,7 +14,7 @@ Any official documentation of Neos' API is lacking, and the API is still changin
 So this crate can't guarantee correctness.
 Some of the types are based solely on educated guesses even.
 
-This crate provides a blocking API client with the optional `api_client` feature.
+This crate provides an example API client with the optional `api_client` feature.
 
 ## Future plans
 

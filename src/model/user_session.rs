@@ -28,8 +28,7 @@ pub struct UserSession {
 	#[serde(rename = "sourceIP")]
 	/// The IP address that created the user session
 	///
-	///Not found in standard CloudX models, defaults to an empty String if
-	/// none.
+	/// Defaults to an empty String if none.
 	pub source_ip: String,
 	#[serde(with = "rfc3339")]
 	/// A time-stamp of the session
@@ -37,8 +36,7 @@ pub struct UserSession {
 	#[serde(default)]
 	/// A standard etag, useful for caching
 	///
-	/// Not found in standard CloudX models, defaults to an empty String if
-	/// none.
+	/// Defaults to an empty String if none.
 	pub e_tag: String,
 	/// Returned when creating a new session
 	pub secret_machine_id: Option<String>,

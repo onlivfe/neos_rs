@@ -14,7 +14,7 @@ use time::OffsetDateTime;
 )]
 pub struct UserStatus {
 	/// "Online" / "Offline" and so on
-	pub online_status: crate::OnlineStatus,
+	pub online_status: crate::model::OnlineStatus,
 	#[serde(rename = "lastStatusChange")]
 	#[serde(default)]
 	#[serde(with = "crate::util::opt_rfc3339")]
@@ -23,7 +23,7 @@ pub struct UserStatus {
 	/// The id of the session that the user is currently in
 	pub current_session_id: Option<crate::id::Session>,
 	/// The access level of the session that the user is currently in
-	pub current_session_access_level: crate::SessionAccessLevel,
+	pub current_session_access_level: crate::model::SessionAccessLevel,
 	#[serde(rename = "currentSessionHidden")]
 	/// If the session that the user is currently in is hidden
 	pub is_current_session_hidden: bool,
@@ -31,18 +31,18 @@ pub struct UserStatus {
 	/// If the user is currently hosting a session
 	pub is_current_hosting: bool,
 	/// "Screen" or "VR" for example
-	pub output_device: crate::OutputDevice,
+	pub output_device: crate::model::OutputDevice,
 	/// Only seems to exist when the user is online
 	pub compatibility_hash: Option<String>,
 	/// Only seems to exist when the user is online
 	pub neos_version: Option<String>,
 	/// Only seems to exist when the user is online
 	#[serde(rename = "publicRSAKey")]
-	pub public_rsa_key: Option<crate::RSAParametersData>,
+	pub public_rsa_key: Option<crate::model::RSAParametersData>,
 	/// If the user is using a mobile client.
 	pub is_mobile: bool,
 	/// Only seems to exist when the user is online
 	#[serde_as(deserialize_as = "serde_with::DefaultOnNull")]
 	#[serde(default)]
-	pub active_sessions: Vec<crate::SessionInfo>,
+	pub active_sessions: Vec<crate::model::SessionInfo>,
 }

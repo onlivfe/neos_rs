@@ -24,9 +24,9 @@ pub struct Friend {
 	pub is_accepted: bool,
 	#[serde(rename = "userStatus")]
 	/// The status of the user
-	pub status: crate::UserStatus,
+	pub status: crate::model::UserStatus,
 	/// The profile of the user
-	pub profile: Option<crate::UserProfile>,
+	pub profile: Option<crate::model::UserProfile>,
 	#[serde(default)]
 	#[serde(with = "crate::util::opt_rfc3339")]
 	/// When the latest message with the friend was at.
@@ -37,3 +37,12 @@ pub struct Friend {
 	/// The U-username form of ID of whose friend the details are for.
 	pub owner_id: crate::id::Owner,
 }
+
+#[serde_with::serde_as]
+#[derive(Debug, Clone, serde::Deserialize)]
+/// A list of friends that skips deserializing items with errors when not in
+/// debug mode
+pub struct Friends(
+	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
+	pub Vec<Friend>,
+);

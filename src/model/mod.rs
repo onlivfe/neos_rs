@@ -1,10 +1,11 @@
+//! Models of the responses of Neos' API.
+
 #![allow(clippy::struct_excessive_bools)]
 
 mod credit_transaction;
 mod friend;
 mod friend_status;
 mod group;
-mod login_credentials;
 mod message;
 mod neos_db_asset;
 mod online_status;
@@ -28,7 +29,6 @@ pub use credit_transaction::*;
 pub use friend::*;
 pub use friend_status::*;
 pub use group::*;
-pub use login_credentials::*;
 pub use message::*;
 pub use neos_db_asset::*;
 pub use online_status::*;

@@ -13,7 +13,7 @@
 //!
 //! ```rust
 //! extern crate serde_json;
-//!
+//! 	
 //! // Normally you'd get the data by calling the API
 //! let data = r#"{
 //!         "username": "ljoonal",
@@ -21,9 +21,9 @@
 //!         "isPresent": true,
 //!         "outputDevice": 2
 //!      }"#;
-//!
+//! 	
 //! let session_user: neos::SessionUser = serde_json::from_str(data).unwrap();
-//!
+//! 	
 //! assert_eq!(session_user.output_device, neos::OutputDevice::Screen);
 //! ```
 
@@ -41,22 +41,26 @@
 // My project my choice, tabs are literally made for indentation, spaces not.
 #![allow(clippy::tabs_in_doc_comments)]
 
+/// The API's base path
+const API_BASE_URI: &str = "https://api.neos.com/api";
+
 pub mod id;
+pub mod model;
+pub mod query;
 
 // The models are split into slightly smaller files in order to avoid a really
 // long single file.
 mod assets;
 
-// Models that should match up with Neos' CloudX ones.
-mod cloudx;
+// Models that should match up with Neos' API's ones.
+
 
 mod util;
 
 // They are re-exported at the top level though to make importing them easier /
 // less confusing.
 pub use assets::*;
-pub use cloudx::*;
 
-#[cfg(feature = "api_client")]
-#[cfg_attr(nightly, doc(cfg(feature = "api_client")))]
+#[cfg(feature = "http_client")]
+#[cfg_attr(nightly, doc(cfg(feature = "http_client")))]
 pub mod api_client;

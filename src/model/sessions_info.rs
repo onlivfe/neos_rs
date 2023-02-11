@@ -4,13 +4,6 @@ use time::{serde::rfc3339, OffsetDateTime};
 #[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 /// A Neos session.
-#[cfg_attr(feature = "api_client", doc = "")]
-#[cfg_attr(
-	feature = "api_client",
-	doc = "Can be gotten with
-	[`Neos::get_sessions`](crate::api_client::Neos::get_sessions) &
-	[`Neos::get_session`](crate::api_client::Neos::get_session)."
-)]
 pub struct SessionInfo {
 	/// The name of the session
 	pub name: String,
@@ -22,7 +15,7 @@ pub struct SessionInfo {
 	pub description: String,
 	#[serde(rename = "correspondingWorldId")]
 	/// The ID of the session's world
-	pub world: Option<crate::RecordId>,
+	pub world: Option<crate::model::RecordId>,
 	/// The tags of the session
 	pub tags: Vec<String>,
 	#[serde(rename = "sessionId")]
@@ -52,7 +45,7 @@ pub struct SessionInfo {
 	pub urls: Vec<String>,
 	#[serde(rename = "sessionUsers")]
 	/// A list of the session's users very basic details.
-	pub users: Vec<crate::SessionUser>,
+	pub users: Vec<crate::model::SessionUser>,
 	/// A link to the thumbnail of the session.
 	///
 	/// Can be `https://` or `neosdb://` for example
@@ -82,7 +75,7 @@ pub struct SessionInfo {
 	/// Since when has the host been away most likely
 	pub away_since: Option<OffsetDateTime>,
 	/// Who can access the session
-	pub access_level: crate::SessionAccessLevel,
+	pub access_level: crate::model::SessionAccessLevel,
 	/// If the session has ended
 	#[serde_as(deserialize_as = "serde_with::DefaultOnNull")]
 	#[serde(default = "has_ended_default")]
@@ -104,6 +97,15 @@ pub struct SessionInfo {
 	/// Defaulted to empty vector if the API returns none for the session.
 	pub nested_session_ids: Vec<crate::id::Session>,
 }
+
+#[serde_with::serde_as]
+#[derive(Debug, Clone, serde::Deserialize)]
+/// A list of sessions that skips deserializing items with errors when not in
+/// debug mode
+pub struct Sessions(
+	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
+	pub Vec<SessionInfo>,
+);
 
 // If the field is missing, it probably has ended...
 const fn has_ended_default() -> bool {

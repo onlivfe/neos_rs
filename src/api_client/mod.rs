@@ -1,316 +1,249 @@
-//! An API client for Neos.
+//! An optional API client feature using `reqwest`
 //!
-//! Currently a minimal blocking implementation.
+//! Besides using this, you could instead easily implement your own client using
+//! a different HTTP library with the [`racal::Queryable`](racal::Queryable)
+//! trait. Though this does additionally support unwrapping the message/data of
+//! the `NeosVR` API responses.
 //!
-//! # Example usage
+//! If you're implementing your own API client, you need to implement two
+//! possible API states:
 //!
-//! ```no_run
-//! const USER_AGENT: &str = concat!(
-//! 	env!("CARGO_PKG_NAME"),
-//! 	"/",
-//! 	env!("CARGO_PKG_VERSION"),
-//! 	" (",
-//! 	env!("CARGO_PKG_REPOSITORY"),
-//! 	")",
-//! );
+//! 1. [`neos::query::NoAuthentication`](crate::query::NoAuthentication)
 //!
-//! use neos::api_client::{Neos, NeosUnauthenticated};
-//! let neos_api_client = NeosUnauthenticated::new(USER_AGENT.to_string());
-//! let online_users_count = neos_api_client.online_user_count();
-//! match online_users_count {
-//! 	Ok(online_users_count) => {
-//! 		println!("Neos currently has {} online users", online_users_count);
-//! 	}
-//! 	Err(err) => {
-//! 		println!("Couldn't get the online users count: {} ", err);
-//! 	}
-//! };
-//! ```
+//! > Doesn't require authentication but still needs to be rate limited
+//! > properly.
+//!
+//! 2. [`neos::model::UserSession`](crate::model::UserSession)
+//!
+//! > Requires the `Authorization` header in addition to the rate limiting.
 
-// Pretty much all API calls can fail with repetitively similar errors,
-// documenting them all only adds bloat without much more value.
-#![allow(clippy::missing_errors_doc)]
+use governor::{
+	clock::DefaultClock,
+	middleware::NoOpMiddleware,
+	state::{InMemoryState, NotKeyed},
+	Quota,
+	RateLimiter,
+};
+use racal::{Queryable, RequestMethod};
+use reqwest::{header::HeaderMap, Client};
+use serde::de::DeserializeOwned;
+use std::num::NonZeroU32;
 
-use std::borrow::Borrow;
+use crate::{query::{NoAuthentication, Authentication}};
 
-use minreq::{Method, Request, Response};
+/// An error that may happen with an API query
+#[derive(Debug)]
+pub enum ApiError {
+	/// An error happened with serialization
+	Serde(serde_json::Error),
+	/// An error happened with the request itself
+	Reqwest(reqwest::Error),
+}
 
-const API_BASE: &str = "https://api.neos.com/api/";
+impl From<serde_json::Error> for ApiError {
+	fn from(err: serde_json::Error) -> Self {
+		Self::Serde(err)
+	}
+}
 
-mod error;
-mod inner;
-pub use error::*;
+impl From<reqwest::Error> for ApiError {
+	fn from(err: reqwest::Error) -> Self {
+		Self::Reqwest(err)
+	}
+}
 
-mod any;
-mod auth;
-mod noauth;
-mod req_models;
-pub use any::*;
-pub use auth::*;
-pub use noauth::*;
-pub use req_models::*;
+type NormalRateLimiter =
+	RateLimiter<NotKeyed, InMemoryState, DefaultClock, NoOpMiddleware>;
 
-/// A Neos API client
-///
-/// # Example usage
-///
-/// Counts the amount of users that are active in publicly listed sessions
-///
-/// ```no_run
-/// # use neos::api_client::{Neos, NeosUnauthenticated};
-/// # let USER_AGENT = String::new();
-/// let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-/// let sessions = neos_api_client.get_sessions();
-/// match sessions {
-/// 	Ok(sessions) => {
-/// 		let mut count = 0;
-/// 		for session in sessions {
-/// 			count += session.active_users;
-/// 		}
-/// 		println!("{} users focused on public sessions", count);
-/// 	}
-/// 	Err(err) => {
-/// 		println!("Couldn't get the session details: {} ", err);
-/// 	}
-/// };
-/// ```
-pub trait Neos {
-	#[doc(hidden)]
-	/// Meant for internal use only.
-	fn api_request(
-		&self,
-		method: Method,
-		url: &str,
-		build: &mut dyn FnMut(Request) -> Result<Request, minreq::Error>,
-	) -> Result<Response, RequestError>;
+/// The main API client without authentication
+pub struct UnauthenticatedNeos {
+	user_agent: String,
+	http: Client,
+	rate_limiter: NormalRateLimiter,
+}
 
-	/// Pings the API
-	///
-	/// # Example usage
-	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// if neos_api_client.ping().is_ok() {
-	/// 	println!("Neos is reachable :)");
-	/// } else {
-	/// 	println!("Couldn't reach neos :(");
-	/// }
-	/// ```
-	fn ping(&self) -> Result<(), RequestError> {
-		self.api_request(Method::Get, "testing/ping", &mut Ok)?;
-		Ok(())
+/// The main API client with authentication
+pub struct AuthenticatedNeos {
+	user_agent: String,
+	http: Client,
+	rate_limiter: NormalRateLimiter,
+	auth: Authentication,
+}
+
+impl From<&Authentication> for NoAuthentication {
+	fn from(_: &Authentication) -> Self {
+			NoAuthentication {}
+	}
+}
+
+async fn base_query<R, FromState: Send, T>(
+	http: &Client,
+	api_state: FromState,
+	rate_limiter: &NormalRateLimiter,
+	queryable: T,
+) -> Result<R, ApiError>
+where
+	R: DeserializeOwned,
+	T: Queryable<FromState, R> + Send + Sync,
+{
+	let mut request = http.request(
+		match queryable.method(&api_state) {
+			RequestMethod::Get => reqwest::Method::GET,
+			RequestMethod::Head => reqwest::Method::HEAD,
+			RequestMethod::Patch => reqwest::Method::PATCH,
+			RequestMethod::Post => reqwest::Method::POST,
+			RequestMethod::Put => reqwest::Method::PUT,
+			RequestMethod::Delete => reqwest::Method::DELETE,
+		},
+		queryable.url(&api_state),
+	);
+	if let Some(body) = queryable.body(&api_state) {
+		request = request.body(body?);
 	}
 
-	/// Gets the amount of users that are online
-	///
-	/// # Example usage
-	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let online_users_count = neos_api_client
-	/// 	.online_user_count()
-	/// 	.expect("to be able to get the online user count from Neos");
-	/// println!("Neos currently has {} online users", online_users_count);
-	/// ```
-	fn online_user_count(&self) -> Result<u32, RequestError> {
-		let resp = self.api_request(Method::Get, "stats/onlineUsers", &mut Ok)?;
+	rate_limiter.until_ready().await;
+	let response = request.send().await?.error_for_status()?;
+	// TODO: Figure out if there are any extra rate limit headers to respect
 
-		// The API responds in JSON due to our Accept header, so need to go
-		// trough a string
-		match resp.json::<&str>()?.parse::<u32>() {
-			Ok(num) => Ok(num),
-			Err(err) => Err(RequestError::Deserialization(err.to_string())),
-		}
+	#[cfg(feature = "debug")]
+	{
+		let text = response.text().await?;
+		dbg!(&text);
+		Ok(serde_json::from_str::<R>(&text)?)
+	}
+	#[cfg(not(feature = "debug"))]
+	{
+		Ok(response.json::<R>().await?)
+	}
+}
+
+#[must_use]
+fn http_rate_limiter() -> NormalRateLimiter {
+	// ~5 seconds per request sustained over one minute, allowing up to a request
+	// per second in bursts.
+	RateLimiter::direct(
+		Quota::per_minute(NonZeroU32::try_from(12).unwrap())
+			.allow_burst(NonZeroU32::try_from(5).unwrap()),
+	)
+}
+
+impl AuthenticatedNeos {
+	/// Creates an API client
+	fn http_client(user_agent: &str, auth: &Authentication) -> Result<Client, ApiError> {
+		use serde::ser::Error;
+
+		let builder = Client::builder();
+		let mut headers = HeaderMap::new();
+
+		headers.insert(
+			"Authorization",
+			("neos ".to_owned() + auth.user_id.as_ref() + ":" + &auth.token)
+				.parse()
+				.map_err(|_| {
+				serde_json::Error::custom("Couldn't turn auth into a header")
+			})?,
+		);
+
+		Ok(builder.user_agent(user_agent).default_headers(headers).build()?)
 	}
 
-	/// Gets the amount of online instances
+	/// Removes authentication to the API client
 	///
-	/// # Example usage
+	/// # Errors
 	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let online_instance_count = neos_api_client
-	/// 	.online_instance_count()
-	/// 	.expect("to be able to get the online instance count from Neos");
-	/// println!("Neos currently has {} online instances", online_instance_count);
-	/// ```
-	fn online_instance_count(&self) -> Result<u32, RequestError> {
-		let resp = self.api_request(Method::Get, "stats/onlineInstances", &mut Ok)?;
-
-		// The API responds in JSON due to our Accept header, so need to go
-		// trough a string
-		match resp.json::<&str>()?.parse::<u32>() {
-			Ok(num) => Ok(num),
-			Err(err) => Err(RequestError::Deserialization(err.to_string())),
-		}
+	/// If deserializing user agent fails.
+	pub fn downgrade(self) -> Result<UnauthenticatedNeos, ApiError> {
+		Ok(UnauthenticatedNeos {
+			http: UnauthenticatedNeos::http_client(&self.user_agent)?,
+			rate_limiter: self.rate_limiter,
+			user_agent: self.user_agent,
+		})
 	}
 
-	/// Gets details of publicly listed sessions
+	/// Creates a new authenticated Neos API client
 	///
-	/// # Example usage
+	/// # Errors
 	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let sessions = neos_api_client
-	/// 	.get_sessions()
-	/// 	.expect("to be able to get publicly visible sessions from Neos");
-	/// for session in sessions {
-	/// 	if session.active_users > 0 {
-	/// 		println!(
-	/// 			"Session {} has {} active users",
-	/// 			session.name, session.active_users
-	/// 		);
-	/// 	}
-	/// }
-	/// ```
-	fn get_sessions(&self) -> Result<Vec<crate::SessionInfo>, RequestError> {
-		let resp = self.api_request(Method::Get, "sessions", &mut Ok)?;
-
-		Ok(resp.json()?)
+	/// If deserializing user agent into a header fails
+	pub fn new(
+		user_agent: String,
+		auth: impl Into<Authentication> + Send,
+	) -> Result<Self, ApiError> {
+		let auth = auth.into();
+		Ok(Self {
+			http: Self::http_client(&user_agent, &auth)?,
+			rate_limiter: http_rate_limiter(),
+			user_agent,
+			auth
+		})
 	}
 
-	/// Gets details of an user by either username or ID
-	///
-	/// # Example usage
-	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let neos_bot = neos_api_client
-	/// 	.get_user("Neos")
-	/// 	.expect("to be able to get the Neos bot account from Neos");
-	/// println!("The Neos bot supposedly registered on {}", &neos_bot.registration_time);
-	/// ```
-	fn get_user(
-		&self,
-		user: impl Into<UserIdOrUsername>,
-	) -> Result<crate::User, RequestError> {
-		let user = user.into();
-		let resp = self.api_request(
-			Method::Get,
-			&("users/".to_owned()
-				+ user.as_ref() + "?byUsername="
-				+ &(!user.is_id()).to_string()),
-			&mut Ok,
-		)?;
 
-		Ok(resp.json()?)
+	/// Sends a query to the Neos API
+	///
+	/// # Errors
+	///
+	/// If something with the request failed.
+	pub async fn query<'a, R, FromState, T>(&'a self, queryable: T) -> Result<R, ApiError>
+	where
+		R: DeserializeOwned,
+		FromState: From<&'a Authentication> + Send,
+		T: Queryable<FromState, R> + Send + Sync,
+	{
+		let state = FromState::from(&self.auth);
+		base_query(&self.http, state, &self.rate_limiter, queryable).await
+	}
+}
+
+impl UnauthenticatedNeos {
+	/// Creates an unauthenticated API client
+	fn http_client(user_agent: &str) -> Result<Client, ApiError> {
+		Ok(Client::builder().user_agent(user_agent).build()?)
 	}
 
-	/// Searches users by name
+	/// Adds authentication to the API client
 	///
-	/// # Example usage
+	/// # Errors
 	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let matching_users = neos_api_client
-	/// 	.search_users("Neos")
-	/// 	.expect("to be able to get search for the Neos bot account from Neos");
-	/// let neos_bot = matching_users
-	/// 	.iter()
-	/// 	.find(|user| user.username == "Neos")
-	/// 	.expect("for the search results to contain the Neos bot account");
-	/// println!("Fetched the account of {}", &neos_bot.username);
-	/// ```
-	fn search_users(
-		&self,
-		name: impl Borrow<str>,
-	) -> Result<Vec<crate::User>, RequestError> {
-		let resp = self.api_request(
-			Method::Get,
-			&("users?name=".to_owned() + name.borrow()),
-			&mut Ok,
-		)?;
-
-		Ok(resp.json()?)
+	/// If deserializing user agent or authentication fails.
+	pub fn upgrade(
+		self,
+		auth: impl Into<Authentication> + Send,
+	) -> Result<AuthenticatedNeos, ApiError> {
+		let auth = auth.into();
+		Ok(AuthenticatedNeos {
+			http: AuthenticatedNeos::http_client(&self.user_agent, &auth)?,
+			rate_limiter: self.rate_limiter,
+			user_agent: self.user_agent,
+			auth
+		})
 	}
 
-	/// Gets the status of an user
+	/// Creates a new Neos API client
 	///
-	/// # Example usage
+	/// # Errors
 	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let neos_bot_status = neos_api_client
-	/// 	.get_user_status(neos::id::User::try_from("U-neos").unwrap())
-	/// 	.expect("to be able to get the Neos bot account from Neos");
-	/// println!("Neos bot account is: {}", &neos_bot_status.online_status);
-	/// ```
-	fn get_user_status(
-		&self,
-		user_id: impl Borrow<crate::id::User>,
-	) -> Result<crate::UserStatus, RequestError> {
-		let resp = self.api_request(
-			Method::Get,
-			&("users/".to_owned() + user_id.borrow().as_ref() + "/status"),
-			&mut Ok,
-		)?;
-
-		Ok(resp.json()?)
+	/// If deserializing user agent into a header fails
+	pub fn new(user_agent: String) -> Result<Self, ApiError> {
+		Ok(Self {
+			http: Self::http_client(&user_agent)?,
+			rate_limiter: http_rate_limiter(),
+			user_agent,
+		})
 	}
 
-	/// Gets details of a session
+	/// Sends a query to the Neos API
 	///
-	/// # Example usage
+	/// # Errors
 	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let session = neos_api_client
-	/// 	.get_session(neos::id::Session::try_from("S-totally-legit-id").unwrap())
-	/// 	.expect("to be able to get a session from the invalid id from Neos... yeh no");
-	/// println!("Session has {} active_users users", &session.active_users);
-	/// ```
-	fn get_session(
-		&self,
-		session_id: impl Borrow<crate::id::Session>,
-	) -> Result<crate::SessionInfo, RequestError> {
-		let resp = self.api_request(
-			Method::Get,
-			&("sessions/".to_owned() + session_id.borrow().as_ref()),
-			&mut Ok,
-		)?;
-
-		Ok(resp.json()?)
-	}
-
-	/// Gets details of a group
-	///
-	/// # Example usage
-	///
-	/// ```no_run
-	/// # use neos::api_client::{Neos, NeosUnauthenticated};
-	/// # let USER_AGENT = String::new();
-	/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-	/// let group = neos_api_client
-	/// 	.get_group(neos::id::Group::try_from("G-Neos").unwrap())
-	/// 	.expect("to be able to get the Neos group details from Neos");
-	/// println!("The admin of the group {} is {}", &group.name, group.admin_id.as_ref());
-	/// ```
-	fn get_group(
-		&self,
-		group_id: impl Borrow<crate::id::Group>,
-	) -> Result<crate::Group, RequestError> {
-		let resp = self.api_request(
-			Method::Get,
-			&("groups/".to_owned() + group_id.borrow().as_ref()),
-			&mut Ok,
-		)?;
-
-		Ok(resp.json()?)
+	/// If something with the request failed.
+	pub async fn query<'a, R, FromState, T>(&'a self, queryable: T) -> Result<R, ApiError>
+	where
+		R: DeserializeOwned,
+		FromState: From<&'a NoAuthentication> + Send,
+		T: Queryable<FromState, R> + Send + Sync,
+	{
+		let state = FromState::from(&NoAuthentication {});
+		base_query(&self.http,state, &self.rate_limiter, queryable).await
 	}
 }

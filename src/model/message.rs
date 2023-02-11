@@ -81,16 +81,16 @@ pub enum MessageContents {
 	/// A normal message
 	Text(String),
 	/// ???
-	Object(#[serde_as(as = "serde_with::json::JsonString")] Box<crate::Record>),
+	Object(#[serde_as(as = "serde_with::json::JsonString")] Box<crate::model::Record>),
 	/// Voice recording
-	Sound(#[serde_as(as = "serde_with::json::JsonString")] Box<crate::Record>),
+	Sound(#[serde_as(as = "serde_with::json::JsonString")] Box<crate::model::Record>),
 	/// Invite to a session
 	SessionInvite(
-		#[serde_as(as = "serde_with::json::JsonString")] Box<crate::SessionInfo>,
+		#[serde_as(as = "serde_with::json::JsonString")] Box<crate::model::SessionInfo>,
 	),
 	/// NCR/KFC related most likely
 	CreditTransfer(
-		#[serde_as(as = "serde_with::json::JsonString")] crate::CreditTransaction,
+		#[serde_as(as = "serde_with::json::JsonString")] crate::model::CreditTransaction,
 	),
 	/// Kofi/tipping related..?
 	SugarCubes(String),

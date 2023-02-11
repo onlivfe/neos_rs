@@ -1,14 +1,13 @@
+use racal::Queryable;
 use serde::{Deserialize, Serialize};
+
+use crate::model::UserSession;
+
+use super::{Authentication, NoAuthentication};
 
 #[derive(Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 /// Data for a user session request to Neos' API.
-#[cfg_attr(feature = "api_client", doc = "")]
-#[cfg_attr(
-	feature = "api_client",
-	doc = "Used in
-	[`NeosUnauthenticated::login`](crate::api_client::NeosUnauthenticated::login)"
-)]
 pub struct LoginCredentials {
 	#[serde(flatten)]
 	/// The way to identify the user account the request is for
@@ -71,6 +70,20 @@ impl LoginCredentials {
 	pub fn use_generated_machine_id(mut self) -> Self {
 		self.secret_machine_id = Some(crate::util::random_ascii_string(32));
 		self
+	}
+}
+
+impl Queryable<NoAuthentication, UserSession> for LoginCredentials {
+	fn url(&self, _: &NoAuthentication) -> String {
+		format!("{}/userSessions", crate::API_BASE_URI)
+	}
+
+	fn body(&self, _: &NoAuthentication) -> Option<serde_json::Result<Vec<u8>>> {
+		Some(serde_json::to_vec(self))
+	}
+
+	fn method(&self, _: &NoAuthentication) -> racal::RequestMethod {
+		racal::RequestMethod::Post
 	}
 }
 
@@ -152,5 +165,31 @@ impl LoginCredentialsIdentifier {
 	/// If is owner's ID based
 	pub const fn is_ownerid(&self) -> bool {
 		matches!(self, Self::OwnerID(_))
+	}
+}
+
+/// Tries to remove the current authentication session
+pub struct DestroyUserSession;
+
+impl Queryable<Authentication, ()> for DestroyUserSession {
+	fn url(&self, auth: &Authentication) -> String {
+		format!("{}/userSessions/{}", crate::API_BASE_URI, auth.user_id.as_ref())
+	}
+
+	fn method(&self, _: &Authentication) -> racal::RequestMethod {
+		racal::RequestMethod::Delete
+	}
+}
+
+/// Tries to make the current authentication session last longer
+pub struct ExtendUserSession;
+
+impl Queryable<Authentication, ()> for ExtendUserSession {
+	fn url(&self, _: &Authentication) -> String {
+		format!("{}/userSessions", crate::API_BASE_URI)
+	}
+
+	fn method(&self, _: &Authentication) -> racal::RequestMethod {
+		racal::RequestMethod::Patch
 	}
 }

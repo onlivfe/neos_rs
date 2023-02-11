@@ -76,10 +76,10 @@ pub struct Record {
 	#[serde(default)]
 	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	/// The record's submissions to groups
-	pub submissions: Vec<crate::Submission>,
+	pub submissions: Vec<crate::model::Submission>,
 	#[serde(default)]
 	#[serde_as(deserialize_as = "serde_with::DefaultOnError")]
 	#[serde(rename = "neosDBmanifest")]
 	/// Details about the asset
-	pub neos_db_manifest: Vec<crate::NeosDBAsset>,
+	pub neos_db_manifest: Vec<crate::model::NeosDBAsset>,
 }
