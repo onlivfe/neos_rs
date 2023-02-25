@@ -24,7 +24,8 @@ impl Default for Messages {
 	}
 }
 
-impl Queryable<Authentication, crate::model::Friends> for Messages {
+// TODO: VecSkipError
+impl Queryable<Authentication, Vec<crate::model::Message>> for Messages {
 	fn url(&self, auth: &Authentication) -> String {
 		let mut query = format!(
 			"{}/users/{}/messages?maxItems={}",
@@ -48,7 +49,8 @@ impl Queryable<Authentication, crate::model::Friends> for Messages {
 	}
 }
 
-impl Queryable<Authentication, crate::model::Friends> for crate::model::Message {
+/// Send a message
+impl Queryable<Authentication, crate::model::Message> for crate::model::Message {
 	fn url(&self, _: &Authentication) -> String {
 		format!("{}/users/{}/messages", crate::API_BASE_URI, self.recipient_id.as_ref(),)
 	}

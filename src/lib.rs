@@ -13,7 +13,7 @@
 //!
 //! ```rust
 //! extern crate serde_json;
-//! 	
+//!
 //! // Normally you'd get the data by calling the API
 //! let data = r#"{
 //!         "username": "ljoonal",
@@ -21,10 +21,10 @@
 //!         "isPresent": true,
 //!         "outputDevice": 2
 //!      }"#;
-//! 	
-//! let session_user: neos::SessionUser = serde_json::from_str(data).unwrap();
-//! 	
-//! assert_eq!(session_user.output_device, neos::OutputDevice::Screen);
+//!
+//! let session_user: neos::model::SessionUser = serde_json::from_str(data).unwrap();
+//!
+//! assert_eq!(session_user.output_device, neos::model::OutputDevice::Screen);
 //! ```
 
 #![cfg_attr(nightly, feature(doc_cfg))]
@@ -53,7 +53,6 @@ pub mod query;
 mod assets;
 
 // Models that should match up with Neos' API's ones.
-
 
 mod util;
 

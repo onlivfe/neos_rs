@@ -12,9 +12,9 @@ impl Queryable<NoAuthentication, u32> for OnlineUserCount {
 }
 
 /// Gets the amount of online instances
-pub struct OnlineInstances;
+pub struct OnlineInstanceCount;
 
-impl Queryable<NoAuthentication, u32> for OnlineInstances {
+impl Queryable<NoAuthentication, u32> for OnlineInstanceCount {
 	fn url(&self, _: &NoAuthentication) -> String {
 		format!("{}/stats/onlineInstances", crate::API_BASE_URI)
 	}

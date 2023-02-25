@@ -1,10 +1,10 @@
-#![cfg(feature = "api_client")]
+#![cfg(feature = "http_client")]
 // Something's funky with checking if these are used or not.
 #![allow(dead_code)]
 
 use neos::{
-	api_client::{NeosAuthenticated, NeosUnauthenticated},
-	UserSession,
+	api_client::{AuthenticatedNeos, UnauthenticatedNeos},
+	model::UserSession,
 };
 use once_cell::sync::Lazy;
 
@@ -17,8 +17,9 @@ const USER_AGENT: &str = concat!(
 	")",
 );
 
-pub static UNAUTHENTICATED_API_CLIENT: Lazy<NeosUnauthenticated> =
-	Lazy::new(|| NeosUnauthenticated::new(USER_AGENT.to_string()));
+pub fn api_no_auth() -> UnauthenticatedNeos {
+	UnauthenticatedNeos::new(USER_AGENT.to_string()).unwrap()
+}
 
 pub static USER_SESSION: Lazy<UserSession> = Lazy::new(|| {
 	let user_session: UserSession = serde_json::from_slice(
@@ -32,5 +33,6 @@ pub static USER_SESSION: Lazy<UserSession> = Lazy::new(|| {
 	user_session
 });
 
-pub static AUTHENTICATED_API_CLIENT: Lazy<NeosAuthenticated> =
-	Lazy::new(|| UNAUTHENTICATED_API_CLIENT.clone().upgrade(USER_SESSION.clone()));
+pub fn api_auth() -> AuthenticatedNeos {
+	AuthenticatedNeos::new(USER_AGENT.to_string(), &USER_SESSION.clone()).unwrap()
+}

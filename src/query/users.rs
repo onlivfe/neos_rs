@@ -60,13 +60,20 @@ impl From<crate::id::User> for UserIdOrUsername {
 /// # Example usage
 ///
 /// ```no_run
-/// # use neos::{api_client::{Neos, NeosUnauthenticated}, query::UserSearch};
+/// # tokio_test::block_on(async {
+/// # use neos::{api_client::UnauthenticatedNeos, query::UserSearch};
 /// # let USER_AGENT = String::new();
-/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-/// let neos_user_search_query = UserSearch::new("Neos")
-/// let neos_bot = neos_api_client.query(neos_user_search_query)
+/// # let neos_api_client = UnauthenticatedNeos::new(USER_AGENT).unwrap();
+/// let neos_user_search_query = UserSearch::new("Neos");
+/// let neos_bot = neos_api_client
+/// 	.query(neos_user_search_query)
+/// 	.await
 /// 	.expect("to be able to get the Neos bot account from Neos");
-/// println!("The Neos bot supposedly registered on {}", &neos_bot.registration_time);
+/// println!(
+/// 	"The Neos bot supposedly registered on {}",
+/// 	&neos_bot.first().unwrap().registration_time
+/// );
+/// # })
 /// ```
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct UserInfo {
@@ -97,13 +104,18 @@ impl Queryable<NoAuthentication, crate::model::User> for UserInfo {
 /// # Example usage
 ///
 /// ```no_run
-/// # use neos::{api_client::{Neos, NeosUnauthenticated}, query::UserSearch};
+/// # tokio_test::block_on(async {
+/// # use neos::{api_client::UnauthenticatedNeos, query::UserStatus};
 /// # let USER_AGENT = String::new();
-/// # let neos_api_client = NeosUnauthenticated::new(USER_AGENT);
-/// let neos_user_status_query = UserStatus::new(eos::id::User::try_from("U-neos").unwrap())
-/// let neos_bot_status = neos_api_client.query(neos_user_search_query)
+/// # let neos_api_client = UnauthenticatedNeos::new(USER_AGENT).unwrap();
+/// let neos_user_status_query =
+/// 	UserStatus::new(neos::id::User::try_from("U-neos").unwrap());
+/// let neos_bot_status = neos_api_client
+/// 	.query(neos_user_status_query)
+/// 	.await
 /// 	.expect("to be able to get the Neos bot account from Neos");
 /// println!("Neos bot account is: {}", &neos_bot_status.online_status);
+/// # })
 /// ```
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct UserStatus {
@@ -138,7 +150,8 @@ impl UserSearch {
 	}
 }
 
-impl Queryable<NoAuthentication, crate::model::Users> for UserSearch {
+// TODO: Deserialize skip vec errors
+impl Queryable<NoAuthentication, Vec<crate::model::User>> for UserSearch {
 	fn url(&self, _: &NoAuthentication) -> String {
 		format!("{}/users?name={}", crate::API_BASE_URI, self.name)
 	}

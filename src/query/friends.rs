@@ -17,7 +17,8 @@ impl Default for Friends {
 	}
 }
 
-impl Queryable<Authentication, crate::model::Friends> for Friends {
+// TODO: VecSkipError
+impl Queryable<Authentication, Vec<crate::model::Friend>> for Friends {
 	fn url(&self, auth: &Authentication) -> String {
 		let mut query =
 			format!("{}/users/{}/friends", crate::API_BASE_URI, auth.user_id.as_ref());

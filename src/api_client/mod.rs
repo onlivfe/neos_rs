@@ -29,7 +29,7 @@ use reqwest::{header::HeaderMap, Client};
 use serde::de::DeserializeOwned;
 use std::num::NonZeroU32;
 
-use crate::{query::{NoAuthentication, Authentication}};
+use crate::query::{Authentication, NoAuthentication};
 
 /// An error that may happen with an API query
 #[derive(Debug)]
@@ -72,7 +72,7 @@ pub struct AuthenticatedNeos {
 
 impl From<&Authentication> for NoAuthentication {
 	fn from(_: &Authentication) -> Self {
-			NoAuthentication {}
+		NoAuthentication {}
 	}
 }
 
@@ -105,16 +105,8 @@ where
 	let response = request.send().await?.error_for_status()?;
 	// TODO: Figure out if there are any extra rate limit headers to respect
 
-	#[cfg(feature = "debug")]
-	{
-		let text = response.text().await?;
-		dbg!(&text);
-		Ok(serde_json::from_str::<R>(&text)?)
-	}
-	#[cfg(not(feature = "debug"))]
-	{
-		Ok(response.json::<R>().await?)
-	}
+	let bytes = response.bytes().await?;
+	Ok(queryable.deserialize(&bytes)?)
 }
 
 #[must_use]
@@ -140,8 +132,8 @@ impl AuthenticatedNeos {
 			("neos ".to_owned() + auth.user_id.as_ref() + ":" + &auth.token)
 				.parse()
 				.map_err(|_| {
-				serde_json::Error::custom("Couldn't turn auth into a header")
-			})?,
+					serde_json::Error::custom("Couldn't turn auth into a header")
+				})?,
 		);
 
 		Ok(builder.user_agent(user_agent).default_headers(headers).build()?)
@@ -174,10 +166,9 @@ impl AuthenticatedNeos {
 			http: Self::http_client(&user_agent, &auth)?,
 			rate_limiter: http_rate_limiter(),
 			user_agent,
-			auth
+			auth,
 		})
 	}
-
 
 	/// Sends a query to the Neos API
 	///
@@ -215,7 +206,7 @@ impl UnauthenticatedNeos {
 			http: AuthenticatedNeos::http_client(&self.user_agent, &auth)?,
 			rate_limiter: self.rate_limiter,
 			user_agent: self.user_agent,
-			auth
+			auth,
 		})
 	}
 
@@ -244,6 +235,6 @@ impl UnauthenticatedNeos {
 		T: Queryable<FromState, R> + Send + Sync,
 	{
 		let state = FromState::from(&NoAuthentication {});
-		base_query(&self.http,state, &self.rate_limiter, queryable).await
+		base_query(&self.http, state, &self.rate_limiter, queryable).await
 	}
 }

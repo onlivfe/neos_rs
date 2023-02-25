@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use time::OffsetDateTime;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize)]
+#[derive(Debug, Clone, Hash, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// Details about a friend/contact.
 ///
@@ -37,12 +37,3 @@ pub struct Friend {
 	/// The U-username form of ID of whose friend the details are for.
 	pub owner_id: crate::id::Owner,
 }
-
-#[serde_with::serde_as]
-#[derive(Debug, Clone, serde::Deserialize)]
-/// A list of friends that skips deserializing items with errors when not in
-/// debug mode
-pub struct Friends(
-	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
-	pub Vec<Friend>,
-);

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use time::OffsetDateTime;
 
 #[serde_with::serde_as]
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Hash, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// A Neos user's or friend's status.
 ///
@@ -42,7 +42,14 @@ pub struct UserStatus {
 	/// If the user is using a mobile client.
 	pub is_mobile: bool,
 	/// Only seems to exist when the user is online
-	#[serde_as(deserialize_as = "serde_with::DefaultOnNull")]
+	#[cfg_attr(
+		not(feature = "debug"),
+		serde_as(as = "serde_with::VecSkipError<serde_with::DefaultOnNull>")
+	)]
+	#[cfg_attr(
+		feature = "debug",
+		serde_as(deserialize_as = "serde_with::DefaultOnNull")
+	)]
 	#[serde(default)]
 	pub active_sessions: Vec<crate::model::SessionInfo>,
 }

@@ -6,6 +6,12 @@
 /// into account, thus not using `()` for the API state.
 pub struct NoAuthentication {}
 
+impl From<&NoAuthentication> for NoAuthentication {
+	fn from(_: &NoAuthentication) -> Self {
+		Self {}
+	}
+}
+
 /// [`racal::Queryable`](racal::Queryable)'s `RequiredApiState`.
 ///
 /// With authentication
@@ -16,9 +22,15 @@ pub struct Authentication {
 	pub user_id: crate::id::User,
 }
 
-impl From<UserSession> for Authentication {
-	fn from(user_session: UserSession) -> Self {
-		Self { token: user_session.token, user_id: user_session.user_id }
+impl From<&Authentication> for Authentication {
+	fn from(auth: &Authentication) -> Self {
+		Self { token: auth.token.clone(), user_id: auth.user_id.clone() }
+	}
+}
+
+impl From<&UserSession> for Authentication {
+	fn from(user_session: &UserSession) -> Self {
+		Self { token: user_session.token.clone(), user_id: user_session.user_id.clone() }
 	}
 }
 

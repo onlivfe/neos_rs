@@ -12,12 +12,3 @@ pub struct SessionUser {
 	/// The output device type of the user
 	pub output_device: crate::model::OutputDevice,
 }
-
-#[serde_with::serde_as]
-#[derive(Debug, Clone, serde::Deserialize)]
-/// A list of a session's users that skips deserializing items with errors when
-/// not in debug mode
-pub struct SessionUsers(
-	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
-	pub Vec<SessionUser>,
-);

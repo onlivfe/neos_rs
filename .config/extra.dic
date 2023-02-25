@@ -24,3 +24,4 @@ newtypes st:newtype is:plural
 enums st:enum is:plural
 RFC3339
 TOTP
+deserializing

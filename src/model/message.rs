@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use time::{serde::rfc3339, OffsetDateTime};
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 /// Short description of a session's user.
 pub struct Message {
@@ -74,7 +74,7 @@ impl Message {
 
 #[serde_with::serde_as]
 #[allow(clippy::module_name_repetitions)]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, strum::EnumVariantNames)]
+#[derive(Debug, Clone, Serialize, Deserialize, strum::EnumVariantNames)]
 #[serde(tag = "messageType", content = "content")]
 /// The contents of a message combined with the `MessageType`
 pub enum MessageContents {

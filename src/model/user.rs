@@ -82,13 +82,3 @@ pub struct User {
 	/// NCR address, seems to exist only when authenticated.
 	pub ncr_deposit_address: Option<String>,
 }
-
-#[serde_with::serde_as]
-#[derive(Debug, Clone, serde::Deserialize)]
-/// A list of users that skips deserializing items with errors when not in debug
-/// mode
-
-pub struct Users(
-	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
-	pub Vec<User>,
-);

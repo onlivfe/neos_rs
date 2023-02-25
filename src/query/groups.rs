@@ -10,7 +10,7 @@ pub struct GroupInfo {
 }
 
 impl GroupInfo {
-	/// Creates a new qroup info query
+	/// Creates a new group info query
 	pub fn new(group_id: impl Into<crate::id::Group>) -> Self {
 		Self { group_id: group_id.into() }
 	}

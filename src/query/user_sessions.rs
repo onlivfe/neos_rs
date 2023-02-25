@@ -179,6 +179,10 @@ impl Queryable<Authentication, ()> for DestroyUserSession {
 	fn method(&self, _: &Authentication) -> racal::RequestMethod {
 		racal::RequestMethod::Delete
 	}
+
+	fn deserialize(&self, _data: &[u8]) -> serde_json::Result<()> {
+		Ok(())
+	}
 }
 
 /// Tries to make the current authentication session last longer
@@ -191,5 +195,9 @@ impl Queryable<Authentication, ()> for ExtendUserSession {
 
 	fn method(&self, _: &Authentication) -> racal::RequestMethod {
 		racal::RequestMethod::Patch
+	}
+
+	fn deserialize(&self, _data: &[u8]) -> serde_json::Result<()> {
+		Ok(())
 	}
 }

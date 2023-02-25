@@ -1,7 +1,7 @@
 use time::{serde::rfc3339, OffsetDateTime};
 
 #[serde_with::serde_as]
-#[derive(Debug, Clone, PartialEq, Eq, Hash, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, Clone, Hash, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 /// A Neos session.
 pub struct SessionInfo {
@@ -45,6 +45,7 @@ pub struct SessionInfo {
 	pub urls: Vec<String>,
 	#[serde(rename = "sessionUsers")]
 	/// A list of the session's users very basic details.
+	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
 	pub users: Vec<crate::model::SessionUser>,
 	/// A link to the thumbnail of the session.
 	///
@@ -97,15 +98,6 @@ pub struct SessionInfo {
 	/// Defaulted to empty vector if the API returns none for the session.
 	pub nested_session_ids: Vec<crate::id::Session>,
 }
-
-#[serde_with::serde_as]
-#[derive(Debug, Clone, serde::Deserialize)]
-/// A list of sessions that skips deserializing items with errors when not in
-/// debug mode
-pub struct Sessions(
-	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
-	pub Vec<SessionInfo>,
-);
 
 // If the field is missing, it probably has ended...
 const fn has_ended_default() -> bool {
