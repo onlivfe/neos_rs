@@ -12,6 +12,12 @@ impl From<&NoAuthentication> for NoAuthentication {
 	}
 }
 
+impl From<&Authentication> for NoAuthentication {
+	fn from(_: &Authentication) -> Self {
+		NoAuthentication {}
+	}
+}
+
 /// [`racal::Queryable`](racal::Queryable)'s `RequiredApiState`.
 ///
 /// With authentication

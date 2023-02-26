@@ -70,12 +70,6 @@ pub struct AuthenticatedNeos {
 	auth: Authentication,
 }
 
-impl From<&Authentication> for NoAuthentication {
-	fn from(_: &Authentication) -> Self {
-		NoAuthentication {}
-	}
-}
-
 async fn base_query<R, FromState: Send, T>(
 	http: &Client,
 	api_state: FromState,
