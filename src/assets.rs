@@ -13,7 +13,9 @@ pub struct AssetUrl {
 impl AssetUrl {
 	const URL_PREFIX: &'static str = "https://assets.neos.com/assets/";
 
-	fn from_url(url: impl AsRef<str>, is_neosdb: bool) -> Result<Self, &'static str> {
+	fn from_url(
+		url: impl AsRef<str>, is_neosdb: bool,
+	) -> Result<Self, &'static str> {
 		// Extract the last / part and put the rest back together
 		let mut path_split = url.as_ref().split('/').rev();
 		let last_path = path_split.next().ok_or("Couldn't parse url path")?;
@@ -22,7 +24,8 @@ impl AssetUrl {
 		// Extract the last . part and put the rest back together from the last path
 		// part
 		let mut ext_split = last_path.split('.').rev();
-		let ext_split_last = ext_split.next().ok_or("Couldn't parse url ext")?.to_owned();
+		let ext_split_last =
+			ext_split.next().ok_or("Couldn't parse url ext")?.to_owned();
 		let ext_split_rest = ext_split.rev().collect::<Vec<&str>>().join(".");
 
 		// If there was no ext handle that, map the split result to the id and ext
@@ -38,6 +41,7 @@ impl AssetUrl {
 
 impl TryFrom<&str> for AssetUrl {
 	type Error = &'static str;
+
 	fn try_from(url: &str) -> Result<Self, Self::Error> {
 		if url.starts_with("neosdb:///") {
 			if let Some(split) = url.split_once("neosdb:///") {
@@ -59,20 +63,19 @@ impl AssetUrl {
 	#[must_use]
 	/// Gets the file's name
 	pub fn filename(&self) -> String {
-		self.ext.as_ref().map_or_else(|| self.id.clone(), |ext| self.id.clone() + ext)
+		self
+			.ext
+			.as_ref()
+			.map_or_else(|| self.id.clone(), |ext| self.id.clone() + ext)
 	}
 
 	#[must_use]
 	/// Gets the file's name without the extension
-	pub fn id(&self) -> &str {
-		&self.id
-	}
+	pub fn id(&self) -> &str { &self.id }
 
 	#[must_use]
 	/// Gets the extension
-	pub const fn ext(&self) -> &Option<String> {
-		&self.ext
-	}
+	pub const fn ext(&self) -> &Option<String> { &self.ext }
 }
 
 impl ToString for AssetUrl {
@@ -95,7 +98,9 @@ impl<'de> serde::de::Deserialize<'de> for AssetUrl {
 		impl<'de> serde::de::Visitor<'de> for IdVisitor {
 			type Value = AssetUrl;
 
-			fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+			fn expecting(
+				&self, formatter: &mut std::fmt::Formatter,
+			) -> std::fmt::Result {
 				formatter.write_str(concat!("an AssetUrl string"))
 			}
 

@@ -22,11 +22,11 @@ pub fn api_no_auth() -> UnauthenticatedNeos {
 }
 
 pub static USER_SESSION: Lazy<UserSession> = Lazy::new(|| {
-	let user_session: UserSession = serde_json::from_slice(
-		&std::fs::read("user-session.json")
-			.expect("must have a prepared `user-session.json` file for live API testing"),
-	)
-	.expect("`user-session.json` file to parse into a user session");
+	let user_session: UserSession =
+		serde_json::from_slice(&std::fs::read("user-session.json").expect(
+			"must have a prepared `user-session.json` file for live API testing",
+		))
+		.expect("`user-session.json` file to parse into a user session");
 
 	assert!(user_session.secret_machine_id.is_some());
 

@@ -1,5 +1,6 @@
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+
+use serde::{Deserialize, Serialize};
 use time::{serde::rfc3339, OffsetDateTime};
 
 #[serde_with::serde_as]

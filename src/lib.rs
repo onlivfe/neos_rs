@@ -22,7 +22,8 @@
 //!         "outputDevice": 2
 //!      }"#;
 //!
-//! let session_user: neos::model::SessionUser = serde_json::from_str(data).unwrap();
+//! let session_user: neos::model::SessionUser =
+//! 	serde_json::from_str(data).unwrap();
 //!
 //! assert_eq!(session_user.output_device, neos::model::OutputDevice::Screen);
 //! ```

@@ -45,7 +45,10 @@ pub struct SessionInfo {
 	pub urls: Vec<String>,
 	#[serde(rename = "sessionUsers")]
 	/// A list of the session's users very basic details.
-	#[cfg_attr(not(feature = "debug"), serde_as(as = "serde_with::VecSkipError<_>"))]
+	#[cfg_attr(
+		not(feature = "debug"),
+		serde_as(as = "serde_with::VecSkipError<_>")
+	)]
 	pub users: Vec<crate::model::SessionUser>,
 	/// A link to the thumbnail of the session.
 	///
@@ -100,9 +103,7 @@ pub struct SessionInfo {
 }
 
 // If the field is missing, it probably has ended...
-const fn has_ended_default() -> bool {
-	true
-}
+const fn has_ended_default() -> bool { true }
 
 #[must_use]
 /// Tries to strip XML tags out of a string.
@@ -114,11 +115,13 @@ fn bad_xml_strip(str: &str) -> String {
 	let end_indexes = str.match_indices('>');
 
 	let mut stripped_name = str.to_owned();
-	start_indexes.rev().zip(end_indexes.rev()).for_each(|((start, _), (end, _))| {
-		if start < end {
-			stripped_name.replace_range(start..=end, "");
-		}
-	});
+	start_indexes.rev().zip(end_indexes.rev()).for_each(
+		|((start, _), (end, _))| {
+			if start < end {
+				stripped_name.replace_range(start..=end, "");
+			}
+		},
+	);
 
 	stripped_name
 }
@@ -129,7 +132,5 @@ impl SessionInfo {
 	///
 	/// Note that this is imperfect and not using an actual XML parser to remain
 	/// lightweight.
-	pub fn stripped_name(&self) -> String {
-		bad_xml_strip(&self.name)
-	}
+	pub fn stripped_name(&self) -> String { bad_xml_strip(&self.name) }
 }

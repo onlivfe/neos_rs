@@ -16,15 +16,11 @@ pub enum UserIdOrUsername {
 impl UserIdOrUsername {
 	#[must_use]
 	/// If it's an ID
-	pub const fn is_id(&self) -> bool {
-		matches!(self, Self::Id(_))
-	}
+	pub const fn is_id(&self) -> bool { matches!(self, Self::Id(_)) }
 
 	#[must_use]
 	/// If it's an username
-	pub const fn is_username(&self) -> bool {
-		matches!(self, Self::Username(_))
-	}
+	pub const fn is_username(&self) -> bool { matches!(self, Self::Username(_)) }
 }
 
 impl AsRef<str> for UserIdOrUsername {
@@ -38,21 +34,15 @@ impl AsRef<str> for UserIdOrUsername {
 
 /// For easier scripting, should use String otherwise.
 impl From<&'static str> for UserIdOrUsername {
-	fn from(v: &'static str) -> Self {
-		Self::Username(v.to_owned())
-	}
+	fn from(v: &'static str) -> Self { Self::Username(v.to_owned()) }
 }
 
 impl From<String> for UserIdOrUsername {
-	fn from(v: String) -> Self {
-		Self::Username(v)
-	}
+	fn from(v: String) -> Self { Self::Username(v) }
 }
 
 impl From<crate::id::User> for UserIdOrUsername {
-	fn from(v: crate::id::User) -> Self {
-		Self::Id(v)
-	}
+	fn from(v: crate::id::User) -> Self { Self::Id(v) }
 }
 
 /// Gets details of an user by either username or ID
@@ -145,9 +135,7 @@ pub struct UserSearch {
 
 impl UserSearch {
 	/// Creates a new user search query
-	pub fn new(name: impl Into<String>) -> Self {
-		Self { name: name.into() }
-	}
+	pub fn new(name: impl Into<String>) -> Self { Self { name: name.into() } }
 }
 
 // TODO: Deserialize skip vec errors

@@ -45,8 +45,7 @@ impl Message {
 	#[must_use]
 	/// Creates a new message with a random id and time set to now
 	pub fn new(
-		content: MessageContents,
-		owner_and_sender: crate::id::User,
+		content: MessageContents, owner_and_sender: crate::id::User,
 		recipient: crate::id::User,
 	) -> Self {
 		let now = OffsetDateTime::now_utc();
@@ -81,16 +80,22 @@ pub enum MessageContents {
 	/// A normal message
 	Text(String),
 	/// ???
-	Object(#[serde_as(as = "serde_with::json::JsonString")] Box<crate::model::Record>),
+	Object(
+		#[serde_as(as = "serde_with::json::JsonString")] Box<crate::model::Record>,
+	),
 	/// Voice recording
-	Sound(#[serde_as(as = "serde_with::json::JsonString")] Box<crate::model::Record>),
+	Sound(
+		#[serde_as(as = "serde_with::json::JsonString")] Box<crate::model::Record>,
+	),
 	/// Invite to a session
 	SessionInvite(
-		#[serde_as(as = "serde_with::json::JsonString")] Box<crate::model::SessionInfo>,
+		#[serde_as(as = "serde_with::json::JsonString")]
+		Box<crate::model::SessionInfo>,
 	),
 	/// NCR/KFC related most likely
 	CreditTransfer(
-		#[serde_as(as = "serde_with::json::JsonString")] crate::model::CreditTransaction,
+		#[serde_as(as = "serde_with::json::JsonString")]
+		crate::model::CreditTransaction,
 	),
 	/// Kofi/tipping related..?
 	SugarCubes(String),

@@ -7,25 +7,31 @@
 pub struct NoAuthentication {}
 
 impl From<&NoAuthentication> for NoAuthentication {
-	fn from(_: &NoAuthentication) -> Self {
-		Self {}
-	}
+	fn from(_: &NoAuthentication) -> Self { Self {} }
 }
 
 impl From<&Authentication> for NoAuthentication {
-	fn from(_: &Authentication) -> Self {
-		NoAuthentication {}
-	}
+	fn from(_: &Authentication) -> Self { NoAuthentication {} }
 }
 
 /// [`racal::Queryable`](racal::Queryable)'s `RequiredApiState`.
 ///
 /// With authentication
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub struct Authentication {
 	/// The secret authentication token
 	pub token: String,
 	/// The user that the authentication token is for
 	pub user_id: crate::id::User,
+}
+
+impl std::fmt::Debug for Authentication {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		f.debug_struct("Authentication")
+			.field("token", &"*****")
+			.field("user_id", &self.user_id)
+			.finish()
+	}
 }
 
 impl From<&Authentication> for Authentication {
@@ -36,7 +42,10 @@ impl From<&Authentication> for Authentication {
 
 impl From<&UserSession> for Authentication {
 	fn from(user_session: &UserSession) -> Self {
-		Self { token: user_session.token.clone(), user_id: user_session.user_id.clone() }
+		Self {
+			token: user_session.token.clone(),
+			user_id: user_session.user_id.clone(),
+		}
 	}
 }
 

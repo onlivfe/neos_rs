@@ -94,8 +94,9 @@ async fn sessions() -> Result<(), neos::api_client::ApiError> {
 		.expect("there should be at least one public session");
 
 	// Test that getting a specific session works.
-	let session =
-		client.query(neos::query::SessionInfo::new(public_session.id.clone())).await?;
+	let session = client
+		.query(neos::query::SessionInfo::new(public_session.id.clone()))
+		.await?;
 
 	// Some basic sanity checks, can't do full eq since some data might've changed
 	assert!(session.id == public_session.id);

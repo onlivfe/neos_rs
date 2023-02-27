@@ -10,7 +10,5 @@ impl Queryable<NoAuthentication, ()> for Ping {
 		format!("{}/testing/ping", crate::API_BASE_URI)
 	}
 
-	fn deserialize(&self, _data: &[u8]) -> serde_json::Result<()> {
-		Ok(())
-	}
+	fn deserialize(&self, _data: &[u8]) -> serde_json::Result<()> { Ok(()) }
 }

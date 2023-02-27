@@ -12,16 +12,17 @@ pub struct Friends {
 
 impl Default for Friends {
 	/// Creates a new friends query based on the ID
-	fn default() -> Self {
-		Self { last_status_update: None }
-	}
+	fn default() -> Self { Self { last_status_update: None } }
 }
 
 // TODO: VecSkipError
 impl Queryable<Authentication, Vec<crate::model::Friend>> for Friends {
 	fn url(&self, auth: &Authentication) -> String {
-		let mut query =
-			format!("{}/users/{}/friends", crate::API_BASE_URI, auth.user_id.as_ref());
+		let mut query = format!(
+			"{}/users/{}/friends",
+			crate::API_BASE_URI,
+			auth.user_id.as_ref()
+		);
 
 		if let Some(last_status_update) = self.last_status_update {
 			query = query + "?lastStatusUpdate=" + &last_status_update.to_string();
@@ -39,9 +40,7 @@ pub struct RemoveFriend {
 
 impl RemoveFriend {
 	/// Creates a new friend request query based on the ID
-	pub fn new(to: impl Into<crate::id::User>) -> Self {
-		Self { to: to.into() }
-	}
+	pub fn new(to: impl Into<crate::id::User>) -> Self { Self { to: to.into() } }
 }
 
 impl Queryable<Authentication, crate::model::User> for RemoveFriend {

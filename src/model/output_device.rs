@@ -44,7 +44,9 @@ impl<'de> Deserialize<'de> for OutputDevice {
 		impl<'de> serde::de::Visitor<'de> for OutputDeviceVisitor {
 			type Value = OutputDevice;
 
-			fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+			fn expecting(
+				&self, formatter: &mut std::fmt::Formatter,
+			) -> std::fmt::Result {
 				formatter.write_str("a string or number matching the OutputDevice enum")
 			}
 

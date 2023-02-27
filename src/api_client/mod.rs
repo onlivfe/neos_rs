@@ -17,6 +17,8 @@
 //!
 //! > Requires the `Authorization` header in addition to the rate limiting.
 
+use std::num::NonZeroU32;
+
 use governor::{
 	clock::DefaultClock,
 	middleware::NoOpMiddleware,
@@ -27,7 +29,6 @@ use governor::{
 use racal::{Queryable, RequestMethod};
 use reqwest::{header::HeaderMap, Client};
 use serde::de::DeserializeOwned;
-use std::num::NonZeroU32;
 
 use crate::query::{Authentication, NoAuthentication};
 
@@ -41,15 +42,11 @@ pub enum ApiError {
 }
 
 impl From<serde_json::Error> for ApiError {
-	fn from(err: serde_json::Error) -> Self {
-		Self::Serde(err)
-	}
+	fn from(err: serde_json::Error) -> Self { Self::Serde(err) }
 }
 
 impl From<reqwest::Error> for ApiError {
-	fn from(err: reqwest::Error) -> Self {
-		Self::Reqwest(err)
-	}
+	fn from(err: reqwest::Error) -> Self { Self::Reqwest(err) }
 }
 
 type NormalRateLimiter =
@@ -71,9 +68,7 @@ pub struct AuthenticatedNeos {
 }
 
 async fn base_query<R, FromState: Send, T>(
-	http: &Client,
-	api_state: FromState,
-	rate_limiter: &NormalRateLimiter,
+	http: &Client, api_state: FromState, rate_limiter: &NormalRateLimiter,
 	queryable: T,
 ) -> Result<R, ApiError>
 where
@@ -115,7 +110,9 @@ fn http_rate_limiter() -> NormalRateLimiter {
 
 impl AuthenticatedNeos {
 	/// Creates an API client
-	fn http_client(user_agent: &str, auth: &Authentication) -> Result<Client, ApiError> {
+	fn http_client(
+		user_agent: &str, auth: &Authentication,
+	) -> Result<Client, ApiError> {
 		use serde::ser::Error;
 
 		let builder = Client::builder();
@@ -152,8 +149,7 @@ impl AuthenticatedNeos {
 	///
 	/// If deserializing user agent into a header fails
 	pub fn new(
-		user_agent: String,
-		auth: impl Into<Authentication> + Send,
+		user_agent: String, auth: impl Into<Authentication> + Send,
 	) -> Result<Self, ApiError> {
 		let auth = auth.into();
 		Ok(Self {
@@ -169,7 +165,9 @@ impl AuthenticatedNeos {
 	/// # Errors
 	///
 	/// If something with the request failed.
-	pub async fn query<'a, R, FromState, T>(&'a self, queryable: T) -> Result<R, ApiError>
+	pub async fn query<'a, R, FromState, T>(
+		&'a self, queryable: T,
+	) -> Result<R, ApiError>
 	where
 		R: DeserializeOwned,
 		FromState: From<&'a Authentication> + Send,
@@ -192,8 +190,7 @@ impl UnauthenticatedNeos {
 	///
 	/// If deserializing user agent or authentication fails.
 	pub fn upgrade(
-		self,
-		auth: impl Into<Authentication> + Send,
+		self, auth: impl Into<Authentication> + Send,
 	) -> Result<AuthenticatedNeos, ApiError> {
 		let auth = auth.into();
 		Ok(AuthenticatedNeos {
@@ -222,7 +219,9 @@ impl UnauthenticatedNeos {
 	/// # Errors
 	///
 	/// If something with the request failed.
-	pub async fn query<'a, R, FromState, T>(&'a self, queryable: T) -> Result<R, ApiError>
+	pub async fn query<'a, R, FromState, T>(
+		&'a self, queryable: T,
+	) -> Result<R, ApiError>
 	where
 		R: DeserializeOwned,
 		FromState: From<&'a NoAuthentication> + Send,

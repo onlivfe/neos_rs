@@ -20,7 +20,12 @@ pub struct Messages {
 impl Default for Messages {
 	/// Creates a messages query based on the ID
 	fn default() -> Self {
-		Self { max_amount: 100, unread_only: false, from_time: None, with_user: None }
+		Self {
+			max_amount: 100,
+			unread_only: false,
+			from_time: None,
+			with_user: None,
+		}
 	}
 }
 
@@ -50,12 +55,20 @@ impl Queryable<Authentication, Vec<crate::model::Message>> for Messages {
 }
 
 /// Send a message
-impl Queryable<Authentication, crate::model::Message> for crate::model::Message {
+impl Queryable<Authentication, crate::model::Message>
+	for crate::model::Message
+{
 	fn url(&self, _: &Authentication) -> String {
-		format!("{}/users/{}/messages", crate::API_BASE_URI, self.recipient_id.as_ref(),)
+		format!(
+			"{}/users/{}/messages",
+			crate::API_BASE_URI,
+			self.recipient_id.as_ref(),
+		)
 	}
 
-	fn body(&self, _state: &Authentication) -> Option<serde_json::Result<Vec<u8>>> {
+	fn body(
+		&self, _state: &Authentication,
+	) -> Option<serde_json::Result<Vec<u8>>> {
 		Some(serde_json::to_vec(self))
 	}
 

@@ -122,9 +122,7 @@ add_id!(Machine, "M-");
 impl Session {
 	#[must_use]
 	/// If the session is hosted by an user.
-	pub fn is_custom_user(&self) -> bool {
-		self.0.starts_with("S-U-")
-	}
+	pub fn is_custom_user(&self) -> bool { self.0.starts_with("S-U-") }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Deserialize, Serialize)]
@@ -176,13 +174,9 @@ pub enum Owner {
 }
 
 impl From<User> for Owner {
-	fn from(user: User) -> Self {
-		Owner::User(user)
-	}
+	fn from(user: User) -> Self { Owner::User(user) }
 }
 
 impl From<Group> for Owner {
-	fn from(group: Group) -> Self {
-		Owner::Group(group)
-	}
+	fn from(group: Group) -> Self { Owner::Group(group) }
 }

@@ -11,8 +11,7 @@ pub mod opt_rfc3339 {
 	}
 
 	pub fn serialize<S: Serializer>(
-		option: &Option<OffsetDateTime>,
-		serializer: S,
+		option: &Option<OffsetDateTime>, serializer: S,
 	) -> Result<S::Ok, S::Error> {
 		rfc3339::option::serialize(option, serializer)
 	}
@@ -26,8 +25,10 @@ pub fn random_ascii_string(bytes_count: u8) -> String {
 	// By using nanorand we avoid pulling in really heavy deps.
 	use nanorand::Rng;
 
-	const DICT: &[char; 16] =
-		&['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'];
+	const DICT: &[char; 16] = &[
+		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+		'p',
+	];
 
 	let mut bits = [0u8].repeat(bytes_count as usize);
 

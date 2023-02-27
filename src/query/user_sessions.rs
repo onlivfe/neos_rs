@@ -1,9 +1,8 @@
 use racal::Queryable;
 use serde::{Deserialize, Serialize};
 
-use crate::model::UserSession;
-
 use super::{Authentication, NoAuthentication};
+use crate::model::UserSession;
 
 #[derive(Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -49,12 +48,14 @@ impl LoginCredentials {
 		self.totp = totp.into();
 		self
 	}
+
 	#[must_use]
 	/// Sets the secret machine ID field's value
 	pub fn machine_id(mut self, machine_id: impl Into<Option<String>>) -> Self {
 		self.secret_machine_id = machine_id.into();
 		self
 	}
+
 	#[must_use]
 	/// Sets the remember me field's value
 	pub fn remember_me(mut self, remember_me: impl Into<bool>) -> Self {
@@ -151,21 +152,15 @@ impl LoginCredentialsIdentifier {
 
 	#[must_use]
 	/// If is username
-	pub const fn is_username(&self) -> bool {
-		matches!(self, Self::Username(_))
-	}
+	pub const fn is_username(&self) -> bool { matches!(self, Self::Username(_)) }
 
 	#[must_use]
 	/// If is email based
-	pub const fn is_email(&self) -> bool {
-		matches!(self, Self::Email(_))
-	}
+	pub const fn is_email(&self) -> bool { matches!(self, Self::Email(_)) }
 
 	#[must_use]
 	/// If is owner's ID based
-	pub const fn is_ownerid(&self) -> bool {
-		matches!(self, Self::OwnerID(_))
-	}
+	pub const fn is_ownerid(&self) -> bool { matches!(self, Self::OwnerID(_)) }
 }
 
 /// Tries to remove the current authentication session
@@ -180,9 +175,7 @@ impl Queryable<Authentication, ()> for DestroyUserSession {
 		racal::RequestMethod::Delete
 	}
 
-	fn deserialize(&self, _data: &[u8]) -> serde_json::Result<()> {
-		Ok(())
-	}
+	fn deserialize(&self, _data: &[u8]) -> serde_json::Result<()> { Ok(()) }
 }
 
 /// Tries to make the current authentication session last longer
@@ -197,7 +190,5 @@ impl Queryable<Authentication, ()> for ExtendUserSession {
 		racal::RequestMethod::Patch
 	}
 
-	fn deserialize(&self, _data: &[u8]) -> serde_json::Result<()> {
-		Ok(())
-	}
+	fn deserialize(&self, _data: &[u8]) -> serde_json::Result<()> { Ok(()) }
 }
