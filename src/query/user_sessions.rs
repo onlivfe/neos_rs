@@ -64,7 +64,6 @@ impl LoginCredentials {
 	}
 
 	#[cfg(feature = "rand_util")]
-	#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 	#[must_use]
 	/// Sets the `machine_id` to a not cryptographically safe generated
 	/// pseudorandom value.

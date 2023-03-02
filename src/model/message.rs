@@ -41,7 +41,6 @@ impl Message {
 	}
 
 	#[cfg(feature = "rand_util")]
-	#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 	#[must_use]
 	/// Creates a new message with a random id and time set to now
 	pub fn new(
@@ -63,7 +62,6 @@ impl Message {
 	}
 
 	#[cfg(feature = "rand_util")]
-	#[cfg_attr(nightly, doc(cfg(feature = "rand_util")))]
 	#[must_use]
 	/// Generates a new pseudorandom ID for a message
 	pub fn new_id() -> String {

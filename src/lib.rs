@@ -28,7 +28,7 @@
 //! assert_eq!(session_user.output_device, neos::model::OutputDevice::Screen);
 //! ```
 
-#![cfg_attr(nightly, feature(doc_cfg))]
+#![cfg_attr(nightly, feature(doc_auto_cfg))]
 #![deny(clippy::all)]
 #![forbid(unsafe_code)]
 #![deny(clippy::cargo)]
@@ -62,5 +62,4 @@ mod util;
 pub use assets::*;
 
 #[cfg(feature = "http_client")]
-#[cfg_attr(nightly, doc(cfg(feature = "http_client")))]
 pub mod api_client;

@@ -1,17 +1,38 @@
 //! Models of the queries for Neos' API.
 
+use racal::FromApiState;
+
+use crate::model::UserSession;
+
+mod friends;
+pub use friends::*;
+mod groups;
+pub use groups::*;
+mod messages;
+pub use messages::*;
+mod sessions;
+pub use sessions::*;
+mod stats;
+pub use stats::*;
+mod testing;
+pub use testing::*;
+mod user_sessions;
+pub use user_sessions::*;
+mod users;
+pub use users::*;
+
 /// [`racal::Queryable`](racal::Queryable)'s `RequiredApiState`.
 ///
 /// Even unauthenticated requests to Neos' API should take rate limits
 /// into account, thus not using `()` for the API state.
 pub struct NoAuthentication {}
 
-impl From<&NoAuthentication> for NoAuthentication {
-	fn from(_: &NoAuthentication) -> Self { Self {} }
+impl racal::FromApiState<Self> for NoAuthentication {
+	fn from_state(state: &Self) -> &Self { state }
 }
 
-impl From<&Authentication> for NoAuthentication {
-	fn from(_: &Authentication) -> Self { NoAuthentication {} }
+impl racal::FromApiState<Authentication> for NoAuthentication {
+	fn from_state(_: &Authentication) -> &Self { &NoAuthentication {} }
 }
 
 /// [`racal::Queryable`](racal::Queryable)'s `RequiredApiState`.
@@ -34,10 +55,8 @@ impl std::fmt::Debug for Authentication {
 	}
 }
 
-impl From<&Authentication> for Authentication {
-	fn from(auth: &Authentication) -> Self {
-		Self { token: auth.token.clone(), user_id: auth.user_id.clone() }
-	}
+impl FromApiState<Self> for Authentication {
+	fn from_state(state: &Self) -> &Self { state }
 }
 
 impl From<&UserSession> for Authentication {
@@ -48,22 +67,3 @@ impl From<&UserSession> for Authentication {
 		}
 	}
 }
-
-mod friends;
-pub use friends::*;
-mod groups;
-pub use groups::*;
-mod messages;
-pub use messages::*;
-mod sessions;
-pub use sessions::*;
-mod stats;
-pub use stats::*;
-mod testing;
-pub use testing::*;
-mod user_sessions;
-pub use user_sessions::*;
-mod users;
-pub use users::*;
-
-use crate::model::UserSession;

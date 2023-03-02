@@ -1,10 +1,12 @@
 #![cfg(feature = "http_client")]
 
+use racal::reqwest::{ApiClient, ApiError};
+
 mod common;
 
 #[tokio::test]
 #[ignore]
-async fn ping() -> Result<(), neos::api_client::ApiError> {
+async fn ping() -> Result<(), ApiError> {
 	let client = common::api_no_auth();
 
 	client.query(neos::query::Ping).await?;
@@ -14,7 +16,7 @@ async fn ping() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn online_user_count() -> Result<(), neos::api_client::ApiError> {
+async fn online_user_count() -> Result<(), ApiError> {
 	let client = common::api_no_auth();
 
 	assert!(client.query(neos::query::OnlineUserCount).await? > 0);
@@ -24,7 +26,7 @@ async fn online_user_count() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn online_instance_count() -> Result<(), neos::api_client::ApiError> {
+async fn online_instance_count() -> Result<(), ApiError> {
 	let client = common::api_no_auth();
 
 	assert!(client.query(neos::query::OnlineInstanceCount).await? > 0);
@@ -34,7 +36,7 @@ async fn online_instance_count() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn get_user() -> Result<(), neos::api_client::ApiError> {
+async fn get_user() -> Result<(), ApiError> {
 	let client = common::api_no_auth();
 
 	let user_id = neos::id::User::try_from("U-Neos").unwrap();
@@ -51,7 +53,7 @@ async fn get_user() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn get_user_status() -> Result<(), neos::api_client::ApiError> {
+async fn get_user_status() -> Result<(), ApiError> {
 	let client = common::api_no_auth();
 
 	let user_id = neos::id::User::try_from("U-Neos").unwrap();
@@ -63,7 +65,7 @@ async fn get_user_status() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn search_users() -> Result<(), neos::api_client::ApiError> {
+async fn search_users() -> Result<(), ApiError> {
 	let client = common::api_no_auth();
 
 	let user_search_query = neos::query::UserSearch::new("Neos");
@@ -80,7 +82,7 @@ async fn search_users() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn sessions() -> Result<(), neos::api_client::ApiError> {
+async fn sessions() -> Result<(), ApiError> {
 	let client = common::api_no_auth();
 
 	let sessions = client.query(neos::query::Sessions).await?;
@@ -108,7 +110,7 @@ async fn sessions() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn get_group() -> Result<(), neos::api_client::ApiError> {
+async fn get_group() -> Result<(), ApiError> {
 	let client = common::api_no_auth();
 
 	let group_id = neos::id::Group::try_from("G-Neos").unwrap();

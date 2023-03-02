@@ -1,10 +1,12 @@
 #![cfg(feature = "http_client")]
 
+use racal::reqwest::{ApiClient, ApiError};
+
 mod common;
 
 #[tokio::test]
 #[ignore]
-async fn extend_session() -> Result<(), neos::api_client::ApiError> {
+async fn extend_session() -> Result<(), ApiError> {
 	let client = common::api_auth();
 
 	let extend_session = neos::query::ExtendUserSession;
@@ -15,7 +17,7 @@ async fn extend_session() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn friends() -> Result<(), neos::api_client::ApiError> {
+async fn friends() -> Result<(), ApiError> {
 	let client = common::api_auth();
 
 	let friends_query = neos::query::Friends::default();
@@ -29,7 +31,7 @@ async fn friends() -> Result<(), neos::api_client::ApiError> {
 
 #[tokio::test]
 #[ignore]
-async fn get_messages() -> Result<(), neos::api_client::ApiError> {
+async fn get_messages() -> Result<(), ApiError> {
 	let client = common::api_auth();
 
 	let messages_query = neos::query::Messages::default();

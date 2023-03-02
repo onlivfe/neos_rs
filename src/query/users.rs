@@ -51,7 +51,7 @@ impl From<crate::id::User> for UserIdOrUsername {
 ///
 /// ```no_run
 /// # tokio_test::block_on(async {
-/// # use neos::{api_client::UnauthenticatedNeos, query::UserSearch};
+/// # use neos::{api_client::{UnauthenticatedNeos, ApiClient}, query::UserSearch};
 /// # let USER_AGENT = String::new();
 /// # let neos_api_client = UnauthenticatedNeos::new(USER_AGENT).unwrap();
 /// let neos_user_search_query = UserSearch::new("Neos");
@@ -95,7 +95,7 @@ impl Queryable<NoAuthentication, crate::model::User> for UserInfo {
 ///
 /// ```no_run
 /// # tokio_test::block_on(async {
-/// # use neos::{api_client::UnauthenticatedNeos, query::UserStatus};
+/// # use neos::{api_client::{UnauthenticatedNeos, ApiClient}, query::UserStatus};
 /// # let USER_AGENT = String::new();
 /// # let neos_api_client = UnauthenticatedNeos::new(USER_AGENT).unwrap();
 /// let neos_user_status_query =
