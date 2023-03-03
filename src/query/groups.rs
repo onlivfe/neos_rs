@@ -1,9 +1,10 @@
 use racal::Queryable;
+use serde::{Deserialize, Serialize};
 
 use super::NoAuthentication;
 
 /// Gets details of publicly listed sessions
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct GroupInfo {
 	/// The ID of the group to query information about
 	pub group_id: crate::id::Group,

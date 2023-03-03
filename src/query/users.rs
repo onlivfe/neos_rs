@@ -1,11 +1,12 @@
 use racal::Queryable;
+use serde::{Deserialize, Serialize};
 
 use super::NoAuthentication;
 
 /// An user's ID or their username
 ///
 /// Used in [`UserInfo`](neos::query::UserInfo).
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum UserIdOrUsername {
 	/// An user's ID
 	Id(crate::id::User),
@@ -65,7 +66,7 @@ impl From<crate::id::User> for UserIdOrUsername {
 /// );
 /// # })
 /// ```
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct UserInfo {
 	/// The ID or username to query information about
 	pub user: UserIdOrUsername,
@@ -107,7 +108,7 @@ impl Queryable<NoAuthentication, crate::model::User> for UserInfo {
 /// println!("Neos bot account is: {}", &neos_bot_status.online_status);
 /// # })
 /// ```
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct UserStatus {
 	/// The ID of the user whose status the query is for
 	pub user_id: crate::id::User,
@@ -126,7 +127,7 @@ impl Queryable<NoAuthentication, crate::model::UserStatus> for UserStatus {
 	}
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 /// Searches users by name
 pub struct UserSearch {
 	/// The name to search for

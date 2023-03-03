@@ -1,4 +1,5 @@
 use racal::Queryable;
+use serde::{Deserialize, Serialize};
 
 use super::NoAuthentication;
 
@@ -13,7 +14,7 @@ impl Queryable<NoAuthentication, Vec<crate::model::SessionInfo>> for Sessions {
 }
 
 /// Gets details of publicly listed sessions
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct SessionInfo {
 	/// The ID of the session to query information about
 	pub session_id: crate::id::Session,

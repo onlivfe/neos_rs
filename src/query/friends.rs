@@ -1,10 +1,11 @@
 use racal::Queryable;
+use serde::{Deserialize, Serialize};
 use time::OffsetDateTime;
 
 use super::Authentication;
 
 /// Get the friends for a specific user
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Friends {
 	/// Possibly limit to friends only with newer status updates
 	pub last_status_update: Option<OffsetDateTime>,
@@ -33,6 +34,7 @@ impl Queryable<Authentication, Vec<crate::model::Friend>> for Friends {
 }
 
 /// Removes a friend
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct RemoveFriend {
 	/// The user's ID that's being removed
 	pub to: crate::id::User,

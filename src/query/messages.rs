@@ -1,10 +1,11 @@
 use racal::Queryable;
+use serde::{Deserialize, Serialize};
 use time::OffsetDateTime;
 
 use super::Authentication;
 
 /// Query the messages for a specific user
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Messages {
 	/// Max amount of messages to retrieve,
 	/// most likely capped server side to a smaller value

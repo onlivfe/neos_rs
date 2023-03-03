@@ -1,6 +1,7 @@
 //! Models of the queries for Neos' API.
 
 use racal::FromApiState;
+use serde::{Deserialize, Serialize};
 
 use crate::model::UserSession;
 
@@ -38,7 +39,7 @@ impl racal::FromApiState<Authentication> for NoAuthentication {
 /// [`racal::Queryable`](racal::Queryable)'s `RequiredApiState`.
 ///
 /// With authentication
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Authentication {
 	/// The secret authentication token
 	pub token: String,
