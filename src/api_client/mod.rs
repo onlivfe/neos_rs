@@ -13,7 +13,7 @@
 //! 	env!("CARGO_PKG_REPOSITORY"),
 //! 	")",
 //! );
-//!
+//! 	
 //! use neos::api_client::{Neos, NeosUnauthenticated};
 //! let neos_api_client = NeosUnauthenticated::new(USER_AGENT.to_string());
 //! let online_users_count = neos_api_client.online_user_count();
@@ -35,7 +35,8 @@ use std::borrow::Borrow;
 
 use minreq::{Method, Request, Response};
 
-const API_BASE: &str = "https://api.neos.com/api/";
+// Neos broke their api.neos.com cert, thusly this 0.4 fix
+const API_BASE: &str = "https://cloudx.azurewebsites.net/api/";
 
 mod error;
 mod inner;
