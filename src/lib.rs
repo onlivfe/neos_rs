@@ -43,7 +43,9 @@
 #![allow(clippy::tabs_in_doc_comments)]
 
 /// The base path of the API
-const API_BASE_URI: &str = "https://api.neos.com/api";
+// Neos allowed their cert to expire and monkey patch fixed it by using the
+// azure url const API_BASE_URI: &str = "https://api.neos.com/api";
+const API_BASE_URI: &str = "https://cloudx.azurewebsites.net/api";
 
 pub mod id;
 pub mod model;
