@@ -7,7 +7,7 @@ authors = ["ljoonal"]
 description = "NeosVR's API in rust"
 repository = "https://github.com/onlivfe/neos_rs"
 documentation = "https://docs.rs/neos"
-keywords = ["neos", "neosvr", "api", "rest"]
+keywords = ["neos", "neosvr", "api", "socialvr"]
 categories = ["api-bindings", "games"]
 
 include = ["src", "Cargo.toml", "LICENSE", "README.md"]
