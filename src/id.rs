@@ -174,9 +174,9 @@ pub enum Owner {
 }
 
 impl From<User> for Owner {
-	fn from(user: User) -> Self { Owner::User(user) }
+	fn from(user: User) -> Self { Self::User(user) }
 }
 
 impl From<Group> for Owner {
-	fn from(group: Group) -> Self { Owner::Group(group) }
+	fn from(group: Group) -> Self { Self::Group(group) }
 }

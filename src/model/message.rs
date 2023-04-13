@@ -49,7 +49,7 @@ impl Message {
 	) -> Self {
 		let now = OffsetDateTime::now_utc();
 
-		Message {
+		Self {
 			owner_id: owner_and_sender.clone(),
 			sender_id: owner_and_sender,
 			recipient_id: recipient,

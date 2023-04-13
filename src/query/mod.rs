@@ -33,7 +33,7 @@ impl racal::FromApiState<Self> for NoAuthentication {
 }
 
 impl racal::FromApiState<Authentication> for NoAuthentication {
-	fn from_state(_: &Authentication) -> &Self { &NoAuthentication {} }
+	fn from_state(_: &Authentication) -> &Self { &Self {} }
 }
 
 /// [`racal::Queryable`](racal::Queryable)'s `RequiredApiState`.

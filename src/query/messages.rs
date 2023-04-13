@@ -56,9 +56,7 @@ impl Queryable<Authentication, Vec<crate::model::Message>> for Messages {
 }
 
 /// Send a message
-impl Queryable<Authentication, crate::model::Message>
-	for crate::model::Message
-{
+impl Queryable<Authentication, Self> for crate::model::Message {
 	fn url(&self, _: &Authentication) -> String {
 		format!(
 			"{}/users/{}/messages",
