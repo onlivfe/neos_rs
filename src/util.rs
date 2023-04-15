@@ -17,6 +17,7 @@ pub mod opt_rfc3339 {
 	}
 }
 
+#[cfg(feature = "rand_util")]
 #[must_use]
 /// Generates a new (not cryptographically safe) pseudorandom string
 ///
