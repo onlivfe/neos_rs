@@ -1,7 +1,9 @@
 use time::{serde::rfc3339, OffsetDateTime};
 
 #[serde_with::serde_as]
-#[derive(Debug, Clone, Hash, serde::Deserialize, serde::Serialize)]
+#[derive(
+	Debug, Clone, PartialEq, Eq, Hash, serde::Deserialize, serde::Serialize,
+)]
 #[serde(rename_all = "camelCase")]
 /// A Neos session.
 pub struct SessionInfo {
