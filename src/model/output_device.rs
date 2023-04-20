@@ -26,6 +26,7 @@ pub enum OutputDevice {
 	/// Desktop
 	Screen = 2,
 	#[strum(to_string = "VR")]
+	#[serde(rename = "VR")]
 	/// Virtual Reality
 	Vr = 3,
 	/// In game camera
@@ -90,7 +91,9 @@ impl<'de> Deserialize<'de> for OutputDevice {
 			where
 				E: serde::de::Error,
 			{
-				OutputDevice::try_from(v).map_err(|_| {
+				use std::str::FromStr;
+
+				OutputDevice::from_str(v).map_err(|_| {
 					serde::de::Error::invalid_value(
 						serde::de::Unexpected::Str(v),
 						&"enum str repr",
@@ -100,5 +103,33 @@ impl<'de> Deserialize<'de> for OutputDevice {
 		}
 
 		deserializer.deserialize_any(OutputDeviceVisitor)
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use super::OutputDevice;
+
+	#[test]
+	fn deserialize_vr_num() {
+		let input = "3";
+		let output: OutputDevice =
+			serde_json::from_str(input).expect("deserializing upper case VR to work");
+		assert_eq!(output, OutputDevice::Vr);
+	}
+
+	#[test]
+	fn deserialize_vr_str() {
+		let input = "\"VR\"";
+		let output: OutputDevice =
+			serde_json::from_str(input).expect("deserializing upper case VR to work");
+		assert_eq!(output, OutputDevice::Vr);
+	}
+
+	#[test]
+	fn serialize_vr() {
+		let input = OutputDevice::Vr;
+		let output = serde_json::to_string(&input).expect("serializing VR to work");
+		assert_eq!(&output, "\"VR\"");
 	}
 }
