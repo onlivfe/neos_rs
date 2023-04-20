@@ -114,7 +114,7 @@ mod tests {
 	fn deserialize_vr_num() {
 		let input = "3";
 		let output: OutputDevice =
-			serde_json::from_str(input).expect("deserializing upper case VR to work");
+			serde_json::from_str(input).expect("deserializing from num to work");
 		assert_eq!(output, OutputDevice::Vr);
 	}
 
@@ -122,7 +122,7 @@ mod tests {
 	fn deserialize_vr_str() {
 		let input = "\"VR\"";
 		let output: OutputDevice =
-			serde_json::from_str(input).expect("deserializing upper case VR to work");
+			serde_json::from_str(input).expect("deserializing from str to work");
 		assert_eq!(output, OutputDevice::Vr);
 	}
 
@@ -131,5 +131,31 @@ mod tests {
 		let input = OutputDevice::Vr;
 		let output = serde_json::to_string(&input).expect("serializing VR to work");
 		assert_eq!(&output, "\"VR\"");
+	}
+
+	#[test]
+	fn camera() {
+		let val = serde_json::to_string(&OutputDevice::Camera)
+			.expect("serializing to work");
+		assert_eq!(&val, "\"Camera\"");
+		let val: OutputDevice =
+			serde_json::from_str(&val).expect("deserializing from str to work");
+		assert_eq!(&val, &OutputDevice::Camera);
+		let val: OutputDevice =
+			serde_json::from_str("4").expect("deserializing from num to work");
+		assert_eq!(&val, &OutputDevice::Camera);
+	}
+
+	#[test]
+	fn unknown() {
+		let val = serde_json::to_string(&OutputDevice::Unknown)
+			.expect("serializing to work");
+		assert_eq!(&val, "\"Unknown\"");
+		let val: OutputDevice =
+			serde_json::from_str(&val).expect("deserializing from str to work");
+		assert_eq!(&val, &OutputDevice::Unknown);
+		let val: OutputDevice =
+			serde_json::from_str("0").expect("deserializing from num to work");
+		assert_eq!(&val, &OutputDevice::Unknown);
 	}
 }
